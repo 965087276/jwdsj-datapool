@@ -11,5 +11,13 @@
 
     <artifactId>datapool-dictionary</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>cn.ict.jwdsj.datapool</groupId>
+            <artifactId>datapool-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
 
 </project>
