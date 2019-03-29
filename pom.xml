@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.ict.jwdsj</groupId>
-    <artifactId>jwdsj-data-pool</artifactId>
+    <artifactId>jwdsj-datapool</artifactId>
     <version>1.0-SNAPSHOT</version>
 
 
