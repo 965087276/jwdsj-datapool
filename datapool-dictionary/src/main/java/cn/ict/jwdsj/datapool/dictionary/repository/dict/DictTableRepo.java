@@ -1,6 +1,6 @@
-package cn.ict.jwdsj.datapool.dictionary.repository;
+package cn.ict.jwdsj.datapool.dictionary.repository.dict;
 
-import cn.ict.jwdsj.datapool.dictionary.entity.DictTable;
+import cn.ict.jwdsj.datapool.dictionary.entity.dict.DictTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
