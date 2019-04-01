@@ -1,6 +1,6 @@
-package cn.ict.jwdsj.datapool.dictionary.table.entity;
+package cn.ict.jwdsj.datapool.common.entity.dictionary.table;
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;

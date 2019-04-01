@@ -1,7 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service;
 
-import cn.ict.jwdsj.datapool.dictionary.column.entity.DictColumn;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

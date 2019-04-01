@@ -1,6 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.meta.repo;
 
-import cn.ict.jwdsj.datapool.dictionary.meta.entity.MetaDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaDatabase;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

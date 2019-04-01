@@ -1,8 +1,8 @@
 package cn.ict.jwdsj.datapool.dictionary.table.service.impl;
 
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.DictTable;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.QDictTable;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.repo.DictTableRepo;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;

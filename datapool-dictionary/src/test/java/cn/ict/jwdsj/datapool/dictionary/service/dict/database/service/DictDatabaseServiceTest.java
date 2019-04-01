@@ -1,9 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.service.dict.database.service;
 
-import cn.hutool.core.util.ClassUtil;
-import cn.hutool.poi.excel.ExcelReader;
-import cn.hutool.poi.excel.ExcelUtil;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,10 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

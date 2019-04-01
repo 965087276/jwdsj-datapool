@@ -1,6 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.service.meta.service;
 
-import cn.ict.jwdsj.datapool.dictionary.meta.entity.MetaTable;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaTable;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaTableService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

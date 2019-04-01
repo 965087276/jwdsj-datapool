@@ -1,8 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.meta.repo;
 
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.meta.entity.MetaColumn;
-import cn.ict.jwdsj.datapool.dictionary.meta.entity.MetaColumnMultiKeys;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaColumnMultiKeys;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

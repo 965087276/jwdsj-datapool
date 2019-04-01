@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.dictionary.meta.entity;
+package cn.ict.jwdsj.datapool.common.entity.dictionary.meta;
 
 import lombok.Data;
 

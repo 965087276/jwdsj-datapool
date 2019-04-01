@@ -1,15 +1,14 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service.impl;
 
-import cn.ict.jwdsj.datapool.dictionary.column.entity.DictColumn;
-import cn.ict.jwdsj.datapool.dictionary.column.entity.QDictColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.QDictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.QDictTable;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

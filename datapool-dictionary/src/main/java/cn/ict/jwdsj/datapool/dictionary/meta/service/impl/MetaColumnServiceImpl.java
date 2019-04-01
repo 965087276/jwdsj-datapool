@@ -1,7 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.meta.service.impl;
 
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.meta.entity.MetaColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaColumn;
 import cn.ict.jwdsj.datapool.dictionary.meta.repo.MetaColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaColumnService;
 import org.springframework.beans.factory.annotation.Autowired;

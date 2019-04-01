@@ -27,7 +27,7 @@ public class DictColExcelServiceTest {
     @Test
     public void test() {
         int N = 3;
-        List<Integer> integerList = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
+        List<Integer> integerList = IntStream.range(1, 10).boxed().collect(Collectors.toList());
         List<List<Integer>> list = IntStream.range(0, 4)
                 .mapToObj(i -> integerList.subList(i * N, Math.min(i * N + N, integerList.size())))
                 .collect(Collectors.toList());

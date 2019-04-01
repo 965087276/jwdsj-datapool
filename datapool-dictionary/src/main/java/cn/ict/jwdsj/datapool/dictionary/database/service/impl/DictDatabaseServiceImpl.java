@@ -1,10 +1,8 @@
 package cn.ict.jwdsj.datapool.dictionary.database.service.impl;
 
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.QDictDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.dictionary.database.repo.DictDatabaseRepo;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
