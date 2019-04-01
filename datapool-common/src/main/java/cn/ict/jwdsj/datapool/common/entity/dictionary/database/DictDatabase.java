@@ -21,4 +21,10 @@ public class DictDatabase extends BaseEntity {
     @Column(name = "detail", nullable = true)
     private String detail;
 
+    public static DictDatabase buildById(long id) {
+        DictDatabase dictDatabase = new DictDatabase();
+        dictDatabase.setId(id);
+        return dictDatabase;
+    }
+
 }
