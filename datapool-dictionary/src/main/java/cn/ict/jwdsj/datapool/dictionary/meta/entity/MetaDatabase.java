@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "schemata", catalog = "information_schema")
+@Table(name = "SCHEMATA", catalog = "INFORMATION_SCHEMA")
 public class MetaDatabase {
 
     @Id

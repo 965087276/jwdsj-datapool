@@ -11,5 +11,4 @@ import java.util.List;
 public interface DictTableRepo extends JpaRepository<DictTable, Long> {
 
     List<DictTable> findByDictDatabase(DictDatabase dictDatabase);
-    int countByDictDatabaseAndEnTableIn(DictDatabase dictDatabase, List<String> enTable);
 }

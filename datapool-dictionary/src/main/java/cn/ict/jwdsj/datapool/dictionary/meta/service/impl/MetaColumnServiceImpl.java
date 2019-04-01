@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.meta.service.impl;
 
+import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDatabase;
 import cn.ict.jwdsj.datapool.dictionary.meta.entity.MetaColumn;
 import cn.ict.jwdsj.datapool.dictionary.meta.repo.MetaColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaColumnService;
@@ -17,5 +18,10 @@ public class MetaColumnServiceImpl implements MetaColumnService {
     @Override
     public List<MetaColumn> listByDatabaseAndTable(String database, String table) {
         return metaColumnRepo.findByDatabaseAndTable(database, table);
+    }
+
+    @Override
+    public List<MetaColumn> listByDatabaseAndTableIn(String database, List<String> tables) {
+        return metaColumnRepo.findByDatabaseAndTableIn(database, tables);
     }
 }

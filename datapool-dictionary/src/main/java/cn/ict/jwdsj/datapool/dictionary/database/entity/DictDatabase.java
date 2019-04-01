@@ -1,9 +1,8 @@
 package cn.ict.jwdsj.datapool.dictionary.database.entity;
 
 
-import cn.ict.jwdsj.datapool.dictionary.BaseEntity;
+import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

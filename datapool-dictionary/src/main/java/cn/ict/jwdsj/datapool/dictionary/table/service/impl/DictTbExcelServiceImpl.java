@@ -10,13 +10,14 @@ import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.meta.entity.MetaTable;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaTableService;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.DictTable;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.DictTbExcelDTO;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTbExcelDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTbExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -82,16 +83,19 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
     }
 
     private boolean allTableExistsInMetaDatabase(String enDatabase, List<DictTbExcelDTO> tbExcelDTOS) {
+        NOT_EXISTS_TABLE = "数据表不存在: ";
+        List<String> wrongTables = new ArrayList<>();
+
         Set<String> metaTables = metaTableService.listByDatabase(enDatabase)
                 .stream()
                 .map(MetaTable::getTable)
                 .collect(Collectors.toSet());
         for (DictTbExcelDTO tbExcelDTO : tbExcelDTOS) {
             if (!metaTables.contains(tbExcelDTO.getEnTable())) {
-                NOT_EXISTS_TABLE = "数据表不存在: " + tbExcelDTO.getEnTable();
-                return false;
+                wrongTables.add(tbExcelDTO.getEnTable());
             }
         }
-        return true;
+        NOT_EXISTS_TABLE += wrongTables.stream().collect(Collectors.joining(","));
+        return wrongTables.isEmpty();
     }
 }
