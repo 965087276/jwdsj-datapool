@@ -58,7 +58,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
         List<DictColExcelDTO> colExcelDTOList = reader.readAll(DictColExcelDTO.class);
         // excel中所有表名
         List<String> tableNames =
-                colExcelDTOList.stream().map(DictColExcelDTO::getEnTable).collect(Collectors.toList());
+                colExcelDTOList.stream().map(DictColExcelDTO::getEnTable).distinct().collect(Collectors.toList());
         // excel中每个表的所有字段
         Map<String, List<DictColExcelDTO>> excelColsGroupByTable =
                 colExcelDTOList.stream().collect(groupingBy(DictColExcelDTO::getEnTable));
@@ -77,9 +77,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
         // 每个字段必须对应到正确的表上
         assert allColumnsBelongToCorrectTable(dictDatabase, tableNames, excelColsGroupByTable) : COLUMN_NOT_EXISTS;
 
-
         List<DictColumn> dictColumnList = mapColExcelsToDictColumns(colExcelDTOList, tbIdNameDTOList);
-
         dictColumnService.saveAll(dictColumnList);
 
 
