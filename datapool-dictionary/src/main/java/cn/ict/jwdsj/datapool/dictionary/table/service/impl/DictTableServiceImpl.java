@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +32,14 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
-    public List<DictTable> listByDictDatabase(DictDatabase dictDatabase) {
-        return dictTableRepo.findByDictDatabase(dictDatabase);
+    public List<String> listEnTablesByDictDatabase(DictDatabase dictDatabase) {
+        QDictTable dictTable = QDictTable.dictTable;
+
+        return jpaQueryFactory
+                .select(dictTable.enTable)
+                .from(dictTable)
+                .where(dictTable.dictDatabase.eq(dictDatabase))
+                .fetch();
     }
 
     @Override

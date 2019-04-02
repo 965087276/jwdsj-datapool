@@ -6,6 +6,7 @@ import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DictTableService {
 
@@ -14,8 +15,12 @@ public interface DictTableService {
     @Transactional
     void saveAll(List<DictTable> dictTables);
 
-    List<DictTable> listByDictDatabase(DictDatabase dictDatabase);
-
+    /**
+     * 某库下的所有表
+     * @param dictDatabase 库名
+     * @return 英文表名的集合
+     */
+    List<String> listEnTablesByDictDatabase(DictDatabase dictDatabase);
 
     List<TbIdNameDTO> listTbIdNameDTOByDictDatabase(DictDatabase dictDatabase);
 }

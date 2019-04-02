@@ -36,7 +36,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
     private String NOT_EXISTS_TABLE = "数据库中不存在这个表";
     private final String EMPTY_CHTABLE = "chTable列存在空值";
     private final String DUPLICATE_OBJECT = "存在重复对象";
-    private String EXISTS_IN_DICT_DATABASE = "表之前已经加入过dict_table，不能重复加入";
+    private String EXISTS_IN_DICT_TABLE = "表之前已经加入过dict_table，不能重复加入";
 
     @Override
     public void saveAll(String enDatabase, File file) {
@@ -59,7 +59,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
         // 所有表必须真实存在
         assert allTableExistsInMetaDatabase(dictDatabase.getEnDatabase(), tbExcelDTOS) : NOT_EXISTS_TABLE;
         // dict_table中不存在该表
-        assert allTableNotExistsInDictTable(dictDatabase, tbExcelDTOS) : EXISTS_IN_DICT_DATABASE;
+        assert allTableNotExistsInDictTable(dictDatabase, tbExcelDTOS) : EXISTS_IN_DICT_TABLE;
 
         List<DictTable> dictTables = tbExcelDTOS.stream()
                 .map(tbExcelDTO -> BeanUtil.toBean(tbExcelDTO, DictTable.class))
@@ -70,16 +70,19 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
     }
 
     private boolean allTableNotExistsInDictTable(DictDatabase dictDatabase, List<DictTbExcelDTO> tbExcelDTOS) {
-        List<DictTable> dictTables = dictTableService.listByDictDatabase(dictDatabase);
-        Set<DictTable> dictTableSet = new HashSet<>(dictTables);
+        EXISTS_IN_DICT_TABLE = "下列表之前已经加入过, 不能重复加入: ";
+        List<String> wrongTables = new ArrayList<>();
+
+        List<String> dictTables = dictTableService.listEnTablesByDictDatabase(dictDatabase);
+        Set<String> dictTableSet = new HashSet<>(dictTables);
 
         for (DictTbExcelDTO tbExcelDTO : tbExcelDTOS) {
             if (dictTableSet.contains(tbExcelDTO.getEnTable())) {
-                EXISTS_IN_DICT_DATABASE = "表" + tbExcelDTO.getEnTable() + "之前已经加入过，不能重复加入";
-                return false;
+                wrongTables.add(tbExcelDTO.getEnTable());
             }
         }
-        return true;
+        EXISTS_IN_DICT_TABLE += wrongTables.stream().collect(Collectors.joining(","));
+        return wrongTables.isEmpty();
     }
 
     private boolean allTableExistsInMetaDatabase(String enDatabase, List<DictTbExcelDTO> tbExcelDTOS) {
