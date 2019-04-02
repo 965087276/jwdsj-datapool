@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
@@ -10,11 +11,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class StatServiceImpl implements StatService {
 
     @Autowired private JdbcTemplate jdbcTemplate;
     @Autowired private JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Date getDatabaseUpdateDate(DictDatabase dictDatabase) {
+        QStatTable statTable = QStatTable.statTable;
+        Date date = jpaQueryFactory
+                .select(statTable.updateDate.max())
+                .from(statTable)
+                .where(statTable.dictDatabase.eq(dictDatabase))
+                .fetchOne();
+
+         return date == null ? date : DateUtil.parseDate("2000-01-01");
+
+    }
 
     @Override
     public long countTableRecords(DictTable dictTable) {

@@ -39,7 +39,7 @@
     <modules>
         <module>datapool-dictionary</module>
         <module>datapool-common</module>
-        <module>datapool-datastat</module>
+        <module>datapool-datastats</module>
         <module>datapool-indexmanage</module>
     </modules>
 

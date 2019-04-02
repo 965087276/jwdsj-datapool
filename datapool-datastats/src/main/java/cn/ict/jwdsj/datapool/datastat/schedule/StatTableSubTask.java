@@ -26,10 +26,16 @@ public class StatTableSubTask {
         List<StatTable> tables = statTableService.listAll();
 
         tables.parallelStream().forEach(statTable -> {
-            long count = statService.countTableRecords(statTable.getDictTable());
-            if (statTable.getTotalRecords() != count) {
-                statTable.setTotalRecords(count);
-                statTable.setUpdateDate(new Date());
+            long newCount = statService.countTableRecords(statTable.getDictTable());
+            long oldCount = statTable.getTotalRecords();
+
+            if (oldCount != newCount) {
+                statTable.setTotalRecords(newCount);
+                // 防止第一次统计时程序把时间错该改为最新时间
+                if (oldCount != 0) {
+                    statTable.setUpdateDate(new Date());
+                }
+
                 statTableService.save(statTable);
             }
         });
