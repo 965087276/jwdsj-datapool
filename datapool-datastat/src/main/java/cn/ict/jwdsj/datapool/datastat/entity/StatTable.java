@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.datastat.entity;
 
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
@@ -13,6 +14,12 @@ import java.util.Date;
 @Table(name = "stat_table")
 @Data
 public class StatTable extends BaseEntity {
+
+    @ManyToOne
+    @JoinColumn(name = "database_id", nullable = false)
+    @NotFound(action = NotFoundAction.IGNORE)
+    private DictDatabase dictDatabase;
+
     @ManyToOne
     @JoinColumn(name = "table_id", nullable = false)
     @NotFound(action = NotFoundAction.IGNORE)
