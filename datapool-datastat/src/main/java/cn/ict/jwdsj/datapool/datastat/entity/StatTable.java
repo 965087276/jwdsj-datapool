@@ -3,7 +3,9 @@ package cn.ict.jwdsj.datapool.datastat.entity;
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -29,14 +31,34 @@ public class StatTable extends BaseEntity {
     private long totalRecords = 0L;
 
     @Column(name = "update_date", nullable = false)
-    private Date updateDate = new Date();
+    private Date updateDate;
 
-    public static StatTable builtByTableId(long id) {
-        StatTable statTable = new StatTable();
-        statTable.setDictTable(DictTable.builtById(id));
-        return statTable;
+    public StatTable() {}
+
+    public StatTable id(long id) {
+        this.setId(id);
+        return this;
     }
 
+    public StatTable dictDatabase(long id) {
+        this.setDictDatabase(DictDatabase.buildById(id));
+        return this;
+    }
 
+    public StatTable dictTable(long id) {
+        this.setDictTable(DictTable.builtById(id));
+        return this;
+    }
+
+    public StatTable updateDate(Date date) {
+        this.setUpdateDate(date);
+        return this;
+    }
+
+    public static StatTable builtById(long id) {
+        StatTable statTable = new StatTable();
+        statTable.setId(id);
+        return statTable;
+    }
 
 }

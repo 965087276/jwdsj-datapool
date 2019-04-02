@@ -1,10 +1,8 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.datastat.entity.QStatTable;
 import cn.ict.jwdsj.datapool.datastat.service.StatService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -30,14 +28,10 @@ public class StatServiceImpl implements StatService {
     public long countDatabaseRecords(DictDatabase dictDb) {
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
         QStatTable statTable = QStatTable.statTable;
-        QDictTable dictTable = QDictTable.dictTable;
+
         Long count = jpaQueryFactory
                 .select(statTable.totalRecords.sum())
                 .from(statTable)
-                .innerJoin(dictTable)
-                .on(statTable.dictTable.eq(dictTable))
-                .innerJoin(dictDatabase)
-                .on(dictDatabase.eq(dictTable.dictDatabase))
                 .where(dictDatabase.eq(dictDb))
                 .fetchOne();
 
@@ -49,16 +43,13 @@ public class StatServiceImpl implements StatService {
     public int countTablesInDatabase(DictDatabase dictDb) {
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
         QStatTable statTable = QStatTable.statTable;
-        QDictTable dictTable = QDictTable.dictTable;
 
         Long count = jpaQueryFactory
                 .select(statTable.count())
-                .from(dictDatabase, dictTable, statTable)
-                .where(
-                        dictDatabase.eq(dictDb)
-                                .and(dictTable.dictDatabase.eq(dictDatabase))
-                                .and(statTable.dictTable.eq(dictTable))
-                ).fetchOne();
+                .from(statTable)
+                .where(dictDatabase.eq(dictDb))
+                .fetchOne();
+
         return count == null ? 0 : count.intValue();
     }
 }
