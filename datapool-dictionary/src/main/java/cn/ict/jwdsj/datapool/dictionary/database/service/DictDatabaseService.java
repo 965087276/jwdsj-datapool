@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.database.service;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,5 +15,7 @@ public interface DictDatabaseService {
     boolean exists(String enDatabase);
 
     DictDatabase findByEnDatabase(String enDatabase);
+
+    List<DatabaseNameDTO> listNames();
 
 }

@@ -1,8 +1,10 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service.impl;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
@@ -43,13 +45,26 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Override
     @Transactional
     public void saveAll(List<DictColumn> dictColumns) {
-        int N = 4000; // 将大list分割多个小list，4000个一组
-        int numSubList = dictColumns.size() / N + (dictColumns.size() % N == 0 ? 0 : 1);
-        IntStream.range(0, numSubList)
-                .mapToObj(i ->
-                        dictColumns.subList(i * N, Math.min(i * N + N, dictColumns.size()))
+        dictColumnRepo.saveAll(dictColumns);
+    }
+
+    @Override
+    public List<ColumnNameDTO> listNamesByDictTable(DictTable dictTb) {
+        QDictTable dictTable = QDictTable.dictTable;
+        QDictColumn dictColumn = QDictColumn.dictColumn;
+
+        return jpaQueryFactory
+                .select(dictColumn.id, dictColumn.enColumn, dictColumn.chColumn)
+                .from(dictColumn)
+                .where(dictColumn.dictTable.eq(dictTb))
+                .fetch()
+                .stream()
+                .map(tuple -> ColumnNameDTO.builder()
+                        .columnId(tuple.get(dictColumn.id))
+                        .enColumn(tuple.get(dictColumn.enColumn))
+                        .chColumn(tuple.get(dictColumn.chColumn))
+                        .build()
                 )
-                .collect(Collectors.toList())
-                .forEach(dictColumnRepo::saveAll);
+                .collect(Collectors.toList());
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,7 +77,18 @@ public class DictColExcelServiceImpl implements DictColExcelService {
         assert allColumnsBelongToCorrectTable(dictDatabase, tableNames, excelColsGroupByTable) : COLUMN_NOT_EXISTS;
 
         List<DictColumn> dictColumnList = mapColExcelsToDictColumns(colExcelDTOList, tbIdNameDTOList);
-        dictColumnService.saveAll(dictColumnList);
+
+        // TIDB中一次事务不能超过5000条，所以大于5000条的要分批插入
+        if (dictColumnList.size() < 5000) {
+            dictColumnService.saveAll(dictColumnList);
+        } else {
+            dictColumnList
+                    .stream()
+                    .collect(groupingBy(dictColumn -> dictColumn.getDictTable().getId()))
+                    .forEach((tableId, columns) -> {
+                        dictColumnService.saveAll(columns);
+                    });
+        }
 
 
     }
