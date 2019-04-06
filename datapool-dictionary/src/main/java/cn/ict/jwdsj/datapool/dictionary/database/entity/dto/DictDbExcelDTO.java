@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.dictionary.database.entity;
+package cn.ict.jwdsj.datapool.dictionary.database.entity.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

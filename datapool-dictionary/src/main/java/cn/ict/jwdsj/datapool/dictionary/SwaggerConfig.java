@@ -26,8 +26,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("搜索引擎管理模块")
-                .description("包括索引管理、表信息管理、数据同步管理")
+                .title("数据字典管理模块")
+                .description("包括库信息管理、表信息管理、字段信息管理")
                 .contact("wangjinhao")
                 .version("1.0.0")
                 .build();

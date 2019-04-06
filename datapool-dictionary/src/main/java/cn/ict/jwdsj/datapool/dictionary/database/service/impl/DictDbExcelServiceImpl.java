@@ -6,7 +6,7 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.ict.jwdsj.datapool.common.utils.ExcelJudgeUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.DictDbExcelDTO;
+import cn.ict.jwdsj.datapool.dictionary.database.entity.dto.DictDbExcelDTO;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDbExcelService;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaDatabaseService;
