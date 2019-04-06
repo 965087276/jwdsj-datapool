@@ -12,8 +12,11 @@ import cn.ict.jwdsj.datapool.dictionary.database.service.DictDbExcelService;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,21 +34,25 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
     private final String EXISTS_OBJECT = "库中已存在某enDatabase";
 
     @Override
-    public void saveByExcel(File file) {
-        ExcelReader reader = ExcelUtil.getReader(file);
+    public void saveByExcel(MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        ExcelReader reader = ExcelUtil.getReader(inputStream);
         // 判断表头
-        assert ExcelJudgeUtil.judgeHeader(file, DictDatabase.class) : WRONG_HEADER;
+        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictDatabase.class) : WRONG_HEADER;
         // 获取excel内容
         List<DictDbExcelDTO> dictDatabaseDTOs = reader.readAll(DictDbExcelDTO.class);
 
         // chDatabase字段不能为空
-        assert dictDatabaseDTOs.stream().map(DictDbExcelDTO::getChDatabase).allMatch(StrUtil::isNotBlank) : EMPRY_CHDATABASE;
+        Assert.isTrue(dictDatabaseDTOs.stream().map(DictDbExcelDTO::getChDatabase).allMatch(StrUtil::isNotBlank), EMPRY_CHDATABASE);
+
         // excel中不能有重复记录
-        assert dictDatabaseDTOs.size() == dictDatabaseDTOs.stream().distinct().count() : DUPLICATE_OBJECT;
+        Assert.isTrue(dictDatabaseDTOs.size() == dictDatabaseDTOs.stream().distinct().count(), DUPLICATE_OBJECT);
+
         // 数据库必须是真实存在的库
-        assert dictDatabaseDTOs.stream().map(DictDbExcelDTO::getEnDatabase).allMatch(metaDatabaseService::exists) : WRONG_ENDATABASE;
+        Assert.isTrue(dictDatabaseDTOs.stream().map(DictDbExcelDTO::getEnDatabase).allMatch(metaDatabaseService::exists), WRONG_ENDATABASE);
+
         // dict_database表中不能有这个库
-        assert dictDatabaseDTOs.stream().map(DictDbExcelDTO::getEnDatabase).noneMatch(dictDatabaseService::exists) : EXISTS_OBJECT;
+        Assert.isTrue(dictDatabaseDTOs.stream().map(DictDbExcelDTO::getEnDatabase).noneMatch(dictDatabaseService::exists), EXISTS_OBJECT);
 
         List<DictDatabase> dictDatabases = dictDatabaseDTOs
                 .stream()
@@ -53,7 +60,6 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
                 .collect(Collectors.toList());
 
         dictDatabaseService.saveAll(dictDatabases);
-
     }
 
 }

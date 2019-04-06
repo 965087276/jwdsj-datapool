@@ -42,14 +42,15 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
     public void saveAll(String enDatabase, File file) {
 
         DictDatabase dictDatabase = dictDatabaseService.findByEnDatabase(enDatabase);
+        ExcelReader reader = ExcelUtil.getReader(file);
 
         // 库名必须在数据库中存在
         assert !BeanUtil.isEmpty(dictDatabase) : NOT_EXISTS_DATABASE;
 
         // 表头必须正确
-        assert ExcelJudgeUtil.judgeHeader(file, DictTbExcelDTO.class);
+        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictTbExcelDTO.class);
 
-        ExcelReader reader = ExcelUtil.getReader(file);
+
         List<DictTbExcelDTO> tbExcelDTOS = reader.readAll(DictTbExcelDTO.class);
 
         // 中文表名不能为空

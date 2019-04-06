@@ -47,13 +47,14 @@ public class DictColExcelServiceImpl implements DictColExcelService {
     @Transactional
     public void saveAll(String enDatabase, File file) {
         DictDatabase dictDatabase = dictDatabaseService.findByEnDatabase(enDatabase);
+        ExcelReader reader = ExcelUtil.getReader(file);
 
         // 库必须在dict_database中存在
         assert !BeanUtil.isEmpty(dictDatabase) : NOT_EXISTS_DATABASE;
         // 表头必须正确
-        assert ExcelJudgeUtil.judgeHeader(file, DictColExcelDTO.class) : WRONG_TITLE;
+        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictColExcelDTO.class) : WRONG_TITLE;
 
-        ExcelReader reader = ExcelUtil.getReader(file);
+
         List<DictColExcelDTO> colExcelDTOList = reader.readAll(DictColExcelDTO.class);
         // excel中所有表名
         List<String> tableNames =
