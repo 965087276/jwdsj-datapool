@@ -11,7 +11,7 @@
  Target Server Version : 50642
  File Encoding         : 65001
 
- Date: 02/04/2019 11:54:11
+ Date: 06/04/2019 19:41:39
 */
 
 SET NAMES utf8mb4;
@@ -31,7 +31,7 @@ CREATE TABLE `dict_column`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`, `en_column`) USING BTREE,
   INDEX `table_id_2`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字段中英对照信息表' ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字段中英对照信息表' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for dict_database
@@ -70,8 +70,8 @@ DROP TABLE IF EXISTS `es_column`;
 CREATE TABLE `es_column`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `index_id` bigint(20) UNSIGNED NOT NULL COMMENT '索引表主键，关联es_index表',
-  `column_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字段名',
-  `column_type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字段类型(text、keyword、not_search)',
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字段名',
+  `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字段类型(text、keyword、not_search)',
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
@@ -85,7 +85,7 @@ CREATE TABLE `es_index`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `index_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '索引名',
   `num_shards` tinyint(4) UNSIGNED NOT NULL COMMENT '主分片数',
-  `total_docs` bigint(20) UNSIGNED NOT NULL COMMENT '记录数',
+  `total_docs` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '记录数',
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
@@ -97,10 +97,10 @@ CREATE TABLE `es_index`  (
 DROP TABLE IF EXISTS `mapping_column`;
 CREATE TABLE `mapping_column`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `table_id` bigint(20) NOT NULL COMMENT '外键 关联info_table',
-  `en_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表字段英文名',
-  `ch_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表字段中文名',
+  `table_id` bigint(20) NOT NULL COMMENT '外键 关联dict_table',
+  `column_id` bigint(20) NOT NULL COMMENT '外键 关联dict_column',
   `es_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'es中的字段名',
+  `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字段类型（针对es来说，TEXT、KEYWORD、NOT_SEARCH）',
   `is_searched` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否搜索',
   `is_analyzed` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否分词',
   `is_displayed` bit(1) NOT NULL DEFAULT b'1' COMMENT '是否前端展示',
@@ -108,9 +108,10 @@ CREATE TABLE `mapping_column`  (
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `table_id_2`(`table_id`, `en_column`) USING BTREE,
-  INDEX `table_id`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表字段与索引字段对照信息表' ROW_FORMAT = Compact;
+  UNIQUE INDEX `table_id_2`(`table_id`, `es_column`) USING BTREE,
+  INDEX `table_id`(`table_id`) USING BTREE,
+  UNIQUE INDEX `column_id`(`column_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表字段与索引字段对照信息表' ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for mapping_table
@@ -119,12 +120,27 @@ DROP TABLE IF EXISTS `mapping_table`;
 CREATE TABLE `mapping_table`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `table_id` bigint(20) NOT NULL COMMENT '外键，表id',
-  `index_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '所在索引',
+  `index_id` bigint(20) NOT NULL COMMENT '所在索引, 关联es_index',
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表名与索引名对照信息表' ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Table structure for stat_column
+-- ----------------------------
+DROP TABLE IF EXISTS `stat_column`;
+CREATE TABLE `stat_column`  (
+  `id` bigint(20) NOT NULL COMMENT '主键id',
+  `table_id` bigint(20) NOT NULL COMMENT '表id，关联dict_table',
+  `column_id` bigint(20) NOT NULL COMMENT '字段id，关联dict_column',
+  `update_date` date NOT NULL COMMENT '更新时间',
+  `is_defect` bit(1) NOT NULL COMMENT '是否为缺陷字段',
+  `gmt_create` datetime(0) NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for stat_database
@@ -157,19 +173,5 @@ CREATE TABLE `stat_table`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表数据统计' ROW_FORMAT = Compact;
-
--- ----------------------------
--- Table structure for sync_table
--- ----------------------------
-DROP TABLE IF EXISTS `sync_table`;
-CREATE TABLE `sync_table`  (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `table_id` bigint(20) UNSIGNED NOT NULL COMMENT '需同步的表，关联info_table',
-  `table_records` bigint(20) UNSIGNED NOT NULL COMMENT '表记录条数（当数据库中该表的记录数与这里不一致时，进行数据同步操作）',
-  `index_records` bigint(20) UNSIGNED NOT NULL COMMENT '索引中该表的记录条数，该值应与table_records相同',
-  `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '需要同步的表' ROW_FORMAT = Compact;
 
 SET FOREIGN_KEY_CHECKS = 1;
