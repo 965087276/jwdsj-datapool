@@ -24,4 +24,10 @@ public class DictColumn extends BaseEntity {
     @Column(name = "ch_column")
     private String chColumn;
 
+    public static DictColumn builtById(long id) {
+        DictColumn dictColumn = new DictColumn();
+        dictColumn.setId(id);
+        return dictColumn;
+    }
+
 }
