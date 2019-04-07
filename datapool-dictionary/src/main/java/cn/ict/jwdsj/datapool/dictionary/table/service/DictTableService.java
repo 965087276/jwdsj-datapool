@@ -47,4 +47,6 @@ public interface DictTableService {
      * @param dictTableMultiAddDTO 多个表的信息
      */
     void saveAll(DictTableMultiAddDTO dictTableMultiAddDTO);
+
+    DictTable findById(long id);
 }

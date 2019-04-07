@@ -108,6 +108,11 @@ public class DictTableServiceImpl implements DictTableService {
         dictTableRepo.saveAll(dictTables);
     }
 
+    @Override
+    public DictTable findById(long id) {
+        return dictTableRepo.findById(id).get();
+    }
+
     private DictTableVO convertToDictTableVO(DictTable dictTable) {
         DictTableVO dictTableVO = BeanUtil.toBean(dictTable, DictTableVO.class);
         dictTableVO.setTableId(dictTable.getId());
