@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.dictionary.table.service;
 
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import org.springframework.data.domain.Page;
@@ -40,4 +41,10 @@ public interface DictTableService {
      * @return
      */
     Page<DictTableVO> listVO(int curPage, int pageSize, long databaseId, String nameLike);
+
+    /**
+     * 表信息管理--手动添加表信息
+     * @param dictTableMultiAddDTO 多个表的信息
+     */
+    void saveAll(DictTableMultiAddDTO dictTableMultiAddDTO);
 }

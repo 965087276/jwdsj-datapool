@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.table.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -15,8 +16,11 @@ import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTbExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -37,37 +41,66 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
     private final String EMPTY_CHTABLE = "chTable列存在空值";
     private final String DUPLICATE_OBJECT = "存在重复对象";
     private String EXISTS_IN_DICT_TABLE = "表之前已经加入过dict_table，不能重复加入";
+    private final String WRONG_HEADER = "表头错误";
+
+//    @Override
+//    public void saveAll(String enDatabase, File file) {
+//
+//        DictDatabase dictDatabase = dictDatabaseService.findByEnDatabase(enDatabase);
+//        ExcelReader reader = ExcelUtil.getReader(file);
+//
+//        // 库名必须在数据库中存在
+//        assert !BeanUtil.isEmpty(dictDatabase) : NOT_EXISTS_DATABASE;
+//
+//        // 表头必须正确
+//        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictTbExcelDTO.class);
+//
+//
+//        List<DictTbExcelDTO> tbExcelDTOS = reader.readAll(DictTbExcelDTO.class);
+//
+//        // 中文表名不能为空
+//        assert tbExcelDTOS.stream().map(DictTbExcelDTO::getChTable).allMatch(StrUtil::isNotBlank) : EMPTY_CHTABLE;
+//        // 不能存在重复记录
+//        assert tbExcelDTOS.size() == tbExcelDTOS.stream().distinct().count() : DUPLICATE_OBJECT;
+//        // 所有表必须真实存在
+//        assert allTableExistsInMetaDatabase(dictDatabase.getEnDatabase(), tbExcelDTOS) : NOT_EXISTS_TABLE;
+//        // dict_table中不存在该表
+//        assert allTableNotExistsInDictTable(dictDatabase, tbExcelDTOS) : EXISTS_IN_DICT_TABLE;
+//
+//        List<DictTable> dictTables = tbExcelDTOS.stream()
+//                .map(tbExcelDTO -> BeanUtil.toBean(tbExcelDTO, DictTable.class))
+//                .collect(Collectors.toList());
+//        dictTables.forEach(dictTable -> dictTable.setDictDatabase(dictDatabase));
+//        dictTableService.saveAll(dictTables);
+//
+//    }
 
     @Override
-    public void saveAll(String enDatabase, File file) {
+    @Transactional
+    public void saveAll(long databaseId, MultipartFile file) throws IOException {
 
-        DictDatabase dictDatabase = dictDatabaseService.findByEnDatabase(enDatabase);
-        ExcelReader reader = ExcelUtil.getReader(file);
-
-        // 库名必须在数据库中存在
-        assert !BeanUtil.isEmpty(dictDatabase) : NOT_EXISTS_DATABASE;
-
+        DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
+        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
+        Assert.isTrue(!BeanUtil.isEmpty(dictDatabase), "数据库不存在");
         // 表头必须正确
-        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictTbExcelDTO.class);
-
+        Assert.isTrue(ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictTbExcelDTO.class), WRONG_HEADER);
 
         List<DictTbExcelDTO> tbExcelDTOS = reader.readAll(DictTbExcelDTO.class);
 
         // 中文表名不能为空
-        assert tbExcelDTOS.stream().map(DictTbExcelDTO::getChTable).allMatch(StrUtil::isNotBlank) : EMPTY_CHTABLE;
+        Assert.isTrue(tbExcelDTOS.stream().map(DictTbExcelDTO::getChTable).allMatch(StrUtil::isNotBlank), EMPTY_CHTABLE);
         // 不能存在重复记录
-        assert tbExcelDTOS.size() == tbExcelDTOS.stream().distinct().count() : DUPLICATE_OBJECT;
+        Assert.isTrue(tbExcelDTOS.size() == tbExcelDTOS.stream().distinct().count(), DUPLICATE_OBJECT);
         // 所有表必须真实存在
-        assert allTableExistsInMetaDatabase(dictDatabase.getEnDatabase(), tbExcelDTOS) : NOT_EXISTS_TABLE;
+        Assert.isTrue(allTableExistsInMetaDatabase(dictDatabase.getEnDatabase(), tbExcelDTOS), NOT_EXISTS_TABLE);
         // dict_table中不存在该表
-        assert allTableNotExistsInDictTable(dictDatabase, tbExcelDTOS) : EXISTS_IN_DICT_TABLE;
+        Assert.isTrue(allTableNotExistsInDictTable(dictDatabase, tbExcelDTOS), EXISTS_IN_DICT_TABLE);
 
         List<DictTable> dictTables = tbExcelDTOS.stream()
                 .map(tbExcelDTO -> BeanUtil.toBean(tbExcelDTO, DictTable.class))
                 .collect(Collectors.toList());
         dictTables.forEach(dictTable -> dictTable.setDictDatabase(dictDatabase));
         dictTableService.saveAll(dictTables);
-
     }
 
     private boolean allTableNotExistsInDictTable(DictDatabase dictDatabase, List<DictTbExcelDTO> tbExcelDTOS) {

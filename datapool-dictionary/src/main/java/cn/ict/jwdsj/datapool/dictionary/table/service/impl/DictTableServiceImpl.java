@@ -7,6 +7,8 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableDTO;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import cn.ict.jwdsj.datapool.dictionary.table.repo.DictTableRepo;
@@ -19,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Set;
@@ -37,6 +41,7 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
+    @Transactional
     public void saveAll(List<DictTable> dictTables) {
         dictTableRepo.saveAll(dictTables);
     }
@@ -87,11 +92,32 @@ public class DictTableServiceImpl implements DictTableService {
 
     }
 
+    @Override
+    @Transactional
+    public void saveAll(DictTableMultiAddDTO dictTableMultiAddDTO) {
+        DictDatabase dictDatabase = DictDatabase.buildById(dictTableMultiAddDTO.getDatabaseId());
+        List<DictTableDTO> dictTableDTOS = dictTableMultiAddDTO.getDictTables();
+        // 不能有重复元素
+        Assert.isTrue(dictTableDTOS.stream().distinct().count() == dictTableDTOS.size(), "有重复元素");
+
+        List<DictTable> dictTables = dictTableDTOS
+                .stream()
+                .map(dictTableDTO -> this.convertToDictTable(dictTableDTO, dictDatabase))
+                .collect(Collectors.toList());
+
+        dictTableRepo.saveAll(dictTables);
+    }
+
     private DictTableVO convertToDictTableVO(DictTable dictTable) {
         DictTableVO dictTableVO = BeanUtil.toBean(dictTable, DictTableVO.class);
         dictTableVO.setTableId(dictTable.getId());
         dictTableVO.setChDatabase(dictTable.getDictDatabase().getChDatabase());
         dictTableVO.setEnDatabase(dictTable.getDictDatabase().getEnDatabase());
         return dictTableVO;
+    }
+    private DictTable convertToDictTable(DictTableDTO dictTableDTO, DictDatabase dictDatabase) {
+        DictTable dictTable = BeanUtil.toBean(dictTableDTO, DictTable.class);
+        dictTable.setDictDatabase(dictDatabase);
+        return dictTable;
     }
 }
