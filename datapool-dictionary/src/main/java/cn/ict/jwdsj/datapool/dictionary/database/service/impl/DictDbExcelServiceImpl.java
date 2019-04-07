@@ -12,6 +12,7 @@ import cn.ict.jwdsj.datapool.dictionary.database.service.DictDbExcelService;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +35,7 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
     private final String EXISTS_OBJECT = "库中已存在某enDatabase";
 
     @Override
+    @Transactional
     public void saveByExcel(MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
