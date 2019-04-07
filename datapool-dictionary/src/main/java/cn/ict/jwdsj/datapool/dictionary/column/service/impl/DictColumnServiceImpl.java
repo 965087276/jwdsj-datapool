@@ -1,14 +1,18 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
+import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
+import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
+import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,10 @@ public class DictColumnServiceImpl implements DictColumnService {
     private JPAQueryFactory jpaQueryFactory;
     @Autowired
     private DictColumnRepo dictColumnRepo;
+    @Autowired
+    private DictTableService dictTableService;
+    @Autowired
+    private DictDatabaseService dictDatabaseService;
 
     public List<String> getEnTableByDictDatabase(DictDatabase dictDb) {
         QDictColumn dictColumn = QDictColumn.dictColumn;
@@ -66,5 +74,27 @@ public class DictColumnServiceImpl implements DictColumnService {
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DictColumnVO> listDictColumnVOs(long databaseId, long tableId) {
+        DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
+        DictTable dictTable = dictTableService.findById(tableId);
+
+        return dictColumnRepo.findByDictTable(dictTable)
+                .stream()
+                .map(dictColumn -> this.convertToDictColumnVO(dictDatabase, dictTable, dictColumn))
+                .collect(Collectors.toList());
+
+    }
+
+    private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
+        DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
+        dictColumnVO.setColumnId(dictColumn.getId());
+        dictColumnVO.setEnDatabase(dictDatabase.getEnDatabase());
+        dictColumnVO.setChDatabase(dictDatabase.getChDatabase());
+        dictColumnVO.setEnTable(dictTable.getEnTable());
+        dictColumnVO.setChTable(dictTable.getChTable());
+        return dictColumnVO;
     }
 }
