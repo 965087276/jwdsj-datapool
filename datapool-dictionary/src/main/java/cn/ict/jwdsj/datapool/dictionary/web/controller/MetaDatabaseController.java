@@ -15,7 +15,7 @@ public class MetaDatabaseController {
     @Autowired
     private MetaDatabaseService metaDatabaseService;
 
-    @ApiOperation(value = "库信息管理页--添加库--列出库英文名")
+    @ApiOperation(value = "库信息管理页--手动添加库--库英文名下拉框")
     @GetMapping("meta/database_names")
     public ResponseEntity<List<String>> listDatabasesNotAdd() {
         List<String> databases = metaDatabaseService.listDatabasesNotAdd();

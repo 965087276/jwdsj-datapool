@@ -66,7 +66,7 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
-    public Page<DictDatabaseVO> list(int curPage, int pageSize, String enNameLike, String chNameLike) {
+    public Page<DictDatabaseVO> listVO(int curPage, int pageSize, String enNameLike, String chNameLike) {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
 
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
@@ -75,6 +75,11 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
         predicate = StrUtil.isBlank(chNameLike) ? predicate : ExpressionUtils.and(predicate, dictDatabase.chDatabase.like('%' + chNameLike + '%'));
 
         return dictDatabaseRepo.findAll(predicate, pageable).map(this::convertToDictDatabaseVO);
+    }
+
+    @Override
+    public DictDatabase findById(long id) {
+        return dictDatabaseRepo.findById(id).get();
     }
 
 //    @Override

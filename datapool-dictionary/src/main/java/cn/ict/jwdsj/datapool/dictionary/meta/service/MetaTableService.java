@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MetaTableService {
     List<MetaTable> listByDatabase(String database);
+
+    List<String> listTablesNotAdd(long databaseId);
 }

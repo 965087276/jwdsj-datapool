@@ -17,15 +17,12 @@ public class ExcelJudgeUtil {
     /**
      * 判断excel的表头是否与指定实体类的字段名一致
      * excel表头的字段必须都在实体类中存在
-     * @param excelFile
-     * @param clazz
+     * @param header excel表头
+     * @param clazz  实体类
      * @return
      */
-    public static boolean judgeHeader(File excelFile, Class<?> clazz) {
+    public static boolean judgeHeader(List<Object> header, Class<?> clazz) {
 
-        ExcelReader reader = ExcelUtil.getReader(excelFile);
-
-        List<String> header = reader.readRow(0).stream().map(Object::toString).collect(Collectors.toList());
         Set<String> fields = Arrays.stream(ClassUtil.getDeclaredFields(clazz)).map(Field::getName).collect(Collectors.toSet());
 
 

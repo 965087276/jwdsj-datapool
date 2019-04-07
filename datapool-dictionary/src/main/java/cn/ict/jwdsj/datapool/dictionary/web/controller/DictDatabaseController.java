@@ -42,7 +42,7 @@ public class DictDatabaseController {
             @RequestParam(value = "enNameLike", required = false) String enNameLike,
             @RequestParam(value = "chNameLike", required = false) String chNameLike) {
 
-        Page<DictDatabaseVO> dictDatabases = dictDatabaseService.list(curPage, pageSize, enNameLike, chNameLike);
+        Page<DictDatabaseVO> dictDatabases = dictDatabaseService.listVO(curPage, pageSize, enNameLike, chNameLike);
         return ResponseEntity.ok(dictDatabases);
     }
 

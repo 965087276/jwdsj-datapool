@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Data
 public class DictColumn extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_id")
     @NotFound(action = NotFoundAction.IGNORE)
     private DictTable dictTable;
