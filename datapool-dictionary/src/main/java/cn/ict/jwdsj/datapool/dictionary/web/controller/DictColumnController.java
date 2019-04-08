@@ -1,5 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.web.controller;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
@@ -29,18 +31,18 @@ public class DictColumnController {
 
     @ApiOperation(value = "字段信息管理页--库下拉框")
     @GetMapping("dict/dict_column/database_drop_down_box")
-    public ResponseEntity<List<DictDatabaseVO>> getDatabaseDropDownBox() {
-        List<DictDatabaseVO> list = dictColumnService.listDatabaseDropDownBox();
+    public ResponseEntity<List<DatabaseNameDTO>> getDatabaseDropDownBox() {
+        List<DatabaseNameDTO> list = dictColumnService.listDatabaseDropDownBox();
         return ResponseEntity.ok(list);
     }
 
     @ApiOperation(value = "字段信息管理页--表下拉框")
     @ApiImplicitParam(name = "databaseId", value = "数据库id", paramType = "query", required = true)
     @GetMapping("dict/dict_column/table_drop_down_box")
-    public ResponseEntity<List<DictTableVO>> getDatabaseDropDownBox(
+    public ResponseEntity<List<TableNameDTO>> getDatabaseDropDownBox(
         @RequestParam(name = "databaseId", required = true) long databaseId) {
 
-        List<DictTableVO> list = dictColumnService.listTableDropDownBox(databaseId);
+        List<TableNameDTO> list = dictColumnService.listTableDropDownBox(databaseId);
         return ResponseEntity.ok(list);
     }
 

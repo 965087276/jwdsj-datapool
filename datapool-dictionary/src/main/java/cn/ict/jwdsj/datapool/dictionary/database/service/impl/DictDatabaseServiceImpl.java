@@ -80,10 +80,10 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
-    public List<DictDatabaseVO> listVOByIds(List<Long> ids) {
+    public List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids) {
         return dictDatabaseRepo.findByIdIn(ids)
                 .stream()
-                .map(this::convertToDictDatabaseVO)
+                .map(this::convertToDatabaseNameDTO)
                 .collect(Collectors.toList());
     }
 
@@ -100,6 +100,12 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
 
     private DictDatabaseVO convertToDictDatabaseVO(DictDatabase dictDatabase) {
         return BeanUtil.toBean(dictDatabase, DictDatabaseVO.class);
+    }
+
+    private DatabaseNameDTO convertToDatabaseNameDTO(DictDatabase dictDatabase) {
+        DatabaseNameDTO databaseNameDTO =  BeanUtil.toBean(dictDatabase, DatabaseNameDTO.class);
+        databaseNameDTO.setDatabaseId(dictDatabase.getId());
+        return databaseNameDTO;
     }
 
 

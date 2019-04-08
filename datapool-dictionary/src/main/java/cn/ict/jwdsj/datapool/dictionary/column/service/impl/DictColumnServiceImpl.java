@@ -2,6 +2,8 @@ package cn.ict.jwdsj.datapool.dictionary.column.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
@@ -43,7 +45,7 @@ public class DictColumnServiceImpl implements DictColumnService {
     public List<String> getEnTableByDictDatabase(DictDatabase dictDb) {
         return this.listTableDropDownBox(dictDb.getId())
                 .stream()
-                .map(DictTableVO::getEnTable)
+                .map(TableNameDTO::getEnTable)
                 .collect(Collectors.toList());
     }
 
@@ -103,25 +105,25 @@ public class DictColumnServiceImpl implements DictColumnService {
     }
 
     @Override
-    public List<DictTableVO> listTableDropDownBox(long databaseId) {
+    public List<TableNameDTO> listTableDropDownBox(long databaseId) {
         QDictColumn dictColumn = QDictColumn.dictColumn;
         List<Long> tableIds = jpaQueryFactory
                 .select(dictColumn.dictTable.id)
                 .from(dictColumn)
                 .groupBy(dictColumn.dictTable.id)
                 .fetch();
-        return dictTableService.listVOByIds(tableIds);
+        return dictTableService.listTableNameDTOByIds(tableIds);
     }
 
     @Override
-    public List<DictDatabaseVO> listDatabaseDropDownBox() {
+    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
         QDictColumn dictColumn = QDictColumn.dictColumn;
         List<Long> databaseIds = jpaQueryFactory
                 .select(dictColumn.dictDatabase.id)
                 .from(dictColumn)
                 .groupBy(dictColumn.dictDatabase.id)
                 .fetch();
-        return dictDatabaseService.listVOByIds(databaseIds);
+        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
     }
 
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {

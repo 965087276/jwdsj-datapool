@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.web.controller;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
@@ -27,8 +28,8 @@ public class DictTableController {
 
     @ApiOperation(value = "表信息管理页--库下拉框")
     @GetMapping("dict/dict_table/database_drop_down_box")
-    public ResponseEntity<List<DictDatabaseVO>> getDatabaseDropDownBox() {
-        List<DictDatabaseVO> list = dictTableService.listDatabaseDropDownBox();
+    public ResponseEntity<List<DatabaseNameDTO>> getDatabaseDropDownBox() {
+        List<DatabaseNameDTO> list = dictTableService.listDatabaseDropDownBox();
         return ResponseEntity.ok(list);
     }
 

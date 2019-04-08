@@ -1,5 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.table.service;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
@@ -43,7 +45,7 @@ public interface DictTableService {
      */
     Page<DictTableVO> listVO(int curPage, int pageSize, long databaseId, String nameLike);
 
-    List<DictTableVO> listVOByIds(List<Long> ids);
+    List<TableNameDTO> listTableNameDTOByIds(List<Long> ids);
 
     /**
      * 表信息管理--手动添加表信息
@@ -57,5 +59,5 @@ public interface DictTableService {
      * 表信息管理--列表页--库下拉框
      * @return 返回dict_table表中的所有数据库信息
      */
-    List<DictDatabaseVO> listDatabaseDropDownBox();
+    List<DatabaseNameDTO> listDatabaseDropDownBox();
 }

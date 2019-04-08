@@ -3,6 +3,8 @@ package cn.ict.jwdsj.datapool.dictionary.table.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
@@ -97,10 +99,10 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
-    public List<DictTableVO> listVOByIds(List<Long> ids) {
+    public List<TableNameDTO> listTableNameDTOByIds(List<Long> ids) {
         return dictTableRepo.findByIdIn(ids)
                 .stream()
-                .map(this::convertToDictTableVO)
+                .map(this::convertToTableNameDTO)
                 .collect(Collectors.toList());
     }
 
@@ -126,14 +128,14 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
-    public List<DictDatabaseVO> listDatabaseDropDownBox() {
+    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
         QDictTable dictTable = QDictTable.dictTable;
         List<Long> databaseIds = jpaQueryFactory
                 .select(dictTable.dictDatabase.id)
                 .from(dictTable)
                 .groupBy(dictTable.dictDatabase.id)
                 .fetch();
-        return dictDatabaseService.listVOByIds(databaseIds);
+        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
     }
 
     private DictTableVO convertToDictTableVO(DictTable dictTable) {
@@ -142,6 +144,11 @@ public class DictTableServiceImpl implements DictTableService {
         dictTableVO.setChDatabase(dictTable.getDictDatabase().getChDatabase());
         dictTableVO.setEnDatabase(dictTable.getDictDatabase().getEnDatabase());
         return dictTableVO;
+    }
+    private TableNameDTO convertToTableNameDTO(DictTable dictTable) {
+        TableNameDTO tableNameDTO = BeanUtil.toBean(dictTable, TableNameDTO.class);
+        tableNameDTO.setTableId(dictTable.getId());
+        return tableNameDTO;
     }
     private DictTable convertToDictTable(DictTableDTO dictTableDTO, DictDatabase dictDatabase) {
         DictTable dictTable = BeanUtil.toBean(dictTableDTO, DictTable.class);
