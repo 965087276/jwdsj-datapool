@@ -129,7 +129,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
         // 每个字段必须对应到正确的表上
         Assert.isTrue(allColumnsBelongToCorrectTable(dictDatabase, tableNames, excelColsGroupByTable), COLUMN_NOT_EXISTS);
 
-        List<DictColumn> dictColumnList = mapColExcelsToDictColumns(colExcelDTOList, tbIdNameDTOList);
+        List<DictColumn> dictColumnList = mapColExcelsToDictColumns(dictDatabase, colExcelDTOList, tbIdNameDTOList);
 
         // TIDB中一次事务不能超过5000条，所以大于5000条的要分批插入
         if (dictColumnList.size() < 5000) {
@@ -146,19 +146,20 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
     }
 
-    private List<DictColumn> mapColExcelsToDictColumns(List<DictColExcelDTO> colExcelDTOList, List<TbIdNameDTO> tbIdNameDTOList) {
+    private List<DictColumn> mapColExcelsToDictColumns(DictDatabase dictDatabase, List<DictColExcelDTO> colExcelDTOList, List<TbIdNameDTO> tbIdNameDTOList) {
         Map<String, Long> tableAndId = tbIdNameDTOList.stream()
                 .collect(Collectors.toMap(TbIdNameDTO::getEnTable, TbIdNameDTO::getId));
         return colExcelDTOList
                 .stream()
-                .map(colExcelDTO -> getDictColByColExcelAndTableId(colExcelDTO, tableAndId.get(colExcelDTO.getEnTable())))
+                .map(colExcelDTO -> getDictColByColExcelAndTableId(colExcelDTO, tableAndId.get(colExcelDTO.getEnTable()), dictDatabase))
                 .collect(Collectors.toList());
 
     }
 
-    private DictColumn getDictColByColExcelAndTableId(DictColExcelDTO colExcelDTO, long tableId) {
+    private DictColumn getDictColByColExcelAndTableId(DictColExcelDTO colExcelDTO, long tableId, DictDatabase dictDatabase) {
         DictColumn dictColumn = BeanUtil.toBean(colExcelDTO, DictColumn.class);
         dictColumn.setDictTable(DictTable.builtById(tableId));
+        dictColumn.setDictDatabase(dictDatabase);
         return dictColumn;
     }
 

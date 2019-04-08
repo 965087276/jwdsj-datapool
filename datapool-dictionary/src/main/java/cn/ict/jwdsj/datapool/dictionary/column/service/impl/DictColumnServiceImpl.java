@@ -94,12 +94,16 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Override
     @Transactional
     public void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO) {
+        DictDatabase dictDatabase = dictDatabaseService.findById(dictColumnMultiAddDTO.getDatabaseId());
         DictTable dictTable = dictTableService.findById(dictColumnMultiAddDTO.getTableId());
+        // 判断库id、表id的合法性
+        Assert.isTrue(!BeanUtil.isEmpty(dictDatabase), "数据库不存在");
+        Assert.isTrue(!BeanUtil.isEmpty(dictTable), "数据表不存在");
         // 判断是否有重复元素
         Assert.isTrue(dictColumnMultiAddDTO.getDictColumnAddDTOS().size() == dictColumnMultiAddDTO.getDictColumnAddDTOS().stream().distinct().count(), "有重复元素");
         List<DictColumn> dictColumns = dictColumnMultiAddDTO.getDictColumnAddDTOS()
                 .stream()
-                .map(dictColumnAddDTO -> this.convertToDictColumn(dictTable, dictColumnAddDTO))
+                .map(dictColumnAddDTO -> this.convertToDictColumn(dictDatabase, dictTable, dictColumnAddDTO))
                 .collect(Collectors.toList());
         dictColumnRepo.saveAll(dictColumns);
     }
@@ -114,9 +118,10 @@ public class DictColumnServiceImpl implements DictColumnService {
         return dictColumnVO;
     }
 
-    private DictColumn convertToDictColumn(DictTable dictTable, DictColumnAddDTO dictColumnAddDTO) {
+    private DictColumn convertToDictColumn(DictDatabase dictDatabase, DictTable dictTable, DictColumnAddDTO dictColumnAddDTO) {
         DictColumn dictColumn = BeanUtil.toBean(dictColumnAddDTO, DictColumn.class);
         dictColumn.setDictTable(dictTable);
+        dictColumn.setDictDatabase(dictDatabase);
         return dictColumn;
     }
 }
