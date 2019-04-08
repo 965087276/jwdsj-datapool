@@ -22,5 +22,7 @@ public interface DictDatabaseService {
 
     Page<DictDatabaseVO> listVO(int curPage, int pageSize, String enNameLike, String chNameLike);
 
+    List<DictDatabaseVO> listVOByIds(List<Long> ids);
+
     DictDatabase findById(long id);
 }

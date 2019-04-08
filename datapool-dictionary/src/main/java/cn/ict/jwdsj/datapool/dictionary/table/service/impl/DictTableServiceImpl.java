@@ -7,6 +7,8 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
+import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
+import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
@@ -34,6 +36,8 @@ public class DictTableServiceImpl implements DictTableService {
     private DictTableRepo dictTableRepo;
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
+    @Autowired
+    private DictDatabaseService dictDatabaseService;
 
     @Override
     public void save(DictTable dictTable) {
@@ -111,6 +115,17 @@ public class DictTableServiceImpl implements DictTableService {
     @Override
     public DictTable findById(long id) {
         return dictTableRepo.findById(id).get();
+    }
+
+    @Override
+    public List<DictDatabaseVO> listDatabaseDropDownBox() {
+        QDictTable dictTable = QDictTable.dictTable;
+        List<Long> databaseIds = jpaQueryFactory
+                .select(dictTable.dictDatabase.id)
+                .from(dictTable)
+                .groupBy(dictTable.dictDatabase.id)
+                .fetch();
+        return dictDatabaseService.listVOByIds(databaseIds);
     }
 
     private DictTableVO convertToDictTableVO(DictTable dictTable) {

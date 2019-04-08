@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class DictTableController {
@@ -23,6 +24,13 @@ public class DictTableController {
     private DictTableService dictTableService;
     @Autowired
     private DictTbExcelService dictTbExcelService;
+
+    @ApiOperation(value = "表信息管理页--库下拉框")
+    @GetMapping("dict/dict_table/database_drop_down_box")
+    public ResponseEntity<List<DictDatabaseVO>> getDatabaseDropDownBox() {
+        List<DictDatabaseVO> list = dictTableService.listDatabaseDropDownBox();
+        return ResponseEntity.ok(list);
+    }
 
     @ApiOperation(value = "表信息管理页--表列表")
     @ApiImplicitParams({

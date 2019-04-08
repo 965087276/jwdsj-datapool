@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.dictionary.table.service;
 
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
+import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
@@ -49,4 +50,10 @@ public interface DictTableService {
     void saveAll(DictTableMultiAddDTO dictTableMultiAddDTO);
 
     DictTable findById(long id);
+
+    /**
+     * 表信息管理--列表页--库下拉框
+     * @return 返回dict_table表中的所有数据库信息
+     */
+    List<DictDatabaseVO> listDatabaseDropDownBox();
 }

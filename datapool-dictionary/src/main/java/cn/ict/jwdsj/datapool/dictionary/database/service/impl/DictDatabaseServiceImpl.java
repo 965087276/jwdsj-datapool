@@ -80,6 +80,14 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
+    public List<DictDatabaseVO> listVOByIds(List<Long> ids) {
+        return dictDatabaseRepo.findByIdIn(ids)
+                .stream()
+                .map(this::convertToDictDatabaseVO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public DictDatabase findById(long id) {
         return dictDatabaseRepo.findById(id).get();
     }
