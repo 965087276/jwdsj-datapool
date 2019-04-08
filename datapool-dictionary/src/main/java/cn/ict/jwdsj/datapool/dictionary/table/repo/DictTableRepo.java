@@ -16,4 +16,6 @@ public interface DictTableRepo extends JpaRepository<DictTable, Long>, QuerydslP
 
     List<DictTable> findByDictDatabase(DictDatabase dictDatabase);
 
+    List<DictTable> findByIdIn(List<Long> ids);
+
 }

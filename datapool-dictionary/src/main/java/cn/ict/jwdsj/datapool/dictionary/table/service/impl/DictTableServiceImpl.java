@@ -97,6 +97,14 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
+    public List<DictTableVO> listVOByIds(List<Long> ids) {
+        return dictTableRepo.findByIdIn(ids)
+                .stream()
+                .map(this::convertToDictTableVO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public void saveAll(DictTableMultiAddDTO dictTableMultiAddDTO) {
         DictDatabase dictDatabase = DictDatabase.buildById(dictTableMultiAddDTO.getDatabaseId());

@@ -43,6 +43,8 @@ public interface DictTableService {
      */
     Page<DictTableVO> listVO(int curPage, int pageSize, long databaseId, String nameLike);
 
+    List<DictTableVO> listVOByIds(List<Long> ids);
+
     /**
      * 表信息管理--手动添加表信息
      * @param dictTableMultiAddDTO 多个表的信息

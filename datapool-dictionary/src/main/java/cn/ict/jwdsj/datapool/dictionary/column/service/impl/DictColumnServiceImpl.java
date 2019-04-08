@@ -13,7 +13,9 @@ import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
+import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +41,10 @@ public class DictColumnServiceImpl implements DictColumnService {
     private DictDatabaseService dictDatabaseService;
 
     public List<String> getEnTableByDictDatabase(DictDatabase dictDb) {
-        QDictColumn dictColumn = QDictColumn.dictColumn;
-        QDictTable dictTable = QDictTable.dictTable;
-        QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
-
-        return jpaQueryFactory
-                .selectDistinct(dictTable.enTable)
-                .from(dictTable)
-                .innerJoin(dictDatabase)
-                .on(dictTable.dictDatabase.eq(dictDb))
-                .innerJoin(dictColumn)
-                .on(dictColumn.dictTable.eq(dictTable))
-                .fetch();
+        return this.listTableDropDownBox(dictDb.getId())
+                .stream()
+                .map(DictTableVO::getEnTable)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -106,6 +100,28 @@ public class DictColumnServiceImpl implements DictColumnService {
                 .map(dictColumnAddDTO -> this.convertToDictColumn(dictDatabase, dictTable, dictColumnAddDTO))
                 .collect(Collectors.toList());
         dictColumnRepo.saveAll(dictColumns);
+    }
+
+    @Override
+    public List<DictTableVO> listTableDropDownBox(long databaseId) {
+        QDictColumn dictColumn = QDictColumn.dictColumn;
+        List<Long> tableIds = jpaQueryFactory
+                .select(dictColumn.dictTable.id)
+                .from(dictColumn)
+                .groupBy(dictColumn.dictTable.id)
+                .fetch();
+        return dictTableService.listVOByIds(tableIds);
+    }
+
+    @Override
+    public List<DictDatabaseVO> listDatabaseDropDownBox() {
+        QDictColumn dictColumn = QDictColumn.dictColumn;
+        List<Long> databaseIds = jpaQueryFactory
+                .select(dictColumn.dictDatabase.id)
+                .from(dictColumn)
+                .groupBy(dictColumn.dictDatabase.id)
+                .fetch();
+        return dictDatabaseService.listVOByIds(databaseIds);
     }
 
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
