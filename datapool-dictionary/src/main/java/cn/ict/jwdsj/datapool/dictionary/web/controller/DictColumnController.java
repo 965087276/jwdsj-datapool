@@ -72,8 +72,8 @@ public class DictColumnController {
         return ResponseEntity.ok();
     }
 
-    @ApiOperation(value = "表信息管理页--添加表--手动添加")
-    @ApiImplicitParam(name = "dictColumnMultiAddDTO", value = "表信息", dataType = "DictColumnMultiAddDTO", required = true)
+    @ApiOperation(value = "字段信息管理页--添加字段--手动添加")
+    @ApiImplicitParam(name = "dictColumnMultiAddDTO", value = "字段信息", dataType = "DictColumnMultiAddDTO", required = true)
     @PostMapping("dict/dict_columns")
     public ResponseEntity addAll(@Valid @RequestBody DictColumnMultiAddDTO dictColumnMultiAddDTO) {
         dictColumnService.saveAll(dictColumnMultiAddDTO);

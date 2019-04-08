@@ -110,6 +110,7 @@ public class DictColumnServiceImpl implements DictColumnService {
         List<Long> tableIds = jpaQueryFactory
                 .select(dictColumn.dictTable.id)
                 .from(dictColumn)
+                .where(dictColumn.dictDatabase.id.eq(databaseId))
                 .groupBy(dictColumn.dictTable.id)
                 .fetch();
         return dictTableService.listTableNameDTOByIds(tableIds);
