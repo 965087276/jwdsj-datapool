@@ -47,12 +47,20 @@ public class StatTableServiceImpl implements StatTableService{
     @Override
     public Date getTableCreateTime(long tableId) {
         QDictTable dictTable = QDictTable.dictTable;
+        QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
+
         DictTable table = jpaQueryFactory
                 .selectFrom(dictTable)
                 .where(dictTable.id.eq(tableId))
                 .fetchFirst();
+
+        DictDatabase dictDb = jpaQueryFactory
+                .selectFrom(dictDatabase)
+                .where(dictDatabase.eq(dictTable.dictDatabase))
+                .fetchOne();
+
         String enTable = table.getEnTable();
-        String enDatabase = table.getDictDatabase().getEnDatabase();
+        String enDatabase = dictDb.getEnDatabase();
 
         String sql = String.format(
                 "select CREATE_TIME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '%s' and TABLE_NAME = '%s'",

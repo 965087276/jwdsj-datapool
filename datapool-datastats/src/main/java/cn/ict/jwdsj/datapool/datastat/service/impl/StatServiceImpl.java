@@ -34,7 +34,9 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public long countTableRecords(DictTable dictTable) {
-        String database = dictTable.getDictDatabase().getEnDatabase();
+        QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
+        String database = jpaQueryFactory.
+                selectFrom(dictDatabase).where(dictDatabase.eq(dictTable.getDictDatabase())).fetchOne().getEnDatabase();
         String table = dictTable.getEnTable();
         String sql = String.format("select count(*) from `%s`.`%s`", database, table);
         return jdbcTemplate.queryForObject(sql, Long.class);
@@ -68,4 +70,5 @@ public class StatServiceImpl implements StatService {
 
         return count == null ? 0 : count.intValue();
     }
+
 }

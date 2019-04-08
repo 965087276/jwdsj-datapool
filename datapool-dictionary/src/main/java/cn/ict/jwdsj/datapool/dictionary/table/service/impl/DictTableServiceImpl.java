@@ -85,7 +85,7 @@ public class DictTableServiceImpl implements DictTableService {
     @Override
     public Page<DictTableVO> listVO(int curPage, int pageSize, long databaseId, String nameLike) {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
-        DictDatabase dictDatabase = DictDatabase.buildById(databaseId);
+        DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
         QDictTable dictTable = QDictTable.dictTable;
 
         Predicate predicate = dictTable.dictDatabase.eq(dictDatabase);
@@ -94,7 +94,7 @@ public class DictTableServiceImpl implements DictTableService {
                 ExpressionUtils.and(predicate, dictTable.chTable.like('%' + nameLike + '%')) :
                 ExpressionUtils.and(predicate, dictTable.enTable.like('%' + nameLike + '%'));
 
-        return dictTableRepo.findAll(predicate, pageable).map(this::convertToDictTableVO);
+        return dictTableRepo.findAll(predicate, pageable).map(dictTable1 -> this.convertToDictTableVO(dictDatabase, dictTable1));
 
     }
 
@@ -138,11 +138,11 @@ public class DictTableServiceImpl implements DictTableService {
         return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
     }
 
-    private DictTableVO convertToDictTableVO(DictTable dictTable) {
+    private DictTableVO convertToDictTableVO(DictDatabase dictDatabase, DictTable dictTable) {
         DictTableVO dictTableVO = BeanUtil.toBean(dictTable, DictTableVO.class);
         dictTableVO.setTableId(dictTable.getId());
-        dictTableVO.setChDatabase(dictTable.getDictDatabase().getChDatabase());
-        dictTableVO.setEnDatabase(dictTable.getDictDatabase().getEnDatabase());
+        dictTableVO.setChDatabase(dictDatabase.getChDatabase());
+        dictTableVO.setEnDatabase(dictDatabase.getEnDatabase());
         return dictTableVO;
     }
     private TableNameDTO convertToTableNameDTO(DictTable dictTable) {
