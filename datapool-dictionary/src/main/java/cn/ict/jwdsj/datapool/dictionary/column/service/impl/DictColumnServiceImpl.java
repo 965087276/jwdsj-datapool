@@ -7,6 +7,8 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
+import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnAddDTO;
+import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
@@ -17,6 +19,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,6 +91,19 @@ public class DictColumnServiceImpl implements DictColumnService {
 
     }
 
+    @Override
+    @Transactional
+    public void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO) {
+        DictTable dictTable = dictTableService.findById(dictColumnMultiAddDTO.getTableId());
+        // 判断是否有重复元素
+        Assert.isTrue(dictColumnMultiAddDTO.getDictColumnAddDTOS().size() == dictColumnMultiAddDTO.getDictColumnAddDTOS().stream().distinct().count(), "有重复元素");
+        List<DictColumn> dictColumns = dictColumnMultiAddDTO.getDictColumnAddDTOS()
+                .stream()
+                .map(dictColumnAddDTO -> this.convertToDictColumn(dictTable, dictColumnAddDTO))
+                .collect(Collectors.toList());
+        dictColumnRepo.saveAll(dictColumns);
+    }
+
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
         DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
         dictColumnVO.setColumnId(dictColumn.getId());
@@ -96,5 +112,11 @@ public class DictColumnServiceImpl implements DictColumnService {
         dictColumnVO.setEnTable(dictTable.getEnTable());
         dictColumnVO.setChTable(dictTable.getChTable());
         return dictColumnVO;
+    }
+
+    private DictColumn convertToDictColumn(DictTable dictTable, DictColumnAddDTO dictColumnAddDTO) {
+        DictColumn dictColumn = BeanUtil.toBean(dictColumnAddDTO, DictColumn.class);
+        dictColumn.setDictTable(dictTable);
+        return dictColumn;
     }
 }

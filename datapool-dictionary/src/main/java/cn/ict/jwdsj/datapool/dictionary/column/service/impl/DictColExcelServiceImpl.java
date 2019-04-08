@@ -19,9 +19,12 @@ import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.print.Pageable;
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -43,17 +46,66 @@ public class DictColExcelServiceImpl implements DictColExcelService {
     private String COLUMN_NOT_EXISTS = "所有字段必须真实存在且对应到正确的表上";
     private final String WRONG_TITLE = "表头错误";
 
+//    @Override
+//    @Transactional
+//    public void saveAll(String enDatabase, File file) {
+//        DictDatabase dictDatabase = dictDatabaseService.findByEnDatabase(enDatabase);
+//        ExcelReader reader = ExcelUtil.getReader(file);
+//
+//        // 库必须在dict_database中存在
+//        assert !BeanUtil.isEmpty(dictDatabase) : NOT_EXISTS_DATABASE;
+//        // 表头必须正确
+//        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictColExcelDTO.class) : WRONG_TITLE;
+//
+//
+//        List<DictColExcelDTO> colExcelDTOList = reader.readAll(DictColExcelDTO.class);
+//        // excel中所有表名
+//        List<String> tableNames =
+//                colExcelDTOList.stream().map(DictColExcelDTO::getEnTable).distinct().collect(Collectors.toList());
+//        // excel中每个表的所有字段
+//        Map<String, List<DictColExcelDTO>> excelColsGroupByTable =
+//                colExcelDTOList.stream().collect(groupingBy(DictColExcelDTO::getEnTable));
+//        // dict_table中该库的所有表
+//        List<TbIdNameDTO> tbIdNameDTOList = dictTableService.listTbIdNameDTOByDictDatabase(dictDatabase);
+//
+//
+//        // 中文字段不能为空
+//        assert colExcelDTOList.stream().map(DictColExcelDTO::getChColumn).allMatch(StrUtil::isNotBlank) : EMPTY_CHTABLE;
+//        // 不能存在重复记录
+//        assert colExcelDTOList.size() == colExcelDTOList.stream().distinct().count() : DUPLICATE_OBJECT;
+//        // 所有表必须先导入到dict_table中
+//        assert allTableExistsInDictTable(tableNames, tbIdNameDTOList) : NOT_EXISTS_TABLE;
+//        // 该表字段必须是第一次导入，即dict_column中不存在这些表
+//        assert allTableNotExistsInDictColumn(dictDatabase, tableNames) : EXISTS_IN_DICT_COLUMN;
+//        // 每个字段必须对应到正确的表上
+//        assert allColumnsBelongToCorrectTable(dictDatabase, tableNames, excelColsGroupByTable) : COLUMN_NOT_EXISTS;
+//
+//        List<DictColumn> dictColumnList = mapColExcelsToDictColumns(colExcelDTOList, tbIdNameDTOList);
+//
+//        // TIDB中一次事务不能超过5000条，所以大于5000条的要分批插入
+//        if (dictColumnList.size() < 5000) {
+//            dictColumnService.saveAll(dictColumnList);
+//        } else {
+//            dictColumnList
+//                    .stream()
+//                    .collect(groupingBy(dictColumn -> dictColumn.getDictTable().getId()))
+//                    .forEach((tableId, columns) -> {
+//                        dictColumnService.saveAll(columns);
+//                    });
+//        }
+//
+//
+//    }
+
     @Override
-    @Transactional
-    public void saveAll(String enDatabase, File file) {
-        DictDatabase dictDatabase = dictDatabaseService.findByEnDatabase(enDatabase);
-        ExcelReader reader = ExcelUtil.getReader(file);
+    public void saveAll(long databaseId, MultipartFile file) throws IOException {
+        DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
+        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
 
         // 库必须在dict_database中存在
-        assert !BeanUtil.isEmpty(dictDatabase) : NOT_EXISTS_DATABASE;
+        Assert.isTrue(!BeanUtil.isEmpty(dictDatabase), NOT_EXISTS_DATABASE);
         // 表头必须正确
-        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictColExcelDTO.class) : WRONG_TITLE;
-
+        Assert.isTrue(ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictColExcelDTO.class), WRONG_TITLE);
 
         List<DictColExcelDTO> colExcelDTOList = reader.readAll(DictColExcelDTO.class);
         // excel中所有表名
@@ -67,15 +119,15 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
 
         // 中文字段不能为空
-        assert colExcelDTOList.stream().map(DictColExcelDTO::getChColumn).allMatch(StrUtil::isNotBlank) : EMPTY_CHTABLE;
+        Assert.isTrue(colExcelDTOList.stream().map(DictColExcelDTO::getChColumn).allMatch(StrUtil::isNotBlank), EMPTY_CHTABLE);
         // 不能存在重复记录
-        assert colExcelDTOList.size() == colExcelDTOList.stream().distinct().count() : DUPLICATE_OBJECT;
+        Assert.isTrue(colExcelDTOList.size() == colExcelDTOList.stream().distinct().count(), DUPLICATE_OBJECT);
         // 所有表必须先导入到dict_table中
-        assert allTableExistsInDictTable(tableNames, tbIdNameDTOList) : NOT_EXISTS_TABLE;
+        Assert.isTrue(allTableExistsInDictTable(tableNames, tbIdNameDTOList), NOT_EXISTS_TABLE);
         // 该表字段必须是第一次导入，即dict_column中不存在这些表
-        assert allTableNotExistsInDictColumn(dictDatabase, tableNames) : EXISTS_IN_DICT_COLUMN;
+        Assert.isTrue(allTableNotExistsInDictColumn(dictDatabase, tableNames), EXISTS_IN_DICT_COLUMN);
         // 每个字段必须对应到正确的表上
-        assert allColumnsBelongToCorrectTable(dictDatabase, tableNames, excelColsGroupByTable) : COLUMN_NOT_EXISTS;
+        Assert.isTrue(allColumnsBelongToCorrectTable(dictDatabase, tableNames, excelColsGroupByTable), COLUMN_NOT_EXISTS);
 
         List<DictColumn> dictColumnList = mapColExcelsToDictColumns(colExcelDTOList, tbIdNameDTOList);
 

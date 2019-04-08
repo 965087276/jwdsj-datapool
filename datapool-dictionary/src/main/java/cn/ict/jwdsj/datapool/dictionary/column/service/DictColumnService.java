@@ -4,6 +4,7 @@ import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
+import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,11 @@ public interface DictColumnService {
      */
     List<String> getEnTableByDictDatabase(DictDatabase dictDb);
 
-    @Transactional
     void saveAll(List<DictColumn> dictColumns);
 
     List<ColumnNameDTO> listNamesByDictTable(DictTable dictTable);
 
     List<DictColumnVO> listDictColumnVOs(long databaseId, long tableId);
+
+    void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO);
 }
