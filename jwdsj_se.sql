@@ -11,7 +11,7 @@
  Target Server Version : 50642
  File Encoding         : 65001
 
- Date: 06/04/2019 19:41:39
+ Date: 08/04/2019 18:52:08
 */
 
 SET NAMES utf8mb4;
@@ -23,6 +23,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `dict_column`;
 CREATE TABLE `dict_column`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `database_id` bigint(20) NOT NULL COMMENT '外键，关联dict_database表',
   `table_id` bigint(20) NOT NULL COMMENT '外键，关联dict_table表',
   `en_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表字段英文名',
   `ch_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表字段中文名',
@@ -30,7 +31,10 @@ CREATE TABLE `dict_column`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`, `en_column`) USING BTREE,
-  INDEX `table_id_2`(`table_id`) USING BTREE
+  INDEX `table_id_2`(`table_id`) USING BTREE,
+  INDEX `en_column`(`en_column`) USING BTREE,
+  INDEX `database_id`(`database_id`) USING BTREE,
+  INDEX `table_id_3`(`table_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字段中英对照信息表' ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -60,7 +64,10 @@ CREATE TABLE `dict_table`  (
   `gmt_create` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `database_id`(`database_id`, `en_table`) USING BTREE
+  UNIQUE INDEX `database_id`(`database_id`, `en_table`) USING BTREE,
+  INDEX `en_table`(`en_table`) USING BTREE,
+  INDEX `ch_table`(`ch_table`) USING BTREE,
+  INDEX `database_id_2`(`database_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表中英对照信息表' ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -109,8 +116,8 @@ CREATE TABLE `mapping_column`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id_2`(`table_id`, `es_column`) USING BTREE,
-  INDEX `table_id`(`table_id`) USING BTREE,
-  UNIQUE INDEX `column_id`(`column_id`) USING BTREE
+  UNIQUE INDEX `column_id`(`column_id`) USING BTREE,
+  INDEX `table_id`(`table_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表字段与索引字段对照信息表' ROW_FORMAT = Compact;
 
 -- ----------------------------
