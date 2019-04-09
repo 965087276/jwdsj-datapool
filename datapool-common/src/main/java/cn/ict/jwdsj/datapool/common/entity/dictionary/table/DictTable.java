@@ -23,6 +23,9 @@ public class DictTable extends BaseEntity {
     @Column(name = "ch_table")
     private String chTable;
 
+    @Column(name = "is_add_to_se")
+    private boolean addToSe = false;
+
     public static DictTable builtById(long id) {
         DictTable dictTable = new DictTable();
         dictTable.setId(id);
