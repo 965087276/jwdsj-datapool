@@ -2,14 +2,18 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.MappingColumn;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.QMappingColumn;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingColumnDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
+import cn.ict.jwdsj.datapool.indexmanage.db.service.feignclient.DictClient;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
+import cn.ict.jwdsj.datapool.indexmanage.db.service.feignclient.StatClient;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +27,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class MappingColumnServiceImpl implements MappingColumnService {
-    @Autowired
-    private MappingColumnRepo mappingColumnRepo;
-    @Autowired
-    private JPAQueryFactory jpaQueryFactory;
+    @Autowired private MappingColumnRepo mappingColumnRepo;
+    @Autowired private JPAQueryFactory jpaQueryFactory;
+    @Autowired private DictClient dictClient;
+    @Autowired private StatClient statClient;
 
     @Override
     @Transactional
@@ -71,6 +75,31 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MappingColumnVO> getInitMappingColumns(long databaseId, long tableId) {
+
+        List<DictColumn> dictColumns = dictClient.listDictColumnsByTableId(tableId);
+        // 缺陷字段
+        List<String> defectColumns = statClient.getDefectColumnsByTable(tableId);
+
+        return dictColumns
+                .stream().filter(dictColumn -> !defectColumns.contains(dictColumn.getEnColumn())) // 过滤缺陷字段
+                .map(this::convertToMappingColumnVO)
+                .collect(Collectors.toList());
+    }
+
+    private MappingColumnVO convertToMappingColumnVO(DictColumn dictColumn) {
+        MappingColumnVO columnVO = new MappingColumnVO();
+        columnVO.setEnColumn(dictColumn.getEnColumn());
+        columnVO.setChColumn(dictColumn.getChColumn());
+        columnVO.setDictColumnId(dictColumn.getId());
+        columnVO.setDisplayed(true);
+        columnVO.setSearched(false);
+        columnVO.setAnalyzed(false);
+        columnVO.setBoost(1);
+        return columnVO;
     }
 
     private EsColumnTypeEnum getColumnType(MappingColumnDTO column) {
