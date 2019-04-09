@@ -42,4 +42,6 @@ public interface DictColumnService {
      * @return
      */
     List<DatabaseNameDTO> listDatabaseDropDownBox();
+
+    List<DictColumn> listByDictTable(DictTable dictTable);
 }

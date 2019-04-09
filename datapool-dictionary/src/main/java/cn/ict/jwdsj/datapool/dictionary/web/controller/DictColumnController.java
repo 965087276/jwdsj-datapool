@@ -1,7 +1,10 @@
 package cn.ict.jwdsj.datapool.dictionary.web.controller;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
@@ -16,6 +19,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -78,5 +82,12 @@ public class DictColumnController {
     public ResponseEntity addAll(@Valid @RequestBody DictColumnMultiAddDTO dictColumnMultiAddDTO) {
         dictColumnService.saveAll(dictColumnMultiAddDTO);
         return ResponseEntity.ok();
+    }
+
+    @ApiIgnore
+    @GetMapping("dict/dict_columns/tableId/{tableId}")
+    public List<DictColumn> getColumnNameDTOsByTable(@PathVariable("tableId") long tableId) {
+        DictTable dictTable = DictTable.builtById(tableId);
+        return dictColumnService.listByDictTable(dictTable);
     }
 }

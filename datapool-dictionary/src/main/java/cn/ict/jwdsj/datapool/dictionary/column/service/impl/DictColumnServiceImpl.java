@@ -107,6 +107,11 @@ public class DictColumnServiceImpl implements DictColumnService {
         return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
     }
 
+    @Override
+    public List<DictColumn> listByDictTable(DictTable dictTable) {
+        return dictColumnRepo.findByDictTable(dictTable);
+    }
+
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
         DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
         dictColumnVO.setColumnId(dictColumn.getId());

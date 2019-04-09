@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.web.controller;
 
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -69,5 +71,11 @@ public class DictTableController {
             @RequestParam("file") MultipartFile file) throws IOException {
         dictTbExcelService.saveAll(databaseId, file);
         return ResponseEntity.ok();
+    }
+
+    @ApiIgnore
+    @GetMapping("dict/dict_tables/{id}")
+    public DictTable findById(@PathVariable("id") long id) {
+        return dictTableService.findById(id);
     }
 }

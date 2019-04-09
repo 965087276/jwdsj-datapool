@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -62,6 +63,11 @@ public class DictDatabaseController {
         return ResponseEntity.ok();
     }
 
+    @ApiIgnore
+    @GetMapping("dict/dict_databases/{id}")
+    public DictDatabase getById(@PathVariable("id") long id) {
+        return dictDatabaseService.findById(id);
+    }
 
 
 
