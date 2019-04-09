@@ -56,26 +56,6 @@ public class DictColumnServiceImpl implements DictColumnService {
     }
 
     @Override
-    public List<ColumnNameDTO> listNamesByDictTable(DictTable dictTb) {
-        QDictTable dictTable = QDictTable.dictTable;
-        QDictColumn dictColumn = QDictColumn.dictColumn;
-
-        return jpaQueryFactory
-                .select(dictColumn.id, dictColumn.enColumn, dictColumn.chColumn)
-                .from(dictColumn)
-                .where(dictColumn.dictTable.eq(dictTb))
-                .fetch()
-                .stream()
-                .map(tuple -> ColumnNameDTO.builder()
-                        .columnId(tuple.get(dictColumn.id))
-                        .enColumn(tuple.get(dictColumn.enColumn))
-                        .chColumn(tuple.get(dictColumn.chColumn))
-                        .build()
-                )
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<DictColumnVO> listDictColumnVOs(long databaseId, long tableId) {
         DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
         DictTable dictTable = dictTableService.findById(tableId);

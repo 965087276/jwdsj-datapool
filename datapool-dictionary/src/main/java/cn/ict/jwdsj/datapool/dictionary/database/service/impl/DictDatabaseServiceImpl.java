@@ -46,28 +46,6 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
-    public DictDatabase findByEnDatabase(String enDatabase) {
-        return dictDatabaseRepo.findByEnDatabase(enDatabase);
-    }
-
-    @Override
-    public List<DatabaseNameDTO> listNames() {
-        QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
-        return jpaQueryFactory
-                .select(dictDatabase.id, dictDatabase.enDatabase, dictDatabase.chDatabase)
-                .from(dictDatabase)
-                .fetch()
-                .stream()
-                .map(tuple -> DatabaseNameDTO.builder()
-                        .databaseId(tuple.get(dictDatabase.id))
-                        .enDatabase(tuple.get(dictDatabase.enDatabase))
-                        .chDatabase(tuple.get(dictDatabase.chDatabase))
-                        .build()
-                )
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Page<DictDatabaseVO> listVO(int curPage, int pageSize, String enNameLike, String chNameLike) {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
 
@@ -91,12 +69,6 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     public DictDatabase findById(long id) {
         return dictDatabaseRepo.findById(id).get();
     }
-
-//    @Override
-//    public Page<DictDatabaseVO> list(int curPage, int pageSize) {
-//        Pageable pageable = PageRequest.of(curPage-1, pageSize);
-//        return dictDatabaseRepo.findAll(pageable).map(this::convertToDictDatabaseVO);
-//    }
 
     private DictDatabaseVO convertToDictDatabaseVO(DictDatabase dictDatabase) {
         return BeanUtil.toBean(dictDatabase, DictDatabaseVO.class);

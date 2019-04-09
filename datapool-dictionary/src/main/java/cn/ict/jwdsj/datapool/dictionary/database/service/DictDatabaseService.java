@@ -16,10 +16,6 @@ public interface DictDatabaseService {
 
     boolean exists(String enDatabase);
 
-    DictDatabase findByEnDatabase(String enDatabase);
-
-    List<DatabaseNameDTO> listNames();
-
     Page<DictDatabaseVO> listVO(int curPage, int pageSize, String enNameLike, String chNameLike);
 
     List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids);

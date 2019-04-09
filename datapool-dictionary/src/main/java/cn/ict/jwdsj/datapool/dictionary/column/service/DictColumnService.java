@@ -1,6 +1,5 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service;
 
-import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
@@ -8,9 +7,6 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,13 +19,6 @@ public interface DictColumnService {
     List<String> getEnTableByDictDatabase(DictDatabase dictDb);
 
     void saveAll(List<DictColumn> dictColumns);
-
-    /**
-     * 获取字段id、字段名信息
-     * @param dictTable 所在表
-     * @return
-     */
-    List<ColumnNameDTO> listNamesByDictTable(DictTable dictTable);
 
     /**
      * 前端页字段展示列表
