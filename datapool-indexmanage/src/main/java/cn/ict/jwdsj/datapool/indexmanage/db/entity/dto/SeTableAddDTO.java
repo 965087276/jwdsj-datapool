@@ -10,7 +10,7 @@ import java.util.List;
  * 表信息管理模块--添加表信息（包括库名、表名、字段信息）
  */
 @Data
-public class TableAddDTO {
+public class SeTableAddDTO {
     @Min(value = 1)
     private long databaseId;
 

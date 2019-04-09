@@ -7,6 +7,6 @@ import java.io.IOException;
 public interface MappingTableService {
     void save(MappingTableAddDTO mappingTableAddDTO) throws IOException;
 
-//    void save(TableAddDTO tableAddDTO);
+//    void save(SeTableAddDTO tableAddDTO);
 
 }

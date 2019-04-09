@@ -6,7 +6,7 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.MappingColumn;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.QMappingColumn;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.ColumnTypeDTO;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.TableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingColumnDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
@@ -30,12 +30,12 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
     @Override
     @Transactional
-    public void save(TableAddDTO tableAddDTO) {
-        Map<EsColumnTypeEnum, List<MappingColumnDTO>> columnsGroupByType = tableAddDTO.getColumns()
+    public void saveAll(SeTableAddDTO seTableAddDTO) {
+        Map<EsColumnTypeEnum, List<MappingColumnDTO>> columnsGroupByType = seTableAddDTO.getColumns()
                 .stream()
                 .collect(Collectors.groupingBy(this::getColumnType));
         List<MappingColumn> mappingColumns = new ArrayList<>();
-        DictTable dictTable = DictTable.builtById(tableAddDTO.getTableId());
+        DictTable dictTable = DictTable.builtById(seTableAddDTO.getTableId());
 
         columnsGroupByType.forEach((typeEnum, list) -> {
             for (int i = 0; i < list.size(); ++i) {
