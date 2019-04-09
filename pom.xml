@@ -43,6 +43,7 @@
         <module>datapool-datastats</module>
         <module>datapool-indexmanage</module>
         <module>datapool-eureka</module>
+        <module>datapool-datasync</module>
     </modules>
 
     <dependencies>
