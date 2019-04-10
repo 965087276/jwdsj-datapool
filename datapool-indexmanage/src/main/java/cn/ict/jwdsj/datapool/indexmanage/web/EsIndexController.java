@@ -20,7 +20,7 @@ public class EsIndexController {
 
     @ApiOperation(value = "索引信息管理--增加索引")
     @ApiImplicitParam(name = "esIndexDTO", value = "索引信息，包括索引名，主分片数", required = true, dataType = "EsIndexDTO")
-    @PostMapping("mapping/indexes")
+    @PostMapping("index_manage/indexes")
     public ResponseEntity addIndex(@Valid @RequestBody EsIndexDTO esIndexDTO) throws IOException {
         esIndexService.createIndex(esIndexDTO);
         return ResponseEntity.ok();
