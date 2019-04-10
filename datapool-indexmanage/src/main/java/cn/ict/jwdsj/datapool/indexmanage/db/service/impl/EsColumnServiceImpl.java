@@ -37,7 +37,7 @@ public class EsColumnServiceImpl implements EsColumnService {
         EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
         DictTable dictTable = DictTable.builtById(mappingTableAddDTO.getTableId());
 
-        // 筛选出es_column中不存在的字段，这些字段需要加入elasticsearch与es_column中
+        // 筛选出该表在mapping_column中但不在es_column中的字段，这些字段需要加入elasticsearch与es_column中
         List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByTable(dictTable)
                 .stream()
                 .filter(columnTypeDTO -> !(esColumnRepo.existsByEsIndexAndName(esIndex, columnTypeDTO.getName())))
@@ -48,39 +48,6 @@ public class EsColumnServiceImpl implements EsColumnService {
         esColumnRepo.saveAll(esColumns);
         elasticRestService.addFields(esIndex, esColumns);
 
-//        // 将mapping column中的字段按照type分组
-//        Map<String, List<ColumnTypeDTO>> columnTypeMap = mappingColumnService.listColumnTypeDTOByTable(dictTable)
-//                .stream()
-//                .collect(groupingBy(ColumnTypeDTO::getType));
-//
-//        List<EsColumn> esColumns = new ArrayList<>();
-//        columnTypeMap.forEach((type, list) -> {
-//            // 索引中type类型的字段有多少个
-//            int count = esColumnRepo.countByEsIndexAndType(esIndex, type);
-//            // 数量不够，还需要增加list.size()-count个
-//            if (count < list.size()) {
-//
-//            }
-//
-//        });
-
-//        EsIndex esIndex = EsIndex.builtById(columnsAddDTO.getIndexId());
-//
-//        List<EsColumn> esColumns = new ArrayList<>();
-//        columnsGroupByType.forEach((typeEnum, list) -> {
-//            int count = esColumnRepo.countByTypeEquals(typeEnum.name());
-//            // 这种type的字段数量不够，需要添加list-count个
-//            if (count < list.size()) {
-//                for (int i = count+1; i <= list.size(); ++i) {
-//                    EsColumn esColumn = new EsColumn();
-//                    esColumn.setEsIndex(esIndex);
-//                    esColumn.setType(typeEnum.name());
-//                    esColumn.setName(typeEnum.name() + "-" + i);
-//                    esColumns.add(esColumn);
-//                }
-//            }
-//        });
-//        esColumnRepo.saveAll(esColumns);
     }
 
 
