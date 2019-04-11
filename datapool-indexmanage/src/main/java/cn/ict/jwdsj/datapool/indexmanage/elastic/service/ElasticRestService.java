@@ -1,13 +1,11 @@
 package cn.ict.jwdsj.datapool.indexmanage.elastic.service;
 
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsColumn;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsIndex;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsColumn;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.EsIndexDTO;
-import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public interface ElasticRestService {
 

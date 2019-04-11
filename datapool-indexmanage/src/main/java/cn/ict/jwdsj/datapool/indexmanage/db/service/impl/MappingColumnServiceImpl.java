@@ -2,9 +2,8 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.MappingColumn;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.QMappingColumn;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;

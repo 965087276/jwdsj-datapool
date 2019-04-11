@@ -1,10 +1,9 @@
 package cn.ict.jwdsj.datapool.indexmanage.elastic.service.impl;
 
 import cn.hutool.core.map.MapUtil;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsColumn;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsIndex;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsColumn;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.EsIndexDTO;
-import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
 import com.alibaba.fastjson.JSON;
 import org.elasticsearch.action.admin.indices.alias.Alias;

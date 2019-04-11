@@ -1,7 +1,7 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsIndex;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.EsIndexDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsIndexRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;

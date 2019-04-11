@@ -2,9 +2,8 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsColumn;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsIndex;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.ColumnTypeDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsColumn;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsColumnRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
@@ -16,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;

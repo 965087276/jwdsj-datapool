@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.indexmanage.db.entity;
+package cn.ict.jwdsj.datapool.common.entity.indexmanage;
 
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
@@ -8,9 +8,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
-import java.text.DateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "mapping_table")

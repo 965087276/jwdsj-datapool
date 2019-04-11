@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.indexmanage.db.entity;
+package cn.ict.jwdsj.datapool.common.entity.indexmanage;
 
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;

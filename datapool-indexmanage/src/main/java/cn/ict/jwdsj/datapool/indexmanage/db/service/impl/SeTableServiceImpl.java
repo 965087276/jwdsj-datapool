@@ -3,7 +3,7 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.SeTable;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.SeTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.SeTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;

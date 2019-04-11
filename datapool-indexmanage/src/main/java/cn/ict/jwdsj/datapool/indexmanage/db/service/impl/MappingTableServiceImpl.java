@@ -2,12 +2,11 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.EsIndex;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.MappingTable;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
-import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
