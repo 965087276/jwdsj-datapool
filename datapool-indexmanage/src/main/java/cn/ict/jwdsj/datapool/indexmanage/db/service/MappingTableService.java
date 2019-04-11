@@ -1,8 +1,11 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
+import org.springframework.data.jpa.repository.Query;
 
 import java.io.IOException;
+import java.util.List;
 
 public interface MappingTableService {
     /**
@@ -12,4 +15,5 @@ public interface MappingTableService {
      */
     void save(MappingTableAddDTO mappingTableAddDTO) throws IOException;
 
+    List<MappingTable> listTableNeedToUpdate();
 }

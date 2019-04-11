@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.QMappingColumn;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingColumn;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingColumnDTO;

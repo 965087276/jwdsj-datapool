@@ -1,17 +1,21 @@
 package cn.ict.jwdsj.datapool.indexmanage.web;
 
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class MappingTableController {
@@ -25,5 +29,11 @@ public class MappingTableController {
     public ResponseEntity addTableMapping(@Valid @RequestBody MappingTableAddDTO mappingTableAddDTO) throws IOException {
         mappingTableService.save(mappingTableAddDTO);
         return ResponseEntity.ok();
+    }
+
+    @ApiIgnore
+    @GetMapping("index_manage/mapping_table/need_to_update")
+    public List<MappingTable> findTableNeedToUpdate() {
+        return mappingTableService.listTableNeedToUpdate();
     }
 }

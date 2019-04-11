@@ -4,15 +4,21 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Ops;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class MappingTableServiceImpl implements MappingTableService {
@@ -20,6 +26,8 @@ public class MappingTableServiceImpl implements MappingTableService {
     private MappingTableRepo mappingTableRepo;
     @Autowired
     private EsColumnService esColumnService;
+    @Autowired
+    private JPAQueryFactory jpaQueryFactory;
 
     @Override
     @Transactional
@@ -38,6 +46,20 @@ public class MappingTableServiceImpl implements MappingTableService {
         esColumnService.add(mappingTableAddDTO);
     }
 
+    @Override
+    public List<MappingTable> listTableNeedToUpdate() {
+        QMappingTable mappingTable = QMappingTable.mappingTable;
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // current_date - update_date >= update_period
+        builder.and(
+                Expressions.dateOperation(
+                        Integer.class,
+                        Ops.SUB,
+                        Expressions.currentDate(), mappingTable.updateDate).goe(mappingTable.updatePeriod)
+        );
+        return jpaQueryFactory.selectFrom(mappingTable).where(builder).fetch();
+    }
 
 
 }
