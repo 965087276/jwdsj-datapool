@@ -33,17 +33,15 @@ public class DictDatabaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "curPage", value = "第几页", paramType = "query", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页多少条", paramType = "query", required = true),
-            @ApiImplicitParam(name = "enNameLike", value = "英文名搜索", paramType = "query", required = false),
-            @ApiImplicitParam(name = "chNameLike", value = "中文名搜索", paramType = "query", required = false)
+            @ApiImplicitParam(name = "nameLike", value = "库名搜索", paramType = "query", required = false)
     })
     @GetMapping("dict/dict_databases")
     public ResponseEntity<Page<DictDatabaseVO>> listAll(
             @RequestParam(value = "curPage", required = true) int curPage,
             @RequestParam(value = "pageSize", required = true) int pageSize,
-            @RequestParam(value = "enNameLike", required = false) String enNameLike,
-            @RequestParam(value = "chNameLike", required = false) String chNameLike) {
+            @RequestParam(value = "nameLike", required = false) String nameLike) {
 
-        Page<DictDatabaseVO> dictDatabases = dictDatabaseService.listVO(curPage, pageSize, enNameLike, chNameLike);
+        Page<DictDatabaseVO> dictDatabases = dictDatabaseService.listVO(curPage, pageSize, nameLike);
         return ResponseEntity.ok(dictDatabases);
     }
 

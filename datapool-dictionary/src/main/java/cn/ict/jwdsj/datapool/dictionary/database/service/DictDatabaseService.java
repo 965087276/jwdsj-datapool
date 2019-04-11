@@ -16,7 +16,7 @@ public interface DictDatabaseService {
 
     boolean exists(String enDatabase);
 
-    Page<DictDatabaseVO> listVO(int curPage, int pageSize, String enNameLike, String chNameLike);
+    Page<DictDatabaseVO> listVO(int curPage, int pageSize, String nameLike);
 
     List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids);
 

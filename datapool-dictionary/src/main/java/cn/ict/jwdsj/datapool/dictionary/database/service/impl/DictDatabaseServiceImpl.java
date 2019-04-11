@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
+import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.repo.DictDatabaseRepo;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
@@ -46,14 +47,15 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
-    public Page<DictDatabaseVO> listVO(int curPage, int pageSize, String enNameLike, String chNameLike) {
+    public Page<DictDatabaseVO> listVO(int curPage, int pageSize, String nameLike) {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
 
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
         Predicate predicate = dictDatabase.isNotNull().or(dictDatabase.isNull());
-        predicate = StrUtil.isBlank(enNameLike) ? predicate : ExpressionUtils.and(predicate, dictDatabase.enDatabase.like('%' + enNameLike + '%'));
-        predicate = StrUtil.isBlank(chNameLike) ? predicate : ExpressionUtils.and(predicate, dictDatabase.chDatabase.like('%' + chNameLike + '%'));
-
+        // 根据输入的待查询表名是中文还是英文来判断搜索哪个字段
+        predicate = StrUtil.isBlank(nameLike) ? predicate : StrJudgeUtil.isContainChinese(nameLike) ?
+                ExpressionUtils.and(predicate, dictDatabase.chDatabase.like('%' + nameLike + '%')) :
+                ExpressionUtils.and(predicate, dictDatabase.enDatabase.like('%' + nameLike + '%'));
         return dictDatabaseRepo.findAll(predicate, pageable).map(this::convertToDictDatabaseVO);
     }
 
