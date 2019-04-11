@@ -2,14 +2,15 @@ package cn.ict.jwdsj.datapool.dictionary.database.entity.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Data
 public class DictDatabaseDTO {
-    @NotEmpty
+    @NotBlank
     private String enDatabase;
-    @NotEmpty
+    @NotBlank
     private String chDatabase;
-    @NotEmpty
+    @NotBlank
     private String detail;
 }
