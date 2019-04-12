@@ -40,7 +40,7 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         // 判断表头
-        assert ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictDatabase.class) : WRONG_HEADER;
+        Assert.isTrue(ExcelJudgeUtil.judgeHeader(reader.readRow(0), DictDatabase.class), WRONG_HEADER);
         // 获取excel内容
         List<DictDbExcelDTO> dictDatabaseDTOs = reader.readAll(DictDbExcelDTO.class);
 
