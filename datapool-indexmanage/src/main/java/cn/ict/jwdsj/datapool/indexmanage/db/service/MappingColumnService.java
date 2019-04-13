@@ -21,4 +21,10 @@ public interface MappingColumnService {
      * @return
      */
     List<MappingColumnVO> getInitMappingColumns(long databaseId, long tableId);
+
+    /**
+     * 获取某表需要加入到搜索引擎中的字段
+     * @return 字段的名字
+     */
+    List<String> listColumnNamesByTableId(long tableId);
 }

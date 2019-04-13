@@ -8,8 +8,10 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -30,6 +32,16 @@ public class MappingColumnController {
     ) {
         List<MappingColumnVO> columns = mappingColumnService.getInitMappingColumns(databaseId, tableId);
         return ResponseEntity.ok(columns);
+    }
+
+    /**
+     * 获取某表需要加入到搜索引擎中的字段
+     * @return 字段的名字
+     */
+    @ApiIgnore
+    @GetMapping("index_manage/mapping_column_names/tableId/{tableId}")
+    List<String> listColumnNamesByTableId(@PathVariable("tableId") long tableId) {
+        return mappingColumnService.listColumnNamesByTableId(tableId);
     }
 
 }

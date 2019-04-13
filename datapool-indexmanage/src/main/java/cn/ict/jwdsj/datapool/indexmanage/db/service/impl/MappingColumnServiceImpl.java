@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingColumn;
@@ -87,6 +88,25 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .stream().filter(dictColumn -> !defectColumns.contains(dictColumn.getEnColumn())) // 过滤缺陷字段
                 .map(this::convertToMappingColumnVO)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 获取某表需要加入到搜索引擎中的字段
+     *
+     * @param tableId
+     * @return 字段的名字
+     */
+    @Override
+    public List<String> listColumnNamesByTableId(long tableId) {
+        QDictColumn dictColumn = QDictColumn.dictColumn;
+        QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
+
+        return jpaQueryFactory
+                .select(dictColumn.enColumn)
+                .from(dictColumn, mappingColumn)
+                .where(mappingColumn.dictTable.id.eq(tableId)
+                        .and(mappingColumn.dictColumn.eq(dictColumn)))
+                .fetch();
     }
 
     private MappingColumnVO convertToMappingColumnVO(DictColumn dictColumn) {
