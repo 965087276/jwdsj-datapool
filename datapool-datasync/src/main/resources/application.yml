@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: datapool-datasync
+  profiles:
+    active: dev
+
+---
+server:
+  port: 8085
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://10.10.1.122:3306/zkbh-test?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: bohuatech_2018
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  #Kafka
+  kafka:
+    bootstrap-servers: 172.16.8.240:9092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/
+#kafka个人配置
+kafka:
+  topic-name:
+    table-sync-task: sync-table-task
+    table-full-read: table-full-read
+    table-after-mapping: table-after-mapping
