@@ -86,8 +86,13 @@ public class DictColumnController {
 
     @ApiIgnore
     @GetMapping("dict/dict_columns/tableId/{tableId}")
-    public List<DictColumn> getColumnNameDTOsByTable(@PathVariable("tableId") long tableId) {
+    public List<DictColumn> listByTableId(@PathVariable("tableId") long tableId) {
         DictTable dictTable = DictTable.builtById(tableId);
         return dictColumnService.listByDictTable(dictTable);
+    }
+    @ApiIgnore
+    @GetMapping("dict/column_name_dto/tableId/{tableId}")
+    public List<ColumnNameDTO> listColumnNameDTOsByTableId(@PathVariable("tableId") long tableId) {
+        return dictColumnService.listColumnNameDTOsByTableId(tableId);
     }
 }

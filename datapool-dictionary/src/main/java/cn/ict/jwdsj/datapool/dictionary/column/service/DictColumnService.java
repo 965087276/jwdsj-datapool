@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
@@ -44,4 +45,6 @@ public interface DictColumnService {
     List<DatabaseNameDTO> listDatabaseDropDownBox();
 
     List<DictColumn> listByDictTable(DictTable dictTable);
+
+    List<ColumnNameDTO> listColumnNameDTOsByTableId(long tableId);
 }

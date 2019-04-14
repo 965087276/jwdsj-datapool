@@ -112,6 +112,22 @@ public class DictColumnServiceImpl implements DictColumnService {
         return dictColumnRepo.findByDictTable(dictTable);
     }
 
+    @Override
+    public List<ColumnNameDTO> listColumnNameDTOsByTableId(long tableId) {
+        QDictColumn dictColumn = QDictColumn.dictColumn;
+        return jpaQueryFactory.select(dictColumn.id, dictColumn.enColumn, dictColumn.chColumn)
+                .from(dictColumn)
+                .where(dictColumn.dictTable.id.eq(tableId))
+                .fetch()
+                .stream()
+                .map(tuple -> ColumnNameDTO.builder()
+                        .columnId(tuple.get(dictColumn.id))
+                        .enColumn(tuple.get(dictColumn.enColumn))
+                        .chColumn(tuple.get(dictColumn.chColumn))
+                        .build()
+                ).collect(Collectors.toList());
+    }
+
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
         DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
         dictColumnVO.setColumnId(dictColumn.getId());
