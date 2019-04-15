@@ -5,11 +5,11 @@ package cn.ict.jwdsj.datapool.indexmanage.elastic.constant;
  */
 public enum EsColumnTypeEnum {
 
-    DOC("{\"doc\":{\"properties\":{\"elastic_database_name\":{\"type\":\"keyword\",\"eager_global_ordinals\":true},\"elastic_table_name\":{\"type\":\"keyword\",\"eager_global_ordinals\":true}}}}"),
+    DOC("{\"doc\":{\"properties\":{\"elastic_database_id\":{\"type\":\"keyword\",\"eager_global_ordinals\":true},\"elastic_table_id\":{\"type\":\"keyword\",\"eager_global_ordinals\":true},\"md5_id\":{\"enabled\":false},\"elastic_index_name\":{\"enabled\":false},\"all_fields_text\":{\"type\":\"text\",\"analyzer\":\"hanlp_index\"},\"all_fields_keyword\":{\"type\":\"keyword\"}}}}"),
 
-    TEXT("{\"type\":\"text\",\"analyzer\":\"ik_max_word\"}"),
+    TEXT("{\"type\":\"text\",\"analyzer\":\"hanlp_index\",\"copy_to\":\"all_fields_text\"}"),
 
-    KEYWORD("{\"type\":\"keyword\"}"),
+    KEYWORD("{\"type\":\"keyword\",\"copy_to\":\"all_fields_keyword\"}"),
 
     INTEGER("integer"),
 
