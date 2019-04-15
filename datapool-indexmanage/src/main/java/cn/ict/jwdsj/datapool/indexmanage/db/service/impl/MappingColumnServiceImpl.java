@@ -1,8 +1,8 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingColumn;
@@ -21,9 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 public class MappingColumnServiceImpl implements MappingColumnService {
@@ -37,7 +41,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     public void saveAll(SeTableAddDTO seTableAddDTO) {
         Map<EsColumnTypeEnum, List<MappingColumnDTO>> columnsGroupByType = seTableAddDTO.getColumns()
                 .stream()
-                .collect(Collectors.groupingBy(this::getColumnType));
+                .collect(groupingBy(this::getColumnType));
         List<MappingColumn> mappingColumns = new ArrayList<>();
         DictTable dictTable = DictTable.builtById(seTableAddDTO.getTableId());
 
@@ -91,22 +95,39 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     }
 
     /**
-     * 获取某表需要加入到搜索引擎中的字段
+     * 获取全量读取数据时的字段信息
      *
-     * @param tableId
-     * @return 字段的名字
+     * @param tableId 表id
+     * @return 字段信息。包括要加入到搜索引擎的字段列表，表字段到索引字段的映射。
      */
     @Override
-    public List<String> listColumnNamesByTableId(long tableId) {
-        QDictColumn dictColumn = QDictColumn.dictColumn;
-        QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
+    public TableFullReadDTO getTableFullReadDTOByTableId(long tableId) {
+        List<DictColumn> dictColumns = dictClient.listDictColumnsByTableId(tableId);
+        List<ColumnTypeDTO> columnTypeDTOS = listColumnTypeDTOByTable(DictTable.builtById(tableId));
 
-        return jpaQueryFactory
-                .select(dictColumn.enColumn)
-                .from(dictColumn, mappingColumn)
-                .where(mappingColumn.dictTable.id.eq(tableId)
-                        .and(mappingColumn.dictColumn.eq(dictColumn)))
-                .fetch();
+        // 表字段id与表字段名的映射
+        Map<Long, String> colIdAndColNameMap = dictColumns
+                .stream().collect(toMap(DictColumn::getId, dictColumn -> dictColumn.getEnColumn()));
+        // 表字段id与索引字段名的映射
+        Map<Long, String> colIdAndEsColMap = columnTypeDTOS
+                .stream().collect(toMap(ColumnTypeDTO::getDictColumnId, columnTypeDTO -> columnTypeDTO.getName()));
+
+        TableFullReadDTO tableFullReadDTO = new TableFullReadDTO();
+
+        // 表字段名与索引字段名的映射
+        Map<String, String> colAndEsColMap = new HashMap<>();
+        colIdAndEsColMap.forEach((colId, esColumn) -> {
+            colAndEsColMap.put(colIdAndColNameMap.get(colId), esColumn);
+        });
+
+        // 需要加入到搜索引擎的字段列表
+        List<String> columns = colAndEsColMap.keySet().stream().collect(Collectors.toList());
+
+        tableFullReadDTO.setColumns(columns);
+        tableFullReadDTO.setColAndEsColMap(colAndEsColMap);
+
+        return tableFullReadDTO;
+
     }
 
     private MappingColumnVO convertToMappingColumnVO(DictColumn dictColumn) {

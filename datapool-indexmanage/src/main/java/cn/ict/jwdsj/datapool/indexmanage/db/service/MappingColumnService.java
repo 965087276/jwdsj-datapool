@@ -1,11 +1,13 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
+import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MappingColumnService {
 
@@ -22,9 +24,11 @@ public interface MappingColumnService {
      */
     List<MappingColumnVO> getInitMappingColumns(long databaseId, long tableId);
 
+
     /**
-     * 获取某表需要加入到搜索引擎中的字段
-     * @return 字段的名字
+     * 获取全量读取数据时的字段信息
+     * @param tableId 表id
+     * @return 字段信息。包括要加入到搜索引擎的字段列表，表字段到索引字段的映射。
      */
-    List<String> listColumnNamesByTableId(long tableId);
+    TableFullReadDTO getTableFullReadDTOByTableId(long tableId);
 }
