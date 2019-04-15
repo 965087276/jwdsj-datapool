@@ -33,20 +33,20 @@ public class KafkaTableFullReadConsumer {
 //            }
 //        }
 //    }
-    @KafkaListener(topics = "#{'${kafka.topic-name.table-full-read}'}", groupId = "table-full-read", concurrency = "4")
-    public void listen(ConsumerRecord<?, String> record)  {
-
-            Optional<String> kafkaMessage = Optional.ofNullable(record.value());
-            if (kafkaMessage.isPresent()) {
-
-                JSONObject doc = JSONObject.parseObject(record.value());
-                String index = doc.getString("elastic_index_name");
-                String type = "doc";
-                String docId = doc.getString("elastic_table_id") + "-" + doc.getString("md5_id");
-                IndexRequest request = new IndexRequest(index, "doc", docId).source(doc);
-//                System.out.println(request);
-                bulkProcessor.add(request);
-            }
-
-    }
+//    @KafkaListener(topics = "#{'${kafka.topic-name.table-full-read}'}", groupId = "table-full-read", concurrency = "4")
+//    public void listen(ConsumerRecord<?, String> record)  {
+//
+//            Optional<String> kafkaMessage = Optional.ofNullable(record.value());
+//            if (kafkaMessage.isPresent()) {
+//
+//                JSONObject doc = JSONObject.parseObject(record.value());
+//                String index = doc.getString("elastic_index_name");
+//                String type = "doc";
+//                String docId = doc.getString("elastic_table_id") + "-" + doc.getString("md5_id");
+//                IndexRequest request = new IndexRequest(index, "doc", docId).source(doc);
+////                System.out.println(request);
+//                bulkProcessor.add(request);
+//            }
+//
+//    }
 }

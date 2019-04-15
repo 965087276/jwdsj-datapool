@@ -40,4 +40,4 @@ kafka:
     table-full-read: table-full-read
     table-after-mapping: table-after-mapping
 elasticsearch:
-  hosts: 172.16.8.204:9200
+  hosts: 172.16.8.240:9200
