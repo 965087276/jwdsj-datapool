@@ -30,7 +30,7 @@ public class KafkaTableSyncTaskProducer {
     private String syncTableTaskTopic;
 
     @Scheduled(cron = "0/10 * * * * ?")
-    public void getTablesNeedToUpdate() {
+    public void getTablesNeedToUpdate() throws InterruptedException {
         List<MappingTable> mappingTables = indexManageClient.getTableNeedToUpdate();
 
         for (MappingTable mappingTable : mappingTables) {
@@ -45,7 +45,8 @@ public class KafkaTableSyncTaskProducer {
             log.info("the msg have sent to kafka, {}", msg.getId());
             // 更新update_date
             jdbcTemplate.update("update mapping_table set update_date = current_date where table_id = ?", mappingTable.getDictTable().getId());
-
+            // 设置个间隔缓冲一下
+            Thread.sleep(10000);
         }
     }
 }

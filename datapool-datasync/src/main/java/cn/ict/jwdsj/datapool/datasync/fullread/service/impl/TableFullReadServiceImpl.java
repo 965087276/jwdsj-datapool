@@ -2,6 +2,8 @@ package cn.ict.jwdsj.datapool.datasync.fullread.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
+import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.datasync.fullread.client.IndexManageClient;
 import cn.ict.jwdsj.datapool.datasync.fullread.entity.TableSyncMsg;
 import cn.ict.jwdsj.datapool.datasync.fullread.kafka.KafkaTableFullReadProducer;
@@ -11,11 +13,14 @@ import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +38,11 @@ public class TableFullReadServiceImpl implements TableFullReadService {
 
     @Autowired
     private IndexManageClient indexManageClient;
+
     @Autowired
     private KafkaTableFullReadProducer kafkaTableFullReadProducer;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     @Async
@@ -45,23 +53,29 @@ public class TableFullReadServiceImpl implements TableFullReadService {
             e.printStackTrace();
         }
 
-        @Cleanup Connection con = DriverManager.getConnection(url, username, password);
-
+//        @Cleanup Connection con = DriverManager.getConnection(url, username, password);
+        TableFullReadDTO tableFullReadDTO = indexManageClient.getTableFullReadDTOByTableId(msg.getTableId());
         // 需要入搜索引擎的字段
-        List<String> columns = indexManageClient.listColumnNamesByTableId(msg.getTableId());
+        List<String> columns = tableFullReadDTO.getColumns();
+        // 表字段到索引字段的映射
+        Map<String, String> colAndEsColMap = tableFullReadDTO.getColAndEsColMap();
 
         String sql = getSQL(msg.getDatabaseName(), msg.getTableName(), columns);
-
+        @Cleanup Connection con = jdbcTemplate.getDataSource().getConnection();
         @Cleanup PreparedStatement ps = con.prepareStatement(sql,ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
         ps.setFetchSize(Integer.MIN_VALUE);
         ps.setFetchDirection(ResultSet.FETCH_REVERSE);
 
         @Cleanup ResultSet rs = ps.executeQuery();
-        int count = 0;
+
         while (rs.next()) {
             JSONObject record = new JSONObject();
             for (String column : columns) {
-                record.put(column, rs.getObject(column));
+                String esColumn = colAndEsColMap.get(column);
+                String value = StrUtil.toString(rs.getObject(column)).trim();
+                // 规范化null值
+                value = "null".equalsIgnoreCase(value) ? null : value;
+                record.put(esColumn, value);
             }
             // 添加一些额外信息
             record.put("md5_id", getMD5(record));
@@ -70,10 +84,6 @@ public class TableFullReadServiceImpl implements TableFullReadService {
             record.put("elastic_index_name", msg.getIndexName());
             kafkaTableFullReadProducer.send(record.toJSONString());
         }
-
-
-
-
 
     }
 
@@ -85,11 +95,18 @@ public class TableFullReadServiceImpl implements TableFullReadService {
     private String getMD5(JSONObject data) {
         StringBuffer sb = new StringBuffer();
         data.forEach((key, value) -> {
-            sb.append(value == null || StrUtil.isBlank(value.toString()) ? "null" : value);
+            sb.append(value == null || StrUtil.isBlank(value.toString()) ? "null" : value.toString().trim());
         });
         return SecureUtil.md5(sb.toString());
     }
 
+    /**
+     * 全量读取的SQL语句
+     * @param database 库名
+     * @param table 表名
+     * @param columns 需要读取的字段
+     * @return
+     */
     private String getSQL(String database, String table, List<String> columns) {
         String columnStr = columns.stream().map(s -> '`' + s + '`').collect(Collectors.joining(","));
         database = '`' + database + '`';

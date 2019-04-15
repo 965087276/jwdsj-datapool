@@ -24,7 +24,7 @@ public class KafkaTableSyncTaskConsumer {
     public void listen(ConsumerRecord<String, String> record) throws InterruptedException, SQLException {
         Optional<String> kafkaMessage = Optional.ofNullable(record.value());
         if (kafkaMessage.isPresent()) {
-            TableSyncMsg msg = JSONObject.parseObject(kafkaMessage.get(), TableSyncMsg.class);
+            TableSyncMsg msg = JSONObject.parseObject(record.value(), TableSyncMsg.class);
             fullReadService.fullRead(msg);
         }
     }

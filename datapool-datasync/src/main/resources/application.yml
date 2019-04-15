@@ -22,6 +22,12 @@ spring:
   #Kafka
   kafka:
     bootstrap-servers: 172.16.8.240:9092
+    consumer:
+#      max-poll-records: 1000
+      enable-auto-commit: true
+      auto-offset-reset: latest
+#    listener:
+#      concurrency: 4
 
 eureka:
   client:
@@ -33,3 +39,5 @@ kafka:
     table-sync-task: sync-table-task
     table-full-read: table-full-read
     table-after-mapping: table-after-mapping
+elasticsearch:
+  hosts: 172.16.8.204:9200
