@@ -44,6 +44,7 @@
         <module>datapool-indexmanage</module>
         <module>datapool-eureka</module>
         <module>datapool-datasync</module>
+        <module>datapool-search</module>
     </modules>
 
     <dependencies>
