@@ -11,7 +11,7 @@ import java.util.List;
 public interface DictDatabaseService {
     void save(DictDatabase dictDatabase);
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     void saveAll(List<DictDatabase> dictDatabases);
 
     boolean exists(String enDatabase);

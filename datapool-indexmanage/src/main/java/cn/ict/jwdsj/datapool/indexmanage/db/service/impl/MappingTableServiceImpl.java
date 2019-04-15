@@ -30,7 +30,7 @@ public class MappingTableServiceImpl implements MappingTableService {
     private JPAQueryFactory jpaQueryFactory;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void save(MappingTableAddDTO mappingTableAddDTO) throws IOException {
         EsIndex esIndex = EsIndex.builtById(mappingTableAddDTO.getIndexId());
         DictTable dictTable = DictTable.builtById(mappingTableAddDTO.getTableId());

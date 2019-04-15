@@ -18,7 +18,7 @@ public interface DictTableService {
 
     void save(DictTable dictTable);
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     void saveAll(List<DictTable> dictTables);
 
     /**

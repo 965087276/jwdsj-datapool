@@ -23,7 +23,7 @@ public class EsIndexServiceImpl implements EsIndexService {
     private String indexPrefix;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createIndex(EsIndexDTO indexDTO) throws IOException {
 
         EsIndex esIndex = BeanUtil.toBean(indexDTO, EsIndex.class);

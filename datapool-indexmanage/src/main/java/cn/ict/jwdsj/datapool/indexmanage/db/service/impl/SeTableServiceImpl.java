@@ -23,7 +23,7 @@ public class SeTableServiceImpl implements SeTableService {
     private JPAQueryFactory jpaQueryFactory;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void save(SeTableAddDTO seTableAddDTO) {
         SeTable seTable = new SeTable();
         seTable.setDictDatabase(DictDatabase.buildById(seTableAddDTO.getDatabaseId()));

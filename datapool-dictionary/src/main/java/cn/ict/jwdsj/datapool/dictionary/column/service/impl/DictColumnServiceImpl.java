@@ -50,7 +50,7 @@ public class DictColumnServiceImpl implements DictColumnService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAll(List<DictColumn> dictColumns) {
         dictColumnRepo.saveAll(dictColumns);
     }
@@ -68,7 +68,7 @@ public class DictColumnServiceImpl implements DictColumnService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO) {
         DictDatabase dictDatabase = dictDatabaseService.findById(dictColumnMultiAddDTO.getDatabaseId());
         DictTable dictTable = dictTableService.findById(dictColumnMultiAddDTO.getTableId());

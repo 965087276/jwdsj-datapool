@@ -36,7 +36,7 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAll(List<DictDatabase> dictDatabases) {
         dictDatabaseRepo.saveAll(dictDatabases);
     }

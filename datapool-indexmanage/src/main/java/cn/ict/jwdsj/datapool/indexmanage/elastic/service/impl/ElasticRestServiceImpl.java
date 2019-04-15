@@ -55,7 +55,7 @@ public class ElasticRestServiceImpl implements ElasticRestService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void addFields(EsIndex esIndex, List<EsColumn> esColumns) throws IOException {
         PutMappingRequest request = new PutMappingRequest(esIndex.getIndexName());
         Map<String, Object> properties = new HashMap<>();

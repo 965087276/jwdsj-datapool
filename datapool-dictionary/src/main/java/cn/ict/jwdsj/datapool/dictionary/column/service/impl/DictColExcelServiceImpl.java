@@ -47,7 +47,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
     private final String WRONG_TITLE = "表头错误";
 
 //    @Override
-//    @Transactional
+//    @Transactional(rollbackFor = Exception.class)
 //    public void saveAll(String enDatabase, File file) {
 //        DictDatabase dictDatabase = dictDatabaseService.findByEnDatabase(enDatabase);
 //        ExcelReader reader = ExcelUtil.getReader(file);

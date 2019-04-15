@@ -37,7 +37,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Autowired private StatClient statClient;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAll(SeTableAddDTO seTableAddDTO) {
         Map<EsColumnTypeEnum, List<MappingColumnDTO>> columnsGroupByType = seTableAddDTO.getColumns()
                 .stream()

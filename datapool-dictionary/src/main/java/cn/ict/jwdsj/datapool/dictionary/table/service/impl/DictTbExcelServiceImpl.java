@@ -76,7 +76,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
 //    }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAll(long databaseId, MultipartFile file) throws IOException {
 
         DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);

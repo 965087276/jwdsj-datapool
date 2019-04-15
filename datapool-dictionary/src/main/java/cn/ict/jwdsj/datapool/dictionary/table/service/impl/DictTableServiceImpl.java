@@ -47,7 +47,7 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAll(List<DictTable> dictTables) {
         dictTableRepo.saveAll(dictTables);
     }
@@ -107,7 +107,7 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAll(DictTableMultiAddDTO dictTableMultiAddDTO) {
         DictDatabase dictDatabase = DictDatabase.buildById(dictTableMultiAddDTO.getDatabaseId());
         List<DictTableDTO> dictTableDTOS = dictTableMultiAddDTO.getDictTables();

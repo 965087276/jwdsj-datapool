@@ -35,7 +35,7 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
     private final String EXISTS_OBJECT = "库中已存在某enDatabase";
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveByExcel(MultipartFile file) throws IOException {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);

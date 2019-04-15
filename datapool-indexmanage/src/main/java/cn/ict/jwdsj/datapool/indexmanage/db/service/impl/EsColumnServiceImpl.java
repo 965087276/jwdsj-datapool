@@ -28,7 +28,7 @@ public class EsColumnServiceImpl implements EsColumnService {
     @Autowired private EsIndexService esIndexService;
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void add(MappingTableAddDTO mappingTableAddDTO) throws IOException {
 
         EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());

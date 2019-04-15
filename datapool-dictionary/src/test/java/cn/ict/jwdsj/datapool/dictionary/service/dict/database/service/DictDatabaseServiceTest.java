@@ -19,7 +19,7 @@ public class DictDatabaseServiceTest {
     private DictDatabaseService dictDatabaseService;
 
     @Test
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveTest() {
         DictDatabase dictDatabase = new DictDatabase();
         dictDatabase.setEnDatabase("db1");
@@ -29,7 +29,7 @@ public class DictDatabaseServiceTest {
     }
 
     @Test
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveAllTest() {
         List<DictDatabase> dictDatabases = new ArrayList<>();
         for (int i = 1; i <= 100; i++) {
