@@ -19,4 +19,12 @@ public interface ElasticRestService {
      * 添加字段
      */
     void addFields(EsIndex esIndex, List<EsColumn> esColumns) throws IOException;
+
+    /**
+     * 添加别名
+     * @param indexName 索引名
+     * @param databaseId 库id
+     * @param tableId 表id
+     */
+    void addAlias(String indexName, long databaseId, long tableId) throws IOException;
 }

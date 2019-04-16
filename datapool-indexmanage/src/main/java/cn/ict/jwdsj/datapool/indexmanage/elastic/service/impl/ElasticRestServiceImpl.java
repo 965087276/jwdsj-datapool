@@ -7,12 +7,14 @@ import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.EsIndexDTO;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
 import com.alibaba.fastjson.JSON;
 import org.elasticsearch.action.admin.indices.alias.Alias;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,12 +34,15 @@ public class ElasticRestServiceImpl implements ElasticRestService {
     private RestHighLevelClient client;
 
     @Value("${elasticsearch.index-prefix}")
-    private String INDEX_PREFIX;
+    private String indexPrefix;
+    @Value("${elasticsearch.alias-prefix}")
+    private String aliasPrefix;
+    
 
     @Override
     public void createIndex(EsIndexDTO indexDTO) throws IOException {
 
-        CreateIndexRequest request = new CreateIndexRequest(INDEX_PREFIX + indexDTO.getIndexName());
+        CreateIndexRequest request = new CreateIndexRequest(indexPrefix + indexDTO.getIndexName());
 
         request.settings(Settings.builder()
                 .put("index.number_of_shards", indexDTO.getNumShards())
@@ -48,7 +53,7 @@ public class ElasticRestServiceImpl implements ElasticRestService {
         // 初始化索引配置
         request.mapping("doc", DOC.getTemplate(), XContentType.JSON);
         // 设置别名
-        request.alias(new Alias(INDEX_PREFIX));
+        request.alias(new Alias(indexPrefix));
 
         client.indices().create(request, RequestOptions.DEFAULT);
 
@@ -75,6 +80,28 @@ public class ElasticRestServiceImpl implements ElasticRestService {
 
         request.type("doc").source(MapUtil.of("properties", properties));
         client.indices().putMapping(request, RequestOptions.DEFAULT);
+
+    }
+
+    /**
+     * 添加别名
+     *
+     * @param indexName  索引名
+     * @param databaseId 库id
+     * @param tableId    表id
+     */
+    @Override
+    public void addAlias(String indexName, long databaseId, long tableId) throws IOException {
+        IndicesAliasesRequest request = new IndicesAliasesRequest();
+
+        IndicesAliasesRequest.AliasActions aliasActions =
+                new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
+                .index(indexName)
+                .alias(aliasPrefix + databaseId + "-" + tableId)
+                .filter(QueryBuilders.termQuery("elastic_table_id", tableId));
+        request.addAliasAction(aliasActions);
+
+        client.indices().updateAliases(request, RequestOptions.DEFAULT);
 
     }
 }

@@ -33,6 +33,6 @@ public class SeTableServiceImpl implements SeTableService {
         mappingColumnService.saveAll(seTableAddDTO);
         // 更新dict_table表is_add_to_se字段为true（已加入搜索引擎模块）
         QDictTable dictTable = QDictTable.dictTable;
-        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, true).where(dictTable.id.eq(seTableAddDTO.getTableId()));
+        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, true).where(dictTable.id.eq(seTableAddDTO.getTableId())).execute();
     }
 }

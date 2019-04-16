@@ -7,7 +7,7 @@ public enum EsColumnTypeEnum {
 
     DOC("{\"doc\":{\"properties\":{\"elastic_database_id\":{\"type\":\"keyword\",\"eager_global_ordinals\":true},\"elastic_table_id\":{\"type\":\"keyword\",\"eager_global_ordinals\":true},\"md5_id\":{\"enabled\":false},\"elastic_index_name\":{\"enabled\":false},\"all_fields_text\":{\"type\":\"text\",\"analyzer\":\"hanlp_index\"},\"all_fields_keyword\":{\"type\":\"keyword\"}}}}"),
 
-    TEXT("{\"type\":\"text\",\"analyzer\":\"hanlp_index\",\"copy_to\":\"all_fields_text\"}"),
+    TEXT("{\"type\":\"text\",\"analyzer\":\"hanlp_index\",\"copy_to\":\"all_fields_text\",\"term_vector\":\"with_positions_offsets\",\"index_options\":\"offsets\"}"),
 
     KEYWORD("{\"type\":\"keyword\",\"copy_to\":\"all_fields_keyword\"}"),
 

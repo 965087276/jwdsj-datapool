@@ -5,10 +5,13 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingTable;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.QSeTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
+import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
+import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.dsl.Expressions;
@@ -28,11 +31,15 @@ public class MappingTableServiceImpl implements MappingTableService {
     private EsColumnService esColumnService;
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
+    @Autowired
+    private ElasticRestService elasticRestService;
+    @Autowired
+    private EsIndexService esIndexService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(MappingTableAddDTO mappingTableAddDTO) throws IOException {
-        EsIndex esIndex = EsIndex.builtById(mappingTableAddDTO.getIndexId());
+        EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
         DictTable dictTable = DictTable.builtById(mappingTableAddDTO.getTableId());
         DictDatabase dictDatabase = DictDatabase.buildById(mappingTableAddDTO.getDatabaseId());
 
@@ -42,8 +49,15 @@ public class MappingTableServiceImpl implements MappingTableService {
         mappingTable.setDictDatabase(dictDatabase);
         mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
         mappingTableRepo.save(mappingTable);
+        // 为该索引添加一个别名，别名为"{alias-prefix}库id-表id"，别名指向这个表（即filter出elastic_table_id为该表id的文档）
+        elasticRestService.addAlias(esIndex.getIndexName(), dictDatabase.getId(), dictTable.getId());
         // 因为这个表要加入到es中，所以要根据表字段的搜索、分词情况来给elasticsearch的索引添加字段
         esColumnService.add(mappingTableAddDTO);
+
+        // 更新se_table表的is_sync字段为true
+        QSeTable seTable = QSeTable.seTable;
+        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.dictTable.eq(dictTable)).execute();
+
     }
 
     @Override
