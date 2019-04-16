@@ -87,17 +87,16 @@ public class ElasticRestServiceImpl implements ElasticRestService {
      * 添加别名
      *
      * @param indexName  索引名
-     * @param databaseId 库id
      * @param tableId    表id
      */
     @Override
-    public void addAlias(String indexName, long databaseId, long tableId) throws IOException {
+    public void addAlias(String indexName, long tableId) throws IOException {
         IndicesAliasesRequest request = new IndicesAliasesRequest();
 
         IndicesAliasesRequest.AliasActions aliasActions =
                 new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
                 .index(indexName)
-                .alias(aliasPrefix + databaseId + "-" + tableId)
+                .alias(aliasPrefix + "-" + tableId)
                 .filter(QueryBuilders.termQuery("elastic_table_id", tableId));
         request.addAliasAction(aliasActions);
 

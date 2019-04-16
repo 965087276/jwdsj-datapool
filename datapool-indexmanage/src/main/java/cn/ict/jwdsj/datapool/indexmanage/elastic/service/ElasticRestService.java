@@ -23,8 +23,7 @@ public interface ElasticRestService {
     /**
      * 添加别名
      * @param indexName 索引名
-     * @param databaseId 库id
      * @param tableId 表id
      */
-    void addAlias(String indexName, long databaseId, long tableId) throws IOException;
+    void addAlias(String indexName, long tableId) throws IOException;
 }

@@ -49,8 +49,8 @@ public class MappingTableServiceImpl implements MappingTableService {
         mappingTable.setDictDatabase(dictDatabase);
         mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
         mappingTableRepo.save(mappingTable);
-        // 为该索引添加一个别名，别名为"{alias-prefix}库id-表id"，别名指向这个表（即filter出elastic_table_id为该表id的文档）
-        elasticRestService.addAlias(esIndex.getIndexName(), dictDatabase.getId(), dictTable.getId());
+        // 为该索引添加一个别名，别名为"{alias-prefix}-表id"，别名指向这个表（即filter出elastic_table_id为该表id的文档）
+        elasticRestService.addAlias(esIndex.getIndexName(), dictTable.getId());
         // 因为这个表要加入到es中，所以要根据表字段的搜索、分词情况来给elasticsearch的索引添加字段
         esColumnService.add(mappingTableAddDTO);
 
