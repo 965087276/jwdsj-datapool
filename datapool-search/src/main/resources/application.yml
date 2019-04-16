@@ -26,3 +26,5 @@ eureka:
       defaultZone: http://localhost:1025/eureka/
 elasticsearch:
   hosts: 172.16.8.240:9200
+  index-prefix: jwdsj-datapool-index-
+  alias-prefix: jwdsj-datapool-alias-
