@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 @Table(name = "stat_table")
 @Data
-public class StatTable extends BaseEntity {
+public class StatsTable extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "database_id", nullable = false)
@@ -31,32 +31,32 @@ public class StatTable extends BaseEntity {
     @Column(name = "update_date", nullable = false)
     private Date updateDate;
 
-    public StatTable() {}
+    public StatsTable() {}
 
-    public StatTable id(long id) {
+    public StatsTable id(long id) {
         this.setId(id);
         return this;
     }
 
-    public StatTable dictDatabase(long id) {
+    public StatsTable dictDatabase(long id) {
         this.setDictDatabase(DictDatabase.buildById(id));
         return this;
     }
 
-    public StatTable dictTable(long id) {
+    public StatsTable dictTable(long id) {
         this.setDictTable(DictTable.builtById(id));
         return this;
     }
 
-    public StatTable updateDate(Date date) {
+    public StatsTable updateDate(Date date) {
         this.setUpdateDate(date);
         return this;
     }
 
-    public static StatTable builtById(long id) {
-        StatTable statTable = new StatTable();
-        statTable.setId(id);
-        return statTable;
+    public static StatsTable builtById(long id) {
+        StatsTable statsTable = new StatsTable();
+        statsTable.setId(id);
+        return statsTable;
     }
 
 }

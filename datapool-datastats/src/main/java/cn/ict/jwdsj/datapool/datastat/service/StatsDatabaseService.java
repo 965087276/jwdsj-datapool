@@ -1,18 +1,18 @@
 package cn.ict.jwdsj.datapool.datastat.service;
 
-import cn.ict.jwdsj.datapool.common.entity.datastats.StatDatabase;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
 
 import java.util.List;
 
-public interface StatDatabaseService {
+public interface StatsDatabaseService {
 
-    void save(StatDatabase statDatabase);
+    void save(StatsDatabase statsDatabase);
 
-    void saveAll(List<StatDatabase> statDatabases);
+    void saveAll(List<StatsDatabase> statsDatabases);
 
-    void update(StatDatabase statDatabase);
+    void update(StatsDatabase statsDatabase);
 
-    List<StatDatabase> listAll();
+    List<StatsDatabase> listAll();
 
     /**
      * 查找在dict_database中存在但是在stat_database中不存在的库

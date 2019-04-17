@@ -1,8 +1,8 @@
 package cn.ict.jwdsj.datapool.datastat.schedule;
 
-import cn.ict.jwdsj.datapool.common.entity.datastats.StatTable;
-import cn.ict.jwdsj.datapool.datastat.service.StatService;
-import cn.ict.jwdsj.datapool.datastat.service.StatTableService;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
+import cn.ict.jwdsj.datapool.datastat.service.StatsService;
+import cn.ict.jwdsj.datapool.datastat.service.StatsTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -10,22 +10,22 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class StatTableSubTask {
+public class StatsTableSubTask {
 
     @Autowired
-    private StatTableService statTableService;
+    private StatsTableService statsTableService;
     @Autowired
-    private StatService statService;
+    private StatsService statsService;
 
     public void updateStatTables() {
 
-        statTableService.deleteTablesNotExist();
-        statTableService.saveTablesNotAdd();
+        statsTableService.deleteTablesNotExist();
+        statsTableService.saveTablesNotAdd();
 
-        List<StatTable> tables = statTableService.listAll();
+        List<StatsTable> tables = statsTableService.listAll();
 
         tables.parallelStream().forEach(statTable -> {
-            long newCount = statService.countTableRecords(statTable.getDictTable());
+            long newCount = statsService.countTableRecords(statTable.getDictTable());
             long oldCount = statTable.getTotalRecords();
 
             if (oldCount != newCount) {
@@ -35,7 +35,7 @@ public class StatTableSubTask {
                     statTable.setUpdateDate(new Date());
                 }
 
-                statTableService.save(statTable);
+                statsTableService.save(statTable);
             }
         });
 

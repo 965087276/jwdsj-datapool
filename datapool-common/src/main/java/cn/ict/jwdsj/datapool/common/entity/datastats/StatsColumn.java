@@ -13,7 +13,7 @@ import java.util.Date;
 @Entity
 @Table(name = "stat_column")
 @Data
-public class StatColumn extends BaseEntity {
+public class StatsColumn extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "table_id", nullable = false)
     @NotFound(action = NotFoundAction.IGNORE)

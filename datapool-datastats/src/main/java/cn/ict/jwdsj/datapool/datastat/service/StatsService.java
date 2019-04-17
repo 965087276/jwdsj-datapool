@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * 统计相关信息
  */
-public interface StatService {
+public interface StatsService {
 
     /**
      * 获取数据库更新日期

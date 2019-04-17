@@ -8,7 +8,7 @@ import java.util.List;
 
 @FeignClient(name = "datapool-datastat")
 public interface StatClient {
-    @GetMapping("stat/stat_column/defect_column_names/tableId/{tableId}")
+    @GetMapping("stats/stats_column/defect_column_names/tableId/{tableId}")
     List<String> getDefectColumnsByTable(@PathVariable("tableId") long tableId);
 
 }

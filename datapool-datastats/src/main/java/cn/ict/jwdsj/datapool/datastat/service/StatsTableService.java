@@ -1,19 +1,19 @@
 package cn.ict.jwdsj.datapool.datastat.service;
 
-import cn.ict.jwdsj.datapool.common.entity.datastats.StatTable;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
 
 import java.util.Date;
 import java.util.List;
 
-public interface StatTableService {
+public interface StatsTableService {
 
-    void save(StatTable statTable);
+    void save(StatsTable statsTable);
 
-    void saveAll(List<StatTable> statTables);
+    void saveAll(List<StatsTable> statsTables);
 
-    void update(StatTable statTable);
+    void update(StatsTable statsTable);
 
-    List<StatTable> listAll();
+    List<StatsTable> listAll();
 
     /**
      * 获取表的创建日期

@@ -5,12 +5,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StatScheduleTask {
+public class StatsScheduleTask {
 
     @Autowired
-    private StatDatabaseSubTask databaseSubTask;
+    private StatsDatabaseSubTask databaseSubTask;
     @Autowired
-    private StatTableSubTask tableSubTask;
+    private StatsTableSubTask tableSubTask;
 
     @Scheduled(initialDelay = 1000, fixedRate = 43200000)
     public void updateTableAndDatabaseCounts() {

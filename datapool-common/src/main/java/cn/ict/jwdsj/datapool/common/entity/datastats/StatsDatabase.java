@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 @Table(name = "stat_database")
 @Data
-public class StatDatabase extends BaseEntity {
+public class StatsDatabase extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "database_id")
     @NotFound(action = NotFoundAction.IGNORE)
@@ -27,9 +27,9 @@ public class StatDatabase extends BaseEntity {
     @Column(name = "update_date", nullable = false)
     private Date updateDate = new Date();
 
-    public static StatDatabase builtByDatabaseId(long id) {
-        StatDatabase statDatabase = new StatDatabase();
-        statDatabase.setDictDatabase(DictDatabase.buildById(id));
-        return statDatabase;
+    public static StatsDatabase builtByDatabaseId(long id) {
+        StatsDatabase statsDatabase = new StatsDatabase();
+        statsDatabase.setDictDatabase(DictDatabase.buildById(id));
+        return statsDatabase;
     }
 }

@@ -10,16 +10,16 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class StatColumnServiceTest {
+public class StatsColumnServiceTest {
     @Autowired
-    private StatColumnService statColumnService;
+    private StatsColumnService statsColumnService;
 
     @Test
     public void initAndListDefectedColumnsTest() {
         long tableId = 19;
-        statColumnService.initAndListDefectedColumns(tableId);
+        statsColumnService.initAndListDefectedColumns(tableId);
 
-        List<String> defects = statColumnService.initAndListDefectedColumns(tableId);
+        List<String> defects = statsColumnService.initAndListDefectedColumns(tableId);
 
         System.out.println(defects);
 
