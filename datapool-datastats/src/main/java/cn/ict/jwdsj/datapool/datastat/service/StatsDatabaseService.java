@@ -27,4 +27,6 @@ public interface StatsDatabaseService {
      * @return stat_database的id
      */
     void deleteDatabasesNotExist();
+
+    List<StatsDatabase> listByDictDatabaseIds(String ids);
 }
