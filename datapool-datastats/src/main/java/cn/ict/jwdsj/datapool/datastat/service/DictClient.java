@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "datapool-dictionary")
 public interface DictClient {
 
-    @GetMapping("dict/dict_tables/{id}")
+    @GetMapping("dict/dict_tables/id/{id}")
     DictTable findDictTableById(@PathVariable("id") long id);
 
     @GetMapping("dict/dict_databases/{id}")

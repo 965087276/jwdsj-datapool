@@ -15,7 +15,7 @@ public interface DictClient {
     @GetMapping("dict/dict_columns/tableId/{tableId}")
     List<DictColumn> listDictColumnsByTableId(@PathVariable("tableId") long tableId);
 
-    @GetMapping("dict/dict_tables/{id}")
+    @GetMapping("dict/dict_tables/id/{id}")
     DictTable findDictTableById(@PathVariable("id") long id);
 
     @GetMapping("dict/dict_databases/id/{id}")

@@ -74,7 +74,7 @@ public class DictTableController {
     }
 
     @ApiIgnore
-    @GetMapping("dict/dict_tables/{id}")
+    @GetMapping("dict/dict_tables/id/{id}")
     public DictTable findById(@PathVariable("id") long id) {
         return dictTableService.findById(id);
     }
