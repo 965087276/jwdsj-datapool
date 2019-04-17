@@ -96,7 +96,7 @@ public class ElasticRestServiceImpl implements ElasticRestService {
         IndicesAliasesRequest.AliasActions aliasActions =
                 new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
                 .index(indexName)
-                .alias(aliasPrefix + "-" + tableId)
+                .alias(aliasPrefix + tableId)
                 .filter(QueryBuilders.termQuery("elastic_table_id", tableId));
         request.addAliasAction(aliasActions);
 
