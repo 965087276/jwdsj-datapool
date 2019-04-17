@@ -62,7 +62,7 @@ public class DictDatabaseController {
     }
 
     @ApiIgnore
-    @GetMapping("dict/dict_databases/{id}")
+    @GetMapping("dict/dict_databases/id/{id}")
     public DictDatabase getById(@PathVariable("id") long id) {
         return dictDatabaseService.findById(id);
     }

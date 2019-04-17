@@ -18,7 +18,7 @@ public interface DictClient {
     @GetMapping("dict/dict_tables/{id}")
     DictTable findDictTableById(@PathVariable("id") long id);
 
-    @GetMapping("dict/dict_databases/{id}")
+    @GetMapping("dict/dict_databases/id/{id}")
     DictDatabase findDictDatabaseBy(@PathVariable("id") long id);
 
 }
