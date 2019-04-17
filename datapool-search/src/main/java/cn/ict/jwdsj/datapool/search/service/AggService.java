@@ -1,9 +1,12 @@
 package cn.ict.jwdsj.datapool.search.service;
 
-import cn.ict.jwdsj.datapool.search.entity.vo.AggDatabaseVO;
+import cn.ict.jwdsj.datapool.search.entity.vo.AggDatabasePageVO;
 import cn.ict.jwdsj.datapool.search.entity.vo.AggTableVO;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public interface AggService {
     /**
@@ -21,5 +24,5 @@ public interface AggService {
      * @param pageSize 每页多少条
      * @return
      */
-    List<AggDatabaseVO> aggByDatabase(String searchWord, int curPage, int pageSize);
+    AggDatabasePageVO aggByDatabase(String searchWord, int curPage, int pageSize) throws IOException, InterruptedException, ExecutionException, TimeoutException;
 }

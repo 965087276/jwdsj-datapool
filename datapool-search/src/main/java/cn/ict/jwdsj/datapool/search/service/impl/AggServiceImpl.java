@@ -1,18 +1,44 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.StrUtil;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
+import cn.ict.jwdsj.datapool.search.entity.vo.AggDatabasePageVO;
 import cn.ict.jwdsj.datapool.search.entity.vo.AggDatabaseVO;
 import cn.ict.jwdsj.datapool.search.entity.vo.AggTableVO;
 import cn.ict.jwdsj.datapool.search.service.AggService;
-import org.elasticsearch.client.RestHighLevelClient;
+import cn.ict.jwdsj.datapool.search.service.BaseSearch;
+import cn.ict.jwdsj.datapool.search.service.DictService;
+import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality;
+import org.elasticsearch.search.aggregations.metrics.cardinality.CardinalityAggregationBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 @Service
-public class AggServiceImpl implements AggService {
+@Slf4j
+public class AggServiceImpl extends BaseSearch implements AggService {
 
-    @Autowired private RestHighLevelClient client;
 
     /**
      * 某库下的表的聚合
@@ -35,7 +61,94 @@ public class AggServiceImpl implements AggService {
      * @return
      */
     @Override
-    public List<AggDatabaseVO> aggByDatabase(String searchWord, int curPage, int pageSize) {
-        return null;
+    public AggDatabasePageVO aggByDatabase(String searchWord, int curPage, int pageSize) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+        long startTime = System.currentTimeMillis();
+        searchWord = wordRegular(searchWord);
+        Assert.isTrue(StrUtil.isNotBlank(searchWord), "搜索词无效");
+
+        log.info("search word is {}", searchWord);
+
+        SearchRequest request = new SearchRequest(indexPrefix + "*");
+
+        // 使用query_string查询方式
+        QueryStringQueryBuilder queryStringQuery = buildQueryStringBuilder(searchWord, defaultSearchFields);
+
+        // 命中多少个库
+        CardinalityAggregationBuilder databaseCountAgg = AggregationBuilders
+                .cardinality("命中数据库个数").field("elastic_database_id");
+        // 库的分类统计（都命中哪些库，每个库下多少数据）
+        TermsAggregationBuilder databaseGroupByAgg = AggregationBuilders
+                .terms("数据库分类").field("elastic_database_id").size(curPage * pageSize);
+
+        // queryDSL请求体构造
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder()
+                .query(queryStringQuery)
+                .size(0) // 因为是聚合，所以不返回查询结果
+                .aggregation(databaseCountAgg)
+                .aggregation(databaseGroupByAgg);
+        request.source(sourceBuilder);
+
+        // 返回结果
+        AggDatabasePageVO databasePageVO = new AggDatabasePageVO();
+        SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+        log.info("response is {}", response);
+        // 所有的聚合
+        Map<String, Aggregation> aggMap = response.getAggregations().asMap();
+
+        // 命中的总文档数
+        databasePageVO.setDocHit(response.getHits().getTotalHits());
+        // 耗时
+        databasePageVO.setTook(response.getTook());
+        // 命中的总数据库数
+        Cardinality databaseCount = (Cardinality) aggMap.get("命中数据库个数");
+        databasePageVO.setDatabaseHit(databaseCount.getValue());
+
+        // 命中的数据库列表（存的是数据库id）
+        Terms databaseGroupBy = (Terms) aggMap.get("数据库分类");
+        List<? extends Terms.Bucket> buckets = databaseGroupBy.getBuckets() // 取出本页的数据库
+                .subList((curPage - 1) * pageSize, Math.min(curPage * pageSize, (int) databaseCount.getValue()));
+
+        // 数据库id列表
+        List<Long> databaseIds = buckets.stream().map(Terms.Bucket::getKeyAsNumber).map(Number::longValue).collect(Collectors.toList());
+        // 每个数据库的命中数（id -> hit)
+        Map<Long, Long> databaseHits = buckets.stream().collect(Collectors.toMap(bucket -> bucket.getKeyAsNumber().longValue(), Terms.Bucket::getDocCount));
+        // dict_databases信息
+        Future<List<DictDatabase>> futureDictDatabases = dictService.listDatabasesByIds(databaseIds);
+        // stat_databases信息
+        Future<List<StatsDatabase>> futureStatsDatabases = statsService.listDatabasesByIds(databaseIds);
+
+        // 异步任务返回
+        Map<Long, DictDatabase> dictDatabaseMap = futureDictDatabases.get(5, TimeUnit.SECONDS).stream()
+                .collect(Collectors.toMap(DictDatabase::getId, db -> db));
+        Map<Long, StatsDatabase> statsDatabaseMap = futureStatsDatabases.get(5, TimeUnit.SECONDS).stream()
+                .collect(Collectors.toMap(db -> db.getDictDatabase().getId(), db -> db));
+        log.info("dictDatabaseMap is {}", dictDatabaseMap);
+        log.info("statsDatabaseMap is {}", statsDatabaseMap);
+        List<AggDatabaseVO> aggDatabases = databaseIds
+                .stream()
+                .map(id -> AggDatabaseVO.builder()
+                        .databaseId(id)
+                        .chDatabase(dictDatabaseMap.get(id).getChDatabase())
+                        .enDatabase(dictDatabaseMap.get(id).getEnDatabase())
+                        .detail(dictDatabaseMap.get(id).getDetail())
+                        .totalHit(databaseHits.get(id))
+                        .updateDate(statsDatabaseMap.get(id).getUpdateDate())
+                        .build()
+                ).collect(Collectors.toList());
+        databasePageVO.setAggDatabases(aggDatabases);
+        long endTime = System.currentTimeMillis();
+        log.info("Took is {}ms", endTime - startTime);
+        return databasePageVO;
+    }
+
+    /**
+     * 规范化搜索词
+     * @param word
+     * @return
+     */
+    private String wordRegular(String word) {
+        word = word.replaceAll("[\\pP\\p{Punct}]"," ");
+        word = StrUtil.trimToEmpty(word);
+        return StrUtil.blankToDefault(word, " AND ");
     }
 }
