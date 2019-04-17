@@ -21,4 +21,6 @@ public interface DictDatabaseService {
     List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids);
 
     DictDatabase findById(long id);
+
+    List<DictDatabase> listByIds(String ids);
 }

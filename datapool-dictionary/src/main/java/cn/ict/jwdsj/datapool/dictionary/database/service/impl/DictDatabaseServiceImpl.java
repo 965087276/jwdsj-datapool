@@ -12,6 +12,7 @@ import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +72,12 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     @Override
     public DictDatabase findById(long id) {
         return dictDatabaseRepo.findById(id).get();
+    }
+
+    @Override
+    public List<DictDatabase> listByIds(String ids) {
+        List<Long> idList = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
+        return dictDatabaseRepo.findByIdIn(idList);
     }
 
     private DictDatabaseVO convertToDictDatabaseVO(DictDatabase dictDatabase) {

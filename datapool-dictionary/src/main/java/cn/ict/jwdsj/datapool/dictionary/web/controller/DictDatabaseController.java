@@ -10,6 +10,7 @@ import cn.ict.jwdsj.datapool.dictionary.database.service.DictDbExcelService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
+@Slf4j
 public class DictDatabaseController {
     @Autowired
     private DictDatabaseService dictDatabaseService;
@@ -67,6 +69,12 @@ public class DictDatabaseController {
         return dictDatabaseService.findById(id);
     }
 
+    @ApiIgnore
+    @GetMapping("dict/dict_databases/ids/{ids}")
+    public List<DictDatabase> listByIds(@PathVariable("ids") String ids) {
+        List<DictDatabase> dictDatabases = dictDatabaseService.listByIds(ids);
+        return dictDatabases;
+    }
 
 
 }
