@@ -2,7 +2,7 @@ package cn.ict.jwdsj.datapool.datastat.service.impl;
 
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.datastat.entity.QStatDatabase;
-import cn.ict.jwdsj.datapool.datastat.entity.StatDatabase;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatDatabase;
 import cn.ict.jwdsj.datapool.datastat.repo.StatDatabaseRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatDatabaseService;
 import com.querydsl.jpa.impl.JPAQueryFactory;

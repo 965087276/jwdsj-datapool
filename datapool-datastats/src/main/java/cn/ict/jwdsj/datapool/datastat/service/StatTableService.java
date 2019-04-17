@@ -1,6 +1,6 @@
 package cn.ict.jwdsj.datapool.datastat.service;
 
-import cn.ict.jwdsj.datapool.datastat.entity.StatTable;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatTable;
 
 import java.util.Date;
 import java.util.List;

@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.datastat.entity;
+package cn.ict.jwdsj.datapool.common.entity.datastats;
 
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;

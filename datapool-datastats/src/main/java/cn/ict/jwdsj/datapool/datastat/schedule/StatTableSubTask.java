@@ -1,10 +1,9 @@
 package cn.ict.jwdsj.datapool.datastat.schedule;
 
-import cn.ict.jwdsj.datapool.datastat.entity.StatTable;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatTable;
 import cn.ict.jwdsj.datapool.datastat.service.StatService;
 import cn.ict.jwdsj.datapool.datastat.service.StatTableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

@@ -1,11 +1,9 @@
 package cn.ict.jwdsj.datapool.datastat.schedule;
 
-import cn.ict.jwdsj.datapool.datastat.entity.StatDatabase;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatDatabase;
 import cn.ict.jwdsj.datapool.datastat.service.StatDatabaseService;
 import cn.ict.jwdsj.datapool.datastat.service.StatService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

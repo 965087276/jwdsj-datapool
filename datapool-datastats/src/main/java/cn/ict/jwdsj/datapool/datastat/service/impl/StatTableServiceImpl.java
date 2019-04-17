@@ -6,13 +6,11 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.datastat.repo.StatTableRepo;
 import cn.ict.jwdsj.datapool.datastat.entity.QStatTable;
-import cn.ict.jwdsj.datapool.datastat.entity.StatTable;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatTable;
 import cn.ict.jwdsj.datapool.datastat.service.DictClient;
 import cn.ict.jwdsj.datapool.datastat.service.StatTableService;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
