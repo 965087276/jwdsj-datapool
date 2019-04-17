@@ -8,6 +8,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -29,7 +30,7 @@ public class StatsTable extends BaseEntity {
     private long totalRecords = 0L;
 
     @Column(name = "update_date", nullable = false)
-    private Date updateDate;
+    private LocalDate updateDate;
 
     public StatsTable() {}
 
@@ -48,7 +49,7 @@ public class StatsTable extends BaseEntity {
         return this;
     }
 
-    public StatsTable updateDate(Date date) {
+    public StatsTable updateDate(LocalDate date) {
         this.setUpdateDate(date);
         return this;
     }

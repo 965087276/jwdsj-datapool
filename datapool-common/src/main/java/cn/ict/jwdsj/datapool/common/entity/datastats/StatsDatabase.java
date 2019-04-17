@@ -7,6 +7,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -25,7 +26,7 @@ public class StatsDatabase extends BaseEntity {
     private long totalRecords = 0L;
 
     @Column(name = "update_date", nullable = false)
-    private Date updateDate = new Date();
+    private LocalDate updateDate = LocalDate.of(2018, 1, 1);
 
     public static StatsDatabase builtByDatabaseId(long id) {
         StatsDatabase statsDatabase = new StatsDatabase();
