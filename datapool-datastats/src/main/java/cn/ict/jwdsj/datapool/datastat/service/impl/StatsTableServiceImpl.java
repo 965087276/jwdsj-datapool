@@ -1,12 +1,12 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
+import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsTableRepo;
-import cn.ict.jwdsj.datapool.datastat.entity.QStatTable;
 import cn.ict.jwdsj.datapool.datastat.service.DictClient;
 import cn.ict.jwdsj.datapool.datastat.service.StatsTableService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -66,14 +66,14 @@ public class StatsTableServiceImpl implements StatsTableService {
     @Override
     public void saveTablesNotAdd() {
         QDictTable dictTable = QDictTable.dictTable;
-        QStatTable statTable = QStatTable.statTable;
+        QStatsTable statsTable = QStatsTable.statsTable;
 
         List<StatsTable> tablesNotAdd =  jpaQueryFactory
                 .selectDistinct(dictTable.dictDatabase.id, dictTable.id)
                 .from(dictTable)
-                .leftJoin(statTable)
-                .on(dictTable.eq(statTable.dictTable))
-                .where(statTable.isNull())
+                .leftJoin(statsTable)
+                .on(dictTable.eq(statsTable.dictTable))
+                .where(statsTable.isNull())
                 .fetch()
                 .stream()
                 .map(tuple -> new StatsTable()
@@ -90,13 +90,13 @@ public class StatsTableServiceImpl implements StatsTableService {
     @Override
     public void deleteTablesNotExist() {
         QDictTable dictTable = QDictTable.dictTable;
-        QStatTable statTable = QStatTable.statTable;
+        QStatsTable statsTable = QStatsTable.statsTable;
 
         List<StatsTable> statsTables = jpaQueryFactory
-                .selectDistinct(statTable.id)
-                .from(statTable)
+                .selectDistinct(statsTable.id)
+                .from(statsTable)
                 .leftJoin(dictTable)
-                .on(statTable.dictTable.eq(dictTable))
+                .on(statsTable.dictTable.eq(dictTable))
                 .where(dictTable.isNull())
                 .fetch()
                 .stream()

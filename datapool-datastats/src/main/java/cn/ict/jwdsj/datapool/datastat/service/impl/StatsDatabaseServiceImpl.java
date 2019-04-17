@@ -1,8 +1,8 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
+import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsDatabase;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
-import cn.ict.jwdsj.datapool.datastat.entity.QStatDatabase;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsDatabaseRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatsDatabaseService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -40,14 +40,14 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
     @Override
     public void saveDatabasesNotAdd() {
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
-        QStatDatabase statDatabase = QStatDatabase.statDatabase;
+        QStatsDatabase statsDatabase = QStatsDatabase.statsDatabase;
 
         List<StatsDatabase> statsDatabases = jpaQueryFactory
                 .selectDistinct(dictDatabase.id)
                 .from(dictDatabase)
-                .leftJoin(statDatabase)
-                .on(dictDatabase.eq(statDatabase.dictDatabase))
-                .where(statDatabase.isNull())
+                .leftJoin(statsDatabase)
+                .on(dictDatabase.eq(statsDatabase.dictDatabase))
+                .where(statsDatabase.isNull())
                 .fetch()
                 .stream()
                 .map(StatsDatabase::builtByDatabaseId)
@@ -59,13 +59,13 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
     @Override
     public void deleteDatabasesNotExist() {
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
-        QStatDatabase statDatabase = QStatDatabase.statDatabase;
+        QStatsDatabase statsDatabase = QStatsDatabase.statsDatabase;
 
         List<StatsDatabase> statsDatabases = jpaQueryFactory
-                .selectDistinct(statDatabase)
-                .from(statDatabase)
+                .selectDistinct(statsDatabase)
+                .from(statsDatabase)
                 .leftJoin(dictDatabase)
-                .on(statDatabase.dictDatabase.eq(dictDatabase))
+                .on(statsDatabase.dictDatabase.eq(dictDatabase))
                 .where(dictDatabase.isNull())
                 .fetch();
         statsDatabaseRepo.deleteAll(statsDatabases);

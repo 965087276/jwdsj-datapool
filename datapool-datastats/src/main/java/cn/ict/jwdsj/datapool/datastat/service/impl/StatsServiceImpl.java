@@ -1,10 +1,10 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.datastat.entity.QStatTable;
 import cn.ict.jwdsj.datapool.datastat.service.StatsService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +21,11 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public Date getDatabaseUpdateDate(DictDatabase dictDatabase) {
-        QStatTable statTable = QStatTable.statTable;
+        QStatsTable statsTable = QStatsTable.statsTable;
         Date date = jpaQueryFactory
-                .select(statTable.updateDate.max())
-                .from(statTable)
-                .where(statTable.dictDatabase.eq(dictDatabase))
+                .select(statsTable.updateDate.max())
+                .from(statsTable)
+                .where(statsTable.dictDatabase.eq(dictDatabase))
                 .fetchOne();
 
          return date == null ? date : DateUtil.parseDate("2000-01-01");
@@ -45,11 +45,11 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public long countDatabaseRecords(DictDatabase dictDb) {
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
-        QStatTable statTable = QStatTable.statTable;
+        QStatsTable statsTable = QStatsTable.statsTable;
 
         Long count = jpaQueryFactory
-                .select(statTable.totalRecords.sum())
-                .from(statTable)
+                .select(statsTable.totalRecords.sum())
+                .from(statsTable)
                 .where(dictDatabase.eq(dictDb))
                 .fetchOne();
 
@@ -60,11 +60,11 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public int countTablesInDatabase(DictDatabase dictDb) {
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
-        QStatTable statTable = QStatTable.statTable;
+        QStatsTable statsTable = QStatsTable.statsTable;
 
         Long count = jpaQueryFactory
-                .select(statTable.count())
-                .from(statTable)
+                .select(statsTable.count())
+                .from(statsTable)
                 .where(dictDatabase.eq(dictDb))
                 .fetchOne();
 
