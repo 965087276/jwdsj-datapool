@@ -16,7 +16,6 @@ public class TableSearchServiceImpl implements TableSearchService {
     /**
      * 在某表下搜索
      *
-     * @param databaseId 库id
      * @param tableId    表id
      * @param searchWord 搜索词
      * @param curPage    第几页
@@ -24,7 +23,7 @@ public class TableSearchServiceImpl implements TableSearchService {
      * @return
      */
     @Override
-    public List<JSONObject> searchInTable(long databaseId, long tableId, String searchWord, int curPage, int pageSize) {
+    public List<JSONObject> searchInTable(long tableId, String searchWord, int curPage, int pageSize) {
         return null;
     }
 }

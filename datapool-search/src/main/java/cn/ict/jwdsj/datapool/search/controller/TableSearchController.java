@@ -24,21 +24,19 @@ public class TableSearchController {
     @ApiOperation(value = "表下搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "searchWord", value = "搜索词", paramType = "query", required = true),
-            @ApiImplicitParam(name = "databaseId", value = "库id", paramType = "query", required = true),
             @ApiImplicitParam(name = "tableId", value = "表id", paramType = "query", required = true),
             @ApiImplicitParam(name = "curPage", value = "第几页", paramType = "query", required = true),
             @ApiImplicitParam(name = "pageSize", value = "每页多少条", paramType = "query", required = true)
     })
-    @GetMapping("search_engine/search/databaseId/{databaseId}/tableId/{tableId}")
+    @GetMapping("search_engine/search/tableId/{tableId}")
     public ResponseEntity<List<JSONObject>> aggByDatabase(
             @RequestParam(value = "searchWord", required = true) String searchWord,
-            @RequestParam(value = "databaseId", required = true) long databaseId,
             @RequestParam(value = "tableId", required = true) long tableId,
             @RequestParam(value = "curPage", required = true) int curPage,
             @RequestParam(value = "pageSize", required = true) int pageSize)
     {
 
-        List<JSONObject> list = tableSearchService.searchInTable(databaseId, tableId, searchWord, curPage, pageSize);
+        List<JSONObject> list = tableSearchService.searchInTable(tableId, searchWord, curPage, pageSize);
         return ResponseEntity.ok(list);
     }
 
