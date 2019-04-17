@@ -6,6 +6,7 @@ import cn.ict.jwdsj.datapool.datastat.service.StatsTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class StatsTableSubTask {
                 statTable.setTotalRecords(newCount);
                 // 防止第一次统计时程序把时间错该改为最新时间
                 if (oldCount != 0) {
-                    statTable.setUpdateDate(new Date());
+                    statTable.setUpdateDate(LocalDate.now());
                 }
 
                 statsTableService.save(statTable);

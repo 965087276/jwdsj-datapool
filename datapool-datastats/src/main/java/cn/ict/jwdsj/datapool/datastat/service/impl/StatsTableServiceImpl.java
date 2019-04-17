@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class StatsTableServiceImpl implements StatsTableService {
     }
 
     @Override
-    public Date getTableCreateTime(long tableId) {
+    public LocalDate getTableCreateTime(long tableId) {
         QDictTable dictTable = QDictTable.dictTable;
         QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
 
@@ -60,7 +61,7 @@ public class StatsTableServiceImpl implements StatsTableService {
         String sql = String.format(
                 "select CREATE_TIME from INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = '%s' and TABLE_NAME = '%s'",
                 enDatabase, enTable);
-        return jdbcTemplate.queryForObject(sql, Date.class);
+        return jdbcTemplate.queryForObject(sql, LocalDate.class);
     }
 
     @Override

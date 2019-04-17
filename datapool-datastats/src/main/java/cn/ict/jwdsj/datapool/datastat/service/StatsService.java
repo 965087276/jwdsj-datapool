@@ -3,6 +3,7 @@ package cn.ict.jwdsj.datapool.datastat.service;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -15,7 +16,7 @@ public interface StatsService {
      * @param dictDatabase
      * @return
      */
-    Date getDatabaseUpdateDate(DictDatabase dictDatabase);
+    LocalDate getDatabaseUpdateDate(DictDatabase dictDatabase);
 
     /**
      * 获取表的记录数

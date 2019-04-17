@@ -15,11 +15,11 @@ import javax.persistence.EntityManager;
 @EnableScheduling
 @EnableFeignClients
 @ComponentScan(basePackageClasses = {DataPoolCommonConfig.class,
-        DataStatApplication.class})
-public class DataStatApplication {
+        DataStatsApplication.class})
+public class DataStatsApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DataStatApplication.class, args);
+        SpringApplication.run(DataStatsApplication.class, args);
     }
 
     //让Spring管理JPAQueryFactory

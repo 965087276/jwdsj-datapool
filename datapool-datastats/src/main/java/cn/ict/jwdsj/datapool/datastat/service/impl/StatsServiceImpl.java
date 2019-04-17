@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -20,15 +21,15 @@ public class StatsServiceImpl implements StatsService {
     @Autowired private JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Date getDatabaseUpdateDate(DictDatabase dictDatabase) {
+    public LocalDate getDatabaseUpdateDate(DictDatabase dictDatabase) {
         QStatsTable statsTable = QStatsTable.statsTable;
-        Date date = jpaQueryFactory
+        LocalDate date = jpaQueryFactory
                 .select(statsTable.updateDate.max())
                 .from(statsTable)
                 .where(statsTable.dictDatabase.eq(dictDatabase))
                 .fetchOne();
 
-         return date == null ? date : DateUtil.parseDate("2000-01-01");
+         return date != null ? date : LocalDate.of(2019, 1, 1);
 
     }
 

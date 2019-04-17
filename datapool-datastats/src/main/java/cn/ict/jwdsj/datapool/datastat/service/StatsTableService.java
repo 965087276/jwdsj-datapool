@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.datastat.service;
 
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface StatsTableService {
      * 获取表的创建日期
      * @return
      */
-    Date getTableCreateTime(long tableId);
+    LocalDate getTableCreateTime(long tableId);
 
     /**
      * 查找在dict_table存在但是在stat_table中不存在的表

@@ -6,6 +6,7 @@ import cn.ict.jwdsj.datapool.datastat.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -26,13 +27,13 @@ public class StatsDatabaseSubTask {
         databases.parallelStream().forEach(statDatabase -> {
             long countRecords = statsService.countDatabaseRecords(statDatabase.getDictDatabase());
             int  countTables  = statsService.countTablesInDatabase(statDatabase.getDictDatabase());
-            Date updateDate = statsService.getDatabaseUpdateDate(statDatabase.getDictDatabase());
+            LocalDate updateDate = statsService.getDatabaseUpdateDate(statDatabase.getDictDatabase());
             if (countRecords != statDatabase.getTotalRecords()
                     || countTables != statDatabase.getTotalTables()
                     || updateDate != statDatabase.getUpdateDate()) {
                 statDatabase.setTotalRecords(countRecords);
                 statDatabase.setTotalTables(countTables);
-                statDatabase.setUpdateDate(new Date());
+                statDatabase.setUpdateDate(LocalDate.now());
                 statsDatabaseService.save(statDatabase);
             }
         });
