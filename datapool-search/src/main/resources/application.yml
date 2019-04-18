@@ -26,5 +26,7 @@ eureka:
       defaultZone: http://localhost:1025/eureka/
 elasticsearch:
   hosts: 172.16.8.240:9200
+  # 表聚合的最大数目
+  max-table-agg: 30
   index-prefix: jwdsj-datapool-index-
   alias-prefix: jwdsj-datapool-alias-

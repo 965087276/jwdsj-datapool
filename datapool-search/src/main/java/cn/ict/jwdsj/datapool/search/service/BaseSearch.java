@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.search.service;
 
+import cn.hutool.core.util.StrUtil;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -8,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class BaseSearch {
@@ -30,6 +33,10 @@ public class BaseSearch {
     // 索引别名的前缀，该前缀加上表id即可制定到具体表
     @Value("${elasticsearch.alias-prefix}")
     protected String aliasPrefix;
+
+    // 表聚合的最大数目
+    @Value("${elasticsearch.max-table-agg}")
+    protected int maxTableAgg;
 
     protected Map<String, Float> defaultSearchFields;
 
@@ -53,6 +60,17 @@ public class BaseSearch {
         defaultSearchFields = new HashMap<>();
         defaultSearchFields.put("all_fields_text", 1.0f);
         defaultSearchFields.put("all_fields_keyword", 1.0f);
+    }
+
+    /**
+     * 规范化搜索词
+     * @param word
+     * @return
+     */
+    protected String wordRegular(String word) {
+        word = word.replaceAll("[\\pP\\p{Punct}]"," ");
+        String[] words = StrUtil.trimToEmpty(word).split("\\s+");;
+        return Arrays.stream(words).collect(Collectors.joining(" AND "));
     }
 
 

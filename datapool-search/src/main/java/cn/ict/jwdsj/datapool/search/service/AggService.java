@@ -15,7 +15,7 @@ public interface AggService {
      * @param searchWord 搜索词
      * @return
      */
-    List<AggTableVO> aggByTable(long databaseId, String searchWord);
+    List<AggTableVO> aggByTable(long databaseId, String searchWord) throws IOException;
 
     /**
      * 全库的库级聚合

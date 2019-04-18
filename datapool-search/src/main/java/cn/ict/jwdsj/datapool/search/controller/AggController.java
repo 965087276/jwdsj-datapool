@@ -50,8 +50,7 @@ public class AggController {
     @GetMapping("search_engine/agg/table")
     public ResponseEntity<List<AggTableVO>> aggByDatabase(
             @RequestParam(value = "searchWord", required = true) String searchWord,
-            @RequestParam(value = "databaseId", required = true) long databaseId)
-    {
+            @RequestParam(value = "databaseId", required = true) long databaseId) throws IOException {
         List<AggTableVO> list = aggService.aggByTable(databaseId, searchWord);
         return ResponseEntity.ok(list);
     }
