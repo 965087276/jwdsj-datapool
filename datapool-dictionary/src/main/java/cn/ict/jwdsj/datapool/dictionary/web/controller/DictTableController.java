@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.web.controller;
 
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
@@ -19,7 +20,9 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class DictTableController {
@@ -77,5 +80,12 @@ public class DictTableController {
     @GetMapping("dict/dict_tables/id/{id}")
     public DictTable findById(@PathVariable("id") long id) {
         return dictTableService.findById(id);
+    }
+
+    @ApiIgnore
+    @GetMapping("dict/table_name_dtos/ids/{ids}")
+    List<TableNameDTO> listTableNameDTOByIdIn(@PathVariable("ids") String idStr) {
+        List<Long> ids = Arrays.stream(idStr.split(",")).map(Long::parseLong).collect(Collectors.toList());
+        return dictTableService.listTableNameDTOByIds(ids);
     }
 }
