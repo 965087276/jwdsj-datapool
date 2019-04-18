@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
@@ -29,4 +30,11 @@ public interface MappingColumnService {
      * @return 字段信息。包括要加入到搜索引擎的字段列表，表字段到索引字段的映射。
      */
     TableFullReadDTO getTableFullReadDTOByTableId(long tableId);
+
+    /**
+     * 返回某表需要在前端展示的字段（用于搜索引擎的表查询）
+     * @param tableId 表id
+     * @return
+     */
+    List<ColDisplayedDTO> listColDisplayedDTOByTableId(long tableId);
 }

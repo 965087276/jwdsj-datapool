@@ -5,6 +5,7 @@ import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingColumn;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingColumnDTO;
@@ -126,6 +127,29 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
         return tableFullReadDTO;
 
+    }
+
+    /**
+     * 返回某表需要在前端展示的字段（用于搜索引擎的表查询）
+     *
+     * @param tableId 表id
+     * @return
+     */
+    @Override
+    public List<ColDisplayedDTO> listColDisplayedDTOByTableId(long tableId) {
+        return mappingColumnRepo.findByDictTableIdAndDisplayed(tableId, true)
+                .stream()
+                .map(this::convertToColDisplayedDTO)
+                .collect(Collectors.toList());
+    }
+
+    private ColDisplayedDTO convertToColDisplayedDTO(MappingColumn mappingColumn) {
+        ColDisplayedDTO result = new ColDisplayedDTO();
+        result.setBoost(mappingColumn.getBoost());
+        result.setDictColumnId(mappingColumn.getDictColumnId());
+        result.setEsColumn(mappingColumn.getEsColumn());
+        result.setSearched(mappingColumn.isSearched());
+        return result;
     }
 
     private MappingColumnVO convertToMappingColumnVO(DictColumn dictColumn) {

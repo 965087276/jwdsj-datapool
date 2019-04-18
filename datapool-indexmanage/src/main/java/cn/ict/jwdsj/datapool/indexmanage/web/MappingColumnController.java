@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.indexmanage.web;
 
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class MappingColumnController {
@@ -44,6 +44,16 @@ public class MappingColumnController {
     @GetMapping("index_manage/table_full_read_dtos/tableId/{tableId}")
     TableFullReadDTO getTableFullReadDTOByTableId(@PathVariable("tableId") long tableId) {
         return mappingColumnService.getTableFullReadDTOByTableId(tableId);
+    }
+
+    /**
+     * 返回某表需要在前端展示的字段（用于搜索引擎的表查询）
+     * @param tableId 表id
+     * @return
+     */
+    @GetMapping("index_manage/col_displayed_dtos")
+    List<ColDisplayedDTO> listColDisplayedDTOByTableId(@RequestParam(value = "tableId") long tableId) {
+        return mappingColumnService.listColDisplayedDTOByTableId(tableId);
     }
 
 }
