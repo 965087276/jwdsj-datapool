@@ -19,10 +19,8 @@ public class StatsColumn extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     private DictTable dictTable;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "column_id", nullable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictColumn dictColumn;
+    @Column(name = "column_id")
+    private long dictColumnId;
 
     @Column(name = "date")
     private Date updateDate;
