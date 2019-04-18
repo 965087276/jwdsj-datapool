@@ -1,13 +1,11 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.ColumnTypeDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 
 import java.util.List;
-import java.util.Map;
 
 public interface MappingColumnService {
 

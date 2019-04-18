@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.indexmanage.db.entity.dto;
+package cn.ict.jwdsj.datapool.common.entity.indexmanage.dto;
 
 import lombok.Builder;
 import lombok.Data;
