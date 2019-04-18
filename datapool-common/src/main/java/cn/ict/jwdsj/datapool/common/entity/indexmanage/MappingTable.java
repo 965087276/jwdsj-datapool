@@ -15,10 +15,13 @@ import java.time.LocalDate;
 @Data
 public class MappingTable extends BaseEntity {
 
-    @ManyToOne
-    @JoinColumn(name = "database_id", nullable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictDatabase dictDatabase;
+//    @ManyToOne
+//    @JoinColumn(name = "database_id", nullable = false)
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private DictDatabase dictDatabase;
+
+    @Column(name = "database_id")
+    private long dictDatabaseId;
 
     @ManyToOne
     @JoinColumn(name = "table_id", nullable = false)

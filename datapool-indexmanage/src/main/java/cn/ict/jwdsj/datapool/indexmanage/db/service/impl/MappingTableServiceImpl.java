@@ -41,12 +41,12 @@ public class MappingTableServiceImpl implements MappingTableService {
     public void save(MappingTableAddDTO mappingTableAddDTO) throws IOException {
         EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
         DictTable dictTable = DictTable.builtById(mappingTableAddDTO.getTableId());
-        DictDatabase dictDatabase = DictDatabase.buildById(mappingTableAddDTO.getDatabaseId());
+        long dictDatabaseId = mappingTableAddDTO.getDatabaseId();
 
         MappingTable mappingTable = new MappingTable();
         mappingTable.setEsIndex(esIndex);
         mappingTable.setDictTable(dictTable);
-        mappingTable.setDictDatabase(dictDatabase);
+        mappingTable.setDictDatabaseId(dictDatabaseId);
         mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
         mappingTableRepo.save(mappingTable);
         // 为该索引添加一个别名，别名为"{alias-prefix}-表id"，别名指向这个表（即filter出elastic_table_id为该表id的文档）
