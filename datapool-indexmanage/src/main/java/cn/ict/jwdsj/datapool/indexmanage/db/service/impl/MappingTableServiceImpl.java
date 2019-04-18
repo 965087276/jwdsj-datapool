@@ -40,23 +40,23 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Transactional(rollbackFor = Exception.class)
     public void save(MappingTableAddDTO mappingTableAddDTO) throws IOException {
         EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
-        DictTable dictTable = DictTable.builtById(mappingTableAddDTO.getTableId());
+        long dictTableId = mappingTableAddDTO.getTableId();
         long dictDatabaseId = mappingTableAddDTO.getDatabaseId();
 
         MappingTable mappingTable = new MappingTable();
         mappingTable.setEsIndex(esIndex);
-        mappingTable.setDictTable(dictTable);
+        mappingTable.setDictTableId(dictTableId);
         mappingTable.setDictDatabaseId(dictDatabaseId);
         mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
         mappingTableRepo.save(mappingTable);
         // 为该索引添加一个别名，别名为"{alias-prefix}-表id"，别名指向这个表（即filter出elastic_table_id为该表id的文档）
-        elasticRestService.addAlias(esIndex.getIndexName(), dictTable.getId());
+        elasticRestService.addAlias(esIndex.getIndexName(), dictTableId);
         // 因为这个表要加入到es中，所以要根据表字段的搜索、分词情况来给elasticsearch的索引添加字段
         esColumnService.add(mappingTableAddDTO);
 
         // 更新se_table表的is_sync字段为true
         QSeTable seTable = QSeTable.seTable;
-        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.dictTable.eq(dictTable)).execute();
+        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.dictTable.id.eq(dictTableId)).execute();
 
     }
 

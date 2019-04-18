@@ -23,10 +23,13 @@ public class MappingTable extends BaseEntity {
     @Column(name = "database_id")
     private long dictDatabaseId;
 
-    @ManyToOne
-    @JoinColumn(name = "table_id", nullable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictTable dictTable;
+//    @ManyToOne
+//    @JoinColumn(name = "table_id", nullable = false)
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private DictTable dictTable;
+
+    @Column(name = "table_id")
+    private long dictTableId;
 
     @ManyToOne
     @JoinColumn(name = "index_id", nullable = false)
