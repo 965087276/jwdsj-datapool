@@ -19,10 +19,9 @@ public class MappingColumn extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     private DictTable dictTable;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "column_id")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictColumn dictColumn;
+    @Column(name = "column_id")
+//    @NotFound(action = NotFoundAction.IGNORE)
+    private long dictColumnId;
 
     @Column(name = "es_column", nullable = false)
     private String esColumn;

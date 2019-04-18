@@ -50,7 +50,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 MappingColumnDTO mappingColumnDTO = list.get(i);
 
                 MappingColumn mappingColumn = BeanUtil.toBean(mappingColumnDTO, MappingColumn.class);
-                mappingColumn.setDictColumn(DictColumn.builtById(mappingColumnDTO.getDictColumnId()));
+                mappingColumn.setDictColumnId(mappingColumnDTO.getDictColumnId());
                 mappingColumn.setDictTable(dictTable);
                 mappingColumn.setEsColumn(typeEnum.name() + "-" + (i+1));
                 mappingColumn.setType(typeEnum.name());
@@ -67,13 +67,13 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     public List<ColumnTypeDTO> listColumnTypeDTOByTable(DictTable dictTable) {
         QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
         return jpaQueryFactory
-                .select(mappingColumn.dictColumn.id, mappingColumn.esColumn, mappingColumn.type)
+                .select(mappingColumn.dictColumnId, mappingColumn.esColumn, mappingColumn.type)
                 .from(mappingColumn)
                 .where(mappingColumn.dictTable.eq(dictTable))
                 .fetch()
                 .stream()
                 .map(tuple -> ColumnTypeDTO.builder()
-                        .dictColumnId(tuple.get(mappingColumn.dictColumn.id))
+                        .dictColumnId(tuple.get(mappingColumn.dictColumnId))
                         .name(tuple.get(mappingColumn.esColumn))
                         .type(tuple.get(mappingColumn.type))
                         .build()
