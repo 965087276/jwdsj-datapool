@@ -56,8 +56,15 @@ public interface DictTableService {
     DictTable findById(long id);
 
     /**
-     * 表信息管理--列表页--库下拉框
-     * @return 返回dict_table表中的所有数据库信息
+     * 表下拉框
+     * @param databaseId
+     * @return
      */
-    List<DatabaseNameDTO> listDatabaseDropDownBox();
+    List<TableNameDTO> listTableDropDownBox(long databaseId);
+
+//    /**
+//     * 表信息管理--列表页--库下拉框
+//     * @return 返回dict_table表中的所有数据库信息
+//     */
+//    List<DatabaseNameDTO> listDatabaseDropDownBox();
 }

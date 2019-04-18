@@ -61,9 +61,14 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
         return dictDatabaseRepo.findAll(predicate, pageable).map(this::convertToDictDatabaseVO);
     }
 
+    /**
+     * 库中英下拉框
+     *
+     * @return
+     */
     @Override
-    public List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids) {
-        return dictDatabaseRepo.findByIdIn(ids)
+    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
+        return dictDatabaseRepo.findAll()
                 .stream()
                 .map(this::convertToDatabaseNameDTO)
                 .collect(Collectors.toList());
@@ -79,6 +84,7 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
         List<Long> idList = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
         return dictDatabaseRepo.findByIdIn(idList);
     }
+
 
     private DictDatabaseVO convertToDictDatabaseVO(DictDatabase dictDatabase) {
         return BeanUtil.toBean(dictDatabase, DictDatabaseVO.class);

@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.web.controller;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.dto.DictDatabaseDTO;
@@ -45,6 +46,13 @@ public class DictDatabaseController {
 
         Page<DictDatabaseVO> dictDatabases = dictDatabaseService.listVO(curPage, pageSize, nameLike);
         return ResponseEntity.ok(dictDatabases);
+    }
+
+    @ApiOperation(value = "库中英下拉框")
+    @GetMapping("dict/dict_database/database_drop_down_box")
+    public ResponseEntity<List<DatabaseNameDTO>> getDatabaseDropDownBox() {
+        List<DatabaseNameDTO> list = dictDatabaseService.listDatabaseDropDownBox();
+        return ResponseEntity.ok(list);
     }
 
     @ApiOperation(value = "库信息管理页--添加库--手动添加")

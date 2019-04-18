@@ -31,18 +31,14 @@ public interface DictColumnService {
 
     void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO);
 
-    /**
-     * 字段列表页表下拉框信息
-     * @param databaseId 所在库
-     * @return
-     */
-    List<TableNameDTO> listTableDropDownBox(long databaseId);
 
-    /**
-     * 字段列表页库下拉框信息
-     * @return
-     */
-    List<DatabaseNameDTO> listDatabaseDropDownBox();
+    List<TableNameDTO> listTableNameDTOByDatabaseId(long databaseId);
+
+//    /**
+//     * 字段列表页库下拉框信息
+//     * @return
+//     */
+//    List<DatabaseNameDTO> listDatabaseDropDownBox();
 
     List<DictColumn> listByDictTable(DictTable dictTable);
 

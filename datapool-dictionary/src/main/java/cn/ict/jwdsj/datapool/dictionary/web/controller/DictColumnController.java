@@ -33,22 +33,22 @@ public class DictColumnController {
     @Autowired
     private DictColExcelService dictColExcelService;
 
-    @ApiOperation(value = "字段信息管理页--库下拉框")
-    @GetMapping("dict/dict_column/database_drop_down_box")
-    public ResponseEntity<List<DatabaseNameDTO>> getDatabaseDropDownBox() {
-        List<DatabaseNameDTO> list = dictColumnService.listDatabaseDropDownBox();
-        return ResponseEntity.ok(list);
-    }
-
-    @ApiOperation(value = "字段信息管理页--表下拉框")
-    @ApiImplicitParam(name = "databaseId", value = "数据库id", paramType = "query", required = true)
-    @GetMapping("dict/dict_column/table_drop_down_box")
-    public ResponseEntity<List<TableNameDTO>> getDatabaseDropDownBox(
-        @RequestParam(name = "databaseId", required = true) long databaseId) {
-
-        List<TableNameDTO> list = dictColumnService.listTableDropDownBox(databaseId);
-        return ResponseEntity.ok(list);
-    }
+//    @ApiOperation(value = "字段信息管理页--库下拉框")
+//    @GetMapping("dict/dict_column/database_drop_down_box")
+//    public ResponseEntity<List<DatabaseNameDTO>> getDatabaseDropDownBox() {
+//        List<DatabaseNameDTO> list = dictColumnService.listDatabaseDropDownBox();
+//        return ResponseEntity.ok(list);
+//    }
+//
+//    @ApiOperation(value = "字段信息管理页--表下拉框")
+//    @ApiImplicitParam(name = "databaseId", value = "数据库id", paramType = "query", required = true)
+//    @GetMapping("dict/dict_column/table_drop_down_box")
+//    public ResponseEntity<List<TableNameDTO>> getDatabaseDropDownBox(
+//        @RequestParam(name = "databaseId", required = true) long databaseId) {
+//
+//        List<TableNameDTO> list = dictColumnService.listTableDropDownBox(databaseId);
+//        return ResponseEntity.ok(list);
+//    }
 
 
     @ApiOperation(value = "字段信息管理页--字段列表")

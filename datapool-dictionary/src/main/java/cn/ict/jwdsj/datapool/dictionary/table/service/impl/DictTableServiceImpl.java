@@ -127,16 +127,30 @@ public class DictTableServiceImpl implements DictTableService {
         return dictTableRepo.findById(id).get();
     }
 
+    /**
+     * 表下拉框
+     *
+     * @param databaseId
+     * @return
+     */
     @Override
-    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
-        QDictTable dictTable = QDictTable.dictTable;
-        List<Long> databaseIds = jpaQueryFactory
-                .select(dictTable.dictDatabase.id)
-                .from(dictTable)
-                .groupBy(dictTable.dictDatabase.id)
-                .fetch();
-        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
+    public List<TableNameDTO> listTableDropDownBox(long databaseId) {
+        return dictTableRepo.findByDictDatabase(DictDatabase.buildById(databaseId))
+                .stream()
+                .map(this::convertToTableNameDTO)
+                .collect(Collectors.toList());
     }
+
+//    @Override
+//    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
+//        QDictTable dictTable = QDictTable.dictTable;
+//        List<Long> databaseIds = jpaQueryFactory
+//                .select(dictTable.dictDatabase.id)
+//                .from(dictTable)
+//                .groupBy(dictTable.dictDatabase.id)
+//                .fetch();
+//        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
+//    }
 
     private DictTableVO convertToDictTableVO(DictDatabase dictDatabase, DictTable dictTable) {
         DictTableVO dictTableVO = BeanUtil.toBean(dictTable, DictTableVO.class);

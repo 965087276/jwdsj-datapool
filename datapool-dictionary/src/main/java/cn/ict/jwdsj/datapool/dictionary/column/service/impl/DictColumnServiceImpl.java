@@ -43,7 +43,7 @@ public class DictColumnServiceImpl implements DictColumnService {
     private DictDatabaseService dictDatabaseService;
 
     public List<String> getEnTableByDictDatabase(DictDatabase dictDb) {
-        return this.listTableDropDownBox(dictDb.getId())
+        return this.listTableNameDTOByDatabaseId(dictDb.getId())
                 .stream()
                 .map(TableNameDTO::getEnTable)
                 .collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class DictColumnServiceImpl implements DictColumnService {
     }
 
     @Override
-    public List<TableNameDTO> listTableDropDownBox(long databaseId) {
+    public List<TableNameDTO> listTableNameDTOByDatabaseId(long databaseId) {
         QDictColumn dictColumn = QDictColumn.dictColumn;
         List<Long> tableIds = jpaQueryFactory
                 .select(dictColumn.dictTable.id)
@@ -96,16 +96,16 @@ public class DictColumnServiceImpl implements DictColumnService {
         return dictTableService.listTableNameDTOByIds(tableIds);
     }
 
-    @Override
-    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
-        QDictColumn dictColumn = QDictColumn.dictColumn;
-        List<Long> databaseIds = jpaQueryFactory
-                .select(dictColumn.dictDatabase.id)
-                .from(dictColumn)
-                .groupBy(dictColumn.dictDatabase.id)
-                .fetch();
-        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
-    }
+//    @Override
+//    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
+//        QDictColumn dictColumn = QDictColumn.dictColumn;
+//        List<Long> databaseIds = jpaQueryFactory
+//                .select(dictColumn.dictDatabase.id)
+//                .from(dictColumn)
+//                .groupBy(dictColumn.dictDatabase.id)
+//                .fetch();
+//        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
+//    }
 
     @Override
     public List<DictColumn> listByDictTable(DictTable dictTable) {

@@ -18,9 +18,15 @@ public interface DictDatabaseService {
 
     Page<DictDatabaseVO> listVO(int curPage, int pageSize, String nameLike);
 
-    List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids);
+//    List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids);
 
     DictDatabase findById(long id);
 
     List<DictDatabase> listByIds(String ids);
+
+    /**
+     * 库中英下拉框
+     * @return
+     */
+    List<DatabaseNameDTO> listDatabaseDropDownBox();
 }

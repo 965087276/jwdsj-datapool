@@ -31,12 +31,12 @@ public class DictTableController {
     @Autowired
     private DictTbExcelService dictTbExcelService;
 
-    @ApiOperation(value = "表信息管理页--库下拉框")
-    @GetMapping("dict/dict_table/database_drop_down_box")
-    public ResponseEntity<List<DatabaseNameDTO>> getDatabaseDropDownBox() {
-        List<DatabaseNameDTO> list = dictTableService.listDatabaseDropDownBox();
-        return ResponseEntity.ok(list);
-    }
+//    @ApiOperation(value = "表信息管理页--库下拉框")
+//    @GetMapping("dict/dict_table/database_drop_down_box")
+//    public ResponseEntity<List<DatabaseNameDTO>> getDatabaseDropDownBox() {
+//        List<DatabaseNameDTO> list = dictTableService.listDatabaseDropDownBox();
+//        return ResponseEntity.ok(list);
+//    }
 
     @ApiOperation(value = "表信息管理页--表列表")
     @ApiImplicitParams({
@@ -54,6 +54,16 @@ public class DictTableController {
 
         Page<DictTableVO> dictTableVOS = dictTableService.listVO(curPage, pageSize, databaseId, nameLike);
         return ResponseEntity.ok(dictTableVOS);
+    }
+
+    @ApiOperation(value = "表中英下拉框")
+    @ApiImplicitParam(name = "databaseId", value = "数据库id", paramType = "query", required = true)
+    @GetMapping("dict/dict_table/table_drop_down_box")
+    public ResponseEntity<List<TableNameDTO>> getDatabaseDropDownBox(
+        @RequestParam(name = "databaseId", required = true) long databaseId) {
+
+        List<TableNameDTO> list = dictTableService.listTableDropDownBox(databaseId);
+        return ResponseEntity.ok(list);
     }
 
     @ApiOperation(value = "表信息管理页--添加表--手动添加")
