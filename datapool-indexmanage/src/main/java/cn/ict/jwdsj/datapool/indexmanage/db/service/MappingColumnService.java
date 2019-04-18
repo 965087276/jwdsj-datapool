@@ -13,7 +13,7 @@ public interface MappingColumnService {
 
     void saveAll(SeTableAddDTO seTableAddDTO);
 
-    List<ColumnTypeDTO> listColumnTypeDTOByTable(DictTable dictTable);
+    List<ColumnTypeDTO> listColumnTypeDTOByDictTableId(long dictTableId);
 
     /**
      * 表搜索引擎管理--表信息增加--加载该表的字段

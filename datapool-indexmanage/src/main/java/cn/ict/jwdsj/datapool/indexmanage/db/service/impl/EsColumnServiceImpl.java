@@ -32,10 +32,10 @@ public class EsColumnServiceImpl implements EsColumnService {
     public void add(MappingTableAddDTO mappingTableAddDTO) throws IOException {
 
         EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
-        DictTable dictTable = DictTable.builtById(mappingTableAddDTO.getTableId());
+        long dictTableId = mappingTableAddDTO.getTableId();
 
         // 筛选出该表在mapping_column中但不在es_column中的字段，这些字段需要加入elasticsearch与es_column中
-        List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByTable(dictTable)
+        List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByDictTableId(dictTableId)
                 .stream()
                 .filter(columnTypeDTO -> !(esColumnRepo.existsByEsIndexAndName(esIndex, columnTypeDTO.getName())))
                 .map(columnTypeDTO -> BeanUtil.toBean(columnTypeDTO, EsColumn.class))
@@ -46,8 +46,5 @@ public class EsColumnServiceImpl implements EsColumnService {
         elasticRestService.addFields(esIndex, esColumns);
 
     }
-
-
-
 
 }

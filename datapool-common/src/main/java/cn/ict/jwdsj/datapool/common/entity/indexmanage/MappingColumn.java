@@ -14,10 +14,13 @@ import javax.persistence.*;
 @Data
 public class MappingColumn extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_id")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictTable dictTable;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "table_id")
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private DictTable dictTable;\
+
+    @Column(name = "table_id")
+    private long dictTableId;
 
     @Column(name = "column_id")
 //    @NotFound(action = NotFoundAction.IGNORE)

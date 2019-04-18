@@ -43,7 +43,6 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .stream()
                 .collect(groupingBy(this::getColumnType));
         List<MappingColumn> mappingColumns = new ArrayList<>();
-        DictTable dictTable = DictTable.builtById(seTableAddDTO.getTableId());
 
         columnsGroupByType.forEach((typeEnum, list) -> {
             for (int i = 0; i < list.size(); ++i) {
@@ -51,7 +50,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
                 MappingColumn mappingColumn = BeanUtil.toBean(mappingColumnDTO, MappingColumn.class);
                 mappingColumn.setDictColumnId(mappingColumnDTO.getDictColumnId());
-                mappingColumn.setDictTable(dictTable);
+                mappingColumn.setDictTableId(seTableAddDTO.getTableId());
                 mappingColumn.setEsColumn(typeEnum.name() + "-" + (i+1));
                 mappingColumn.setType(typeEnum.name());
 
@@ -64,12 +63,12 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     }
 
     @Override
-    public List<ColumnTypeDTO> listColumnTypeDTOByTable(DictTable dictTable) {
+    public List<ColumnTypeDTO> listColumnTypeDTOByDictTableId(long dictTableId) {
         QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
         return jpaQueryFactory
                 .select(mappingColumn.dictColumnId, mappingColumn.esColumn, mappingColumn.type)
                 .from(mappingColumn)
-                .where(mappingColumn.dictTable.eq(dictTable))
+                .where(mappingColumn.dictTableId.eq(dictTableId))
                 .fetch()
                 .stream()
                 .map(tuple -> ColumnTypeDTO.builder()
@@ -103,7 +102,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Override
     public TableFullReadDTO getTableFullReadDTOByTableId(long tableId) {
         List<DictColumn> dictColumns = dictClient.listDictColumnsByTableId(tableId);
-        List<ColumnTypeDTO> columnTypeDTOS = listColumnTypeDTOByTable(DictTable.builtById(tableId));
+        List<ColumnTypeDTO> columnTypeDTOS = listColumnTypeDTOByDictTableId(tableId);
 
         // 表字段id与表字段名的映射
         Map<Long, String> colIdAndColNameMap = dictColumns
