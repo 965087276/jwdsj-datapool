@@ -6,6 +6,7 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTbExcelService;
@@ -71,6 +72,14 @@ public class DictTableController {
     @PostMapping("dict/dict_tables")
     public ResponseEntity addOne(@Valid @RequestBody DictTableMultiAddDTO dictTableMultiAddDTO) {
         dictTableService.saveAll(dictTableMultiAddDTO);
+        return ResponseEntity.ok();
+    }
+
+    @ApiOperation(value = "表信息管理页--修改表信息")
+    @ApiImplicitParam(name = "updateTableDTO", value = "表信息", dataType = "UpdateTableDTO", required = true)
+    @PutMapping("dict/dict_tables")
+    public ResponseEntity update(@Valid @RequestBody UpdateTableDTO updateTableDTO) {
+        dictTableService.update(updateTableDTO);
         return ResponseEntity.ok();
     }
 

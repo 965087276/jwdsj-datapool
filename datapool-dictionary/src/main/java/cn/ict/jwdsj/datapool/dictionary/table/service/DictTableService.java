@@ -7,6 +7,7 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +62,12 @@ public interface DictTableService {
      * @return
      */
     List<TableNameDTO> listTableDropDownBox(long databaseId);
+
+    /**
+     * 表信息修改
+     * @param updateTableDTO
+     */
+    void update(UpdateTableDTO updateTableDTO);
 
 //    /**
 //     * 表信息管理--列表页--库下拉框

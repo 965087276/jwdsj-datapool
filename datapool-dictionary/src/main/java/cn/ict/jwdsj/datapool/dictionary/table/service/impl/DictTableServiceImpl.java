@@ -14,6 +14,7 @@ import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import cn.ict.jwdsj.datapool.dictionary.table.repo.DictTableRepo;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
@@ -139,6 +140,14 @@ public class DictTableServiceImpl implements DictTableService {
                 .stream()
                 .map(this::convertToTableNameDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void update(UpdateTableDTO updateTableDTO) {
+        DictTable dictTable = dictTableRepo.getOne(updateTableDTO.getTableId());
+        dictTable.setChTable(updateTableDTO.getChTable());
+        dictTableRepo.save(dictTable);
     }
 
 //    @Override
