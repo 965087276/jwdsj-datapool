@@ -1,8 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.web.controller;
 
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
-import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
-import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
@@ -10,8 +8,6 @@ import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColExcelService;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -87,8 +83,7 @@ public class DictColumnController {
     @ApiIgnore
     @GetMapping("dict/dict_columns/tableId/{tableId}")
     public List<DictColumn> listByTableId(@PathVariable("tableId") long tableId) {
-        DictTable dictTable = DictTable.builtById(tableId);
-        return dictColumnService.listByDictTable(dictTable);
+        return dictColumnService.listByDictTableId(tableId);
     }
     @ApiIgnore
     @GetMapping("dict/column_name_dto/tableId/{tableId}")

@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface DictColumnRepo extends JpaRepository<DictColumn, Long> {
-    List<DictColumn> findByDictTable(DictTable dictTable);
+    List<DictColumn> findByDictTableId(long dictTableId);
 }

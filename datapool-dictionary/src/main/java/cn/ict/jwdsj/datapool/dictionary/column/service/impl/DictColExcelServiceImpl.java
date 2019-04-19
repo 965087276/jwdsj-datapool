@@ -18,12 +18,9 @@ import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -137,7 +134,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
         } else {
             dictColumnList
                     .stream()
-                    .collect(groupingBy(dictColumn -> dictColumn.getDictTable().getId()))
+                    .collect(groupingBy(dictColumn -> dictColumn.getDictTableId()))
                     .forEach((tableId, columns) -> {
                         dictColumnService.saveAll(columns);
                     });
@@ -158,8 +155,8 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
     private DictColumn getDictColByColExcelAndTableId(DictColExcelDTO colExcelDTO, long tableId, DictDatabase dictDatabase) {
         DictColumn dictColumn = BeanUtil.toBean(colExcelDTO, DictColumn.class);
-        dictColumn.setDictTable(DictTable.builtById(tableId));
-        dictColumn.setDictDatabase(dictDatabase);
+        dictColumn.setDictTableId(tableId);
+        dictColumn.setDictDatabaseId(dictDatabase.getId());
         return dictColumn;
     }
 
@@ -214,7 +211,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
         EXISTS_IN_DICT_COLUMN = "下列表之前已经导入过，excel不支持再次导入: ";
         List<String> wrongTables = new ArrayList<>();
         Set<String> tablesInDictColumnByDatabase = new HashSet<>(
-                dictColumnService.getEnTableByDictDatabase(dictDatabase)
+                dictColumnService.getEnTableByDictDatabaseId(dictDatabase.getId())
         );
         for (String tableName : tableNames) {
             if (tablesInDictColumnByDatabase.contains(tableName)) {
