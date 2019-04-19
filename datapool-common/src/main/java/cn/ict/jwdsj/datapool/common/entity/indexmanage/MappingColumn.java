@@ -42,6 +42,6 @@ public class MappingColumn extends BaseEntity {
     private boolean displayed = true;
 
     @Column(name = "boost", nullable = false)
-    private double boost = 1;
+    private float boost = 1;
 
 }
