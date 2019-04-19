@@ -9,6 +9,7 @@ import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.repo.DictDatabaseRepo;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateDatabaseDTO;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,8 +30,6 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
 
     @Autowired
     private DictDatabaseRepo dictDatabaseRepo;
-    @Autowired
-    private JPAQueryFactory jpaQueryFactory;
 
     @Override
     public void save(DictDatabase dictDatabase) {
@@ -72,6 +71,15 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
                 .stream()
                 .map(this::convertToDatabaseNameDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void update(UpdateDatabaseDTO updateDatabaseDTO) {
+        DictDatabase dictDatabase = dictDatabaseRepo.findById(updateDatabaseDTO.getDatabaseId()).get();
+        dictDatabase.setChDatabase(updateDatabaseDTO.getChDatabase());
+        dictDatabase.setDetail(updateDatabaseDTO.getDetail());
+        dictDatabaseRepo.save(dictDatabase);
     }
 
     @Override

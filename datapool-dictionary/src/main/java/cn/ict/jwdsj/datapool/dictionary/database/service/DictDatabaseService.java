@@ -3,6 +3,7 @@ package cn.ict.jwdsj.datapool.dictionary.database.service;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateDatabaseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,4 +30,10 @@ public interface DictDatabaseService {
      * @return
      */
     List<DatabaseNameDTO> listDatabaseDropDownBox();
+
+    /**
+     * 库信息更新
+     * @param updateDatabaseDTO
+     */
+    void update(UpdateDatabaseDTO updateDatabaseDTO);
 }
