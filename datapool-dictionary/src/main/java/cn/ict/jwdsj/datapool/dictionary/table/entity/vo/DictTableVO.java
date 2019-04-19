@@ -9,4 +9,5 @@ public class DictTableVO {
     private long tableId;
     private String enTable;
     private String chTable;
+    private boolean addToSe;
 }
