@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.search.client.DictClient;
@@ -22,6 +23,7 @@ public class DictServiceImpl implements DictService {
 
 
     @Override
+    @Async
     public Future<List<DictDatabase>> listDatabasesByIds(List<Long> ids) {
         String idStr = getIdStr(ids);
         List<DictDatabase> databases = dictClient.listDatabasesByIds(idStr);
@@ -32,6 +34,13 @@ public class DictServiceImpl implements DictService {
     public List<TableNameDTO> listTableNameDTOByIdIn(List<Long> ids) {
         String idStr = getIdStr(ids);
         return dictClient.listTableNameDTOByIdIn(idStr);
+    }
+
+    @Override
+    @Async
+    public Future<List<ColumnNameDTO>> listColumnNameDTOByTableId(long tableId) {
+        List<ColumnNameDTO> list = dictClient.listColumnNameDTOByTableId(tableId);
+        return new AsyncResult<>(list);
     }
 
     private String getIdStr(List<Long> ids) {

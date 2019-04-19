@@ -1,12 +1,14 @@
 package cn.ict.jwdsj.datapool.search.service;
 
-import cn.hutool.json.JSONObject;
+import cn.ict.jwdsj.datapool.search.entity.vo.SearchTableVO;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 public interface TableSearchService {
     /**
-     * 在某表下搜索
+     * 在某表下搜索（使用表id）
      *
      * @param tableId 表id
      * @param searchWord 搜索词
@@ -14,5 +16,8 @@ public interface TableSearchService {
      * @param pageSize 每页多少条
      * @return
      */
-    List<JSONObject> searchInTable(long tableId, String searchWord, int curPage, int pageSize);
+    SearchTableVO searchByTableId(long tableId, String searchWord, int curPage, int pageSize) throws IOException, InterruptedException, ExecutionException, TimeoutException;
+
+
+    SearchTableVO searchByEnDatabaseAndEnTable(String enDatabase, String enTable, String searchWord, int curPage, int pageSize);
 }

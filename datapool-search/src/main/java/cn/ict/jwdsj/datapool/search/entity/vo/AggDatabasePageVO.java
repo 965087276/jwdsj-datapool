@@ -13,7 +13,7 @@ public class AggDatabasePageVO {
     /**
      * 耗时
      */
-    private TimeValue took;
+    private String took;
     /**
      * 命中的文档数
      */

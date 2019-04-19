@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.search.client;
 
+import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,4 +16,7 @@ public interface DictClient {
 
     @GetMapping("dict/table_name_dtos/ids/{ids}")
     List<TableNameDTO> listTableNameDTOByIdIn(@PathVariable("ids") String ids);
+
+    @GetMapping("dict/column_name_dto/tableId/{tableId}")
+    List<ColumnNameDTO> listColumnNameDTOByTableId(@PathVariable("tableId") long tableId);
 }

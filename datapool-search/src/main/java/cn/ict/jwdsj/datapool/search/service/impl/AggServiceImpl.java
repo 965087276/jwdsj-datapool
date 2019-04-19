@@ -162,8 +162,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
 
         // 命中的总文档数
         databasePageVO.setDocHit(response.getHits().getTotalHits());
-        // 耗时
-        databasePageVO.setTook(response.getTook());
+
         // 命中的总数据库数
         Cardinality databaseCount = (Cardinality) aggMap.get("命中数据库个数");
         databasePageVO.setDatabaseHit(databaseCount.getValue());
@@ -218,7 +217,8 @@ public class AggServiceImpl extends BaseSearch implements AggService {
         databasePageVO.setAggDatabases(aggDatabases);
 
         long endTime = System.currentTimeMillis();
-        log.info("Took is {}ms", endTime - startTime);
+        // 耗时
+        databasePageVO.setTook((endTime - startTime) + "ms");
 
         return databasePageVO;
     }
