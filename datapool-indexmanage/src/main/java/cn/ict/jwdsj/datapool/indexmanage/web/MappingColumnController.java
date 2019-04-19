@@ -53,6 +53,7 @@ public class MappingColumnController {
      */
     @GetMapping("index_manage/col_displayed_dtos")
     List<ColDisplayedDTO> listColDisplayedDTOByTableId(@RequestParam(value = "tableId") long tableId) {
+
         return mappingColumnService.listColDisplayedDTOByTableId(tableId);
     }
 
