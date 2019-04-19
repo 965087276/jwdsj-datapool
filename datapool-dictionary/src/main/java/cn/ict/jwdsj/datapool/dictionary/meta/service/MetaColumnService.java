@@ -22,4 +22,11 @@ public interface MetaColumnService {
      */
     List<MetaColumn> listByDatabaseAndTableIn(String database, List<String> tables);
 
+    /**
+     * 字段信息手动添加--字段下拉框（返回未加入字典的字段的名称）
+     * @param databaseId 库id
+     * @param tableId 表id
+     * @return
+     */
+    List<String> listColumnsNotAdd(long databaseId, long tableId);
 }
