@@ -8,9 +8,11 @@ import cn.ict.jwdsj.datapool.search.service.*;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryShardContext;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -70,10 +72,21 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
 
         // 查询主体
         QueryBuilder queryBuilder = buildQueryStringBuilder(searchWord, esColumnSearched);
+
+
         // 搜索结果高亮显示
-        HighlightBuilder highlightBuilder = new HighlightBuilder()
-                .field("*")
+        // keyword字段
+        HighlightBuilder.Field highLightKeyword = new HighlightBuilder
+                .Field("KEYWORD-*")
+                .highlighterType("unified");
+        // text字段
+        HighlightBuilder.Field highlightText = new HighlightBuilder
+                .Field("TEXT-*")
                 .highlighterType("fvh");
+
+        HighlightBuilder highlightBuilder = new HighlightBuilder()
+                .field(highLightKeyword)
+                .field(highlightText);
 
         // queryDSL请求体构造
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder()
@@ -81,7 +94,8 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
                 .size(pageSize)
                 .query(queryBuilder)
                 .highlighter(highlightBuilder);
-
+        request.source(sourceBuilder);
+        log.info("request is {}", request);
         // 执行查询
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);
         log.info("response is {}", response);
@@ -124,7 +138,7 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
 
         // 用有高亮内容字段值替换原来的字段值
         documentFields.getHighlightFields().forEach((esCol, highlightContent) -> {
-            doc.replace(esColAndChCol.get(esCol), highlightContent.getFragments()[0]);
+            doc.replace(esColAndChCol.get(esCol), highlightContent.fragments()[0].toString());
         });
 
         return doc;
