@@ -70,7 +70,7 @@ public class DictDatabaseController {
     @ApiOperation(value = "库信息管理页--修改库信息")
     @ApiImplicitParam(name = "updateDatabaseDTO", value = "库信息", dataType = "UpdateDatabaseDTO", required = true)
     @PutMapping("dict/dict_databases")
-    public ResponseEntity addOne(@Valid @RequestBody UpdateDatabaseDTO updateDatabaseDTO) {
+    public ResponseEntity update(@Valid @RequestBody UpdateDatabaseDTO updateDatabaseDTO) {
         dictDatabaseService.update(updateDatabaseDTO);
         return ResponseEntity.ok();
     }
