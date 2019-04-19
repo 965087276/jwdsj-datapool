@@ -35,16 +35,18 @@ public class KafkaTableSyncTaskProducer {
 
         for (MappingTable mappingTable : mappingTables) {
             TableSyncMsg msg = new TableSyncMsg();
-            msg.setDatabaseId(mappingTable.getDictDatabase().getId());
-            msg.setDatabaseName(mappingTable.getDictDatabase().getEnDatabase());
-            msg.setTableId(mappingTable.getDictTable().getId());
-            msg.setTableName(mappingTable.getDictTable().getEnTable());
+            msg.setDatabaseId(mappingTable.getDictDatabaseId());
+            String dbSql = "select en_database from dict_database where id = " + mappingTable.getDictDatabaseId();
+            String tbSql = "select en_table from dict_table where id = " + mappingTable.getDictTableId();
+            msg.setDatabaseName(jdbcTemplate.queryForObject(dbSql, String.class));
+            msg.setTableId(mappingTable.getDictTableId());
+            msg.setTableName(jdbcTemplate.queryForObject(tbSql, String.class));
             msg.setIndexName(mappingTable.getEsIndex().getIndexName());
             msg.setId(++id);
             kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
             log.info("the msg have sent to kafka, {}", msg.getId());
             // 更新update_date
-            jdbcTemplate.update("update mapping_table set update_date = current_date where table_id = ?", mappingTable.getDictTable().getId());
+            jdbcTemplate.update("update mapping_table set update_date = current_date where table_id = ?", mappingTable.getDictTableId());
             // 设置个间隔缓冲一下
             Thread.sleep(10000);
         }
