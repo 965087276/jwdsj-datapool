@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface StatsDatabaseRepo extends JpaRepository<StatsDatabase, Long> {
     void deleteAllByIdIn(List<Long> ids);
-    List<StatsDatabase> findByDictDatabaseIn(List<DictDatabase> dictDatabases);
+    List<StatsDatabase> findByDictDatabaseIdIn(List<Long> dictDatabaseIds);
 }

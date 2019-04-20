@@ -27,9 +27,9 @@ public class StatsDatabaseSubTask {
         List<StatsDatabase> databases = statsDatabaseService.listAll();
 
         databases.parallelStream().forEach(statDatabase -> {
-            long countRecords = statsService.countDatabaseRecords(statDatabase.getDictDatabase());
-            int  countTables  = statsService.countTablesInDatabase(statDatabase.getDictDatabase());
-            LocalDate updateDate = statsService.getDatabaseUpdateDate(statDatabase.getDictDatabase());
+            long countRecords = statsService.countDatabaseRecords(statDatabase.getDictDatabaseId());
+            int  countTables  = statsService.countTablesInDatabase(statDatabase.getDictDatabaseId());
+            LocalDate updateDate = statsService.getDatabaseUpdateDate(statDatabase.getDictDatabaseId());
             if (countRecords != statDatabase.getTotalRecords()
                     || countTables != statDatabase.getTotalTables()
                     || updateDate != statDatabase.getUpdateDate()) {

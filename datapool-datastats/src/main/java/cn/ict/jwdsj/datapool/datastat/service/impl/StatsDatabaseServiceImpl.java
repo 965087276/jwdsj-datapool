@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,14 +49,20 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
         QStatsDatabase statsDatabase = QStatsDatabase.statsDatabase;
 
         List<StatsDatabase> statsDatabases = jpaQueryFactory
-                .selectDistinct(dictDatabase.id)
+                .select(dictDatabase.id, dictDatabase.enDatabase, dictDatabase.chDatabase)
                 .from(dictDatabase)
                 .leftJoin(statsDatabase)
-                .on(dictDatabase.eq(statsDatabase.dictDatabase))
+                .on(dictDatabase.id.eq(statsDatabase.dictDatabaseId))
                 .where(statsDatabase.isNull())
                 .fetch()
                 .stream()
-                .map(StatsDatabase::builtByDatabaseId)
+                .map(tuple -> StatsDatabase.builder()
+                        .dictDatabaseId(tuple.get(dictDatabase.id))
+                        .enDatabase(tuple.get(dictDatabase.enDatabase))
+                        .chDatabase(tuple.get(dictDatabase.chDatabase))
+                        .updateDate(LocalDate.of(2019, 1, 1))
+                        .build()
+                )
                 .collect(Collectors.toList());
         statsDatabaseRepo.saveAll(statsDatabases);
 
@@ -70,7 +77,7 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
                 .selectDistinct(statsDatabase)
                 .from(statsDatabase)
                 .leftJoin(dictDatabase)
-                .on(statsDatabase.dictDatabase.eq(dictDatabase))
+                .on(statsDatabase.dictDatabaseId.eq(dictDatabase.id))
                 .where(dictDatabase.isNull())
                 .fetch();
         statsDatabaseRepo.deleteAll(statsDatabases);
@@ -79,11 +86,10 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
     @Override
     public List<StatsDatabase> listByDictDatabaseIds(String ids) {
 
-        List<DictDatabase> dictDatabases = Arrays.stream(ids.split(","))
+        List<Long> dictDatabaseIds = Arrays.stream(ids.split(","))
                 .map(Long::parseLong)
-                .map(DictDatabase::buildById)
                 .collect(Collectors.toList());
 
-        return statsDatabaseRepo.findByDictDatabaseIn(dictDatabases);
+        return statsDatabaseRepo.findByDictDatabaseIdIn(dictDatabaseIds);
     }
 }

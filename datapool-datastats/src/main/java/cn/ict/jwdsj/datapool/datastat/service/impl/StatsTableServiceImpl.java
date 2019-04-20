@@ -70,16 +70,18 @@ public class StatsTableServiceImpl implements StatsTableService {
         QStatsTable statsTable = QStatsTable.statsTable;
 
         List<StatsTable> tablesNotAdd =  jpaQueryFactory
-                .selectDistinct(dictTable.dictDatabase.id, dictTable.id)
+                .selectDistinct(dictTable.dictDatabase.id, dictTable.id, dictTable.enTable, dictTable.chTable)
                 .from(dictTable)
                 .leftJoin(statsTable)
-                .on(dictTable.eq(statsTable.dictTable))
+                .on(dictTable.id.eq(statsTable.dictTableId))
                 .where(statsTable.isNull())
                 .fetch()
                 .stream()
                 .map(tuple -> new StatsTable()
-                        .dictDatabase(tuple.get(dictTable.dictDatabase.id))
-                        .dictTable(tuple.get(dictTable.id))
+                        .dictDatabaseId(tuple.get(dictTable.dictDatabase.id))
+                        .dictTableId(tuple.get(dictTable.id))
+                        .enTable(tuple.get(dictTable.enTable))
+                        .chTable(tuple.get(dictTable.chTable))
                         .updateDate(getTableCreateTime(tuple.get(dictTable.id)))
                 )
                 .collect(Collectors.toList());
@@ -97,7 +99,7 @@ public class StatsTableServiceImpl implements StatsTableService {
                 .selectDistinct(statsTable.id)
                 .from(statsTable)
                 .leftJoin(dictTable)
-                .on(statsTable.dictTable.eq(dictTable))
+                .on(statsTable.dictTableId.eq(dictTable.id))
                 .where(dictTable.isNull())
                 .fetch()
                 .stream()

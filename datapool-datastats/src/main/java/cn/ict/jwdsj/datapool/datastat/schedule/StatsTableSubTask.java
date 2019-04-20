@@ -27,7 +27,7 @@ public class StatsTableSubTask {
         List<StatsTable> tables = statsTableService.listAll();
 
         tables.parallelStream().forEach(statTable -> {
-            long newCount = statsService.countTableRecords(statTable.getDictTable());
+            long newCount = statsService.countTableRecords(statTable.getDictTableId());
             long oldCount = statTable.getTotalRecords();
 
             if (oldCount != newCount) {

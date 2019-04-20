@@ -13,29 +13,29 @@ public interface StatsService {
 
     /**
      * 获取数据库更新日期
-     * @param dictDatabase
+     * @param dictDatabaseId
      * @return
      */
-    LocalDate getDatabaseUpdateDate(DictDatabase dictDatabase);
+    LocalDate getDatabaseUpdateDate(long dictDatabaseId);
 
     /**
      * 获取表的记录数
-     * @param dictTable
+     * @param dictTableId
      * @return
      */
-    long countTableRecords(DictTable dictTable);
+    long countTableRecords(long dictTableId);
 
     /**
      * 获取数据库的记录数
-     * @param dictDatabase
+     * @param dictDatabaseId
      * @return
      */
-    long countDatabaseRecords(DictDatabase dictDatabase);
+    long countDatabaseRecords(long dictDatabaseId);
 
     /**
      * 获取某库的表数
-     * @param dictDatabase
+     * @param dictDatabaseId
      * @return
      */
-    int countTablesInDatabase(DictDatabase dictDatabase);
+    int countTablesInDatabase(long dictDatabaseId);
 }
