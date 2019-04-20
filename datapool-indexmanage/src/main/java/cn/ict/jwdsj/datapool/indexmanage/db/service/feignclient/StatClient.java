@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "datapool-datastat")
+@FeignClient(name = "datapool-datastats")
 public interface StatClient {
     @GetMapping("stats/stats_column/defect_column_names/tableId/{tableId}")
     List<String> getDefectColumnsByTable(@PathVariable("tableId") long tableId);
