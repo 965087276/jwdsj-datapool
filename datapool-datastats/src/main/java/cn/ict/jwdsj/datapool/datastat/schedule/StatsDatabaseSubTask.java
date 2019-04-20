@@ -19,7 +19,9 @@ public class StatsDatabaseSubTask {
     private StatsService statsService;
 
     public void updateStatDatabases() {
+        // 删去字典中不存在的库
         statsDatabaseService.deleteDatabasesNotExist();
+        // 添加字典中存在但是统计模块不存在的库
         statsDatabaseService.saveDatabasesNotAdd();
 
         List<StatsDatabase> databases = statsDatabaseService.listAll();

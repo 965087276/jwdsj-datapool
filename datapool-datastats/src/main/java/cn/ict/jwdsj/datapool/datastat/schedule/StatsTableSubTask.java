@@ -19,8 +19,9 @@ public class StatsTableSubTask {
     private StatsService statsService;
 
     public void updateStatTables() {
-
+        // 删去字典中不存在的表
         statsTableService.deleteTablesNotExist();
+        // 添加字典中存在但是统计模块不存在的表
         statsTableService.saveTablesNotAdd();
 
         List<StatsTable> tables = statsTableService.listAll();
