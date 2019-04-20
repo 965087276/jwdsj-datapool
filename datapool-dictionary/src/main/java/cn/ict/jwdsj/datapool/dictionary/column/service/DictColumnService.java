@@ -5,6 +5,7 @@ import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateColumnDTO;
 
 import java.util.List;
 
@@ -40,4 +41,10 @@ public interface DictColumnService {
     List<DictColumn> listByDictTableId(long dictTableId);
 
     List<ColumnNameDTO> listColumnNameDTOsByTableId(long tableId);
+
+    /**
+     * 修改字段信息
+     * @param updateColumnDTO
+     */
+    void update(UpdateColumnDTO updateColumnDTO);
 }

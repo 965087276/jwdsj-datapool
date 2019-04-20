@@ -8,6 +8,7 @@ import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColExcelService;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateColumnDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -77,6 +78,14 @@ public class DictColumnController {
     @PostMapping("dict/dict_columns")
     public ResponseEntity addAll(@Valid @RequestBody DictColumnMultiAddDTO dictColumnMultiAddDTO) {
         dictColumnService.saveAll(dictColumnMultiAddDTO);
+        return ResponseEntity.ok();
+    }
+
+    @ApiOperation(value = "字段信息管理页--修改字段")
+    @ApiImplicitParam(name = "updateColumnDTO", value = "字段信息", dataType = "UpdateColumnDTO", required = true)
+    @PutMapping("dict/dict_columns")
+    public ResponseEntity update(@Valid @RequestBody UpdateColumnDTO updateColumnDTO) {
+        dictColumnService.update(updateColumnDTO);
         return ResponseEntity.ok();
     }
 

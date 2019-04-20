@@ -13,6 +13,7 @@ import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
+import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateColumnDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +124,14 @@ public class DictColumnServiceImpl implements DictColumnService {
                         .chColumn(tuple.get(dictColumn.chColumn))
                         .build()
                 ).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void update(UpdateColumnDTO updateColumnDTO) {
+        DictColumn dictColumn = dictColumnRepo.getOne(updateColumnDTO.getColumnId());
+        dictColumn.setChColumn(updateColumnDTO.getChColumn());
+        dictColumnRepo.save(dictColumn);
     }
 
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
