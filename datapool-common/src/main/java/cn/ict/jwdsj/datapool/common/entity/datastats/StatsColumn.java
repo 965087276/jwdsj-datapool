@@ -15,18 +15,24 @@ import java.util.Date;
 @Data
 public class StatsColumn extends BaseEntity {
 
-    @Column(name = "database_id")
+    @Column(name = "database_id", nullable = false)
     private long dictDatabaseId;
 
-    @Column(name = "table_id")
+    @Column(name = "table_id", nullable = false)
     private long dictTableId;
 
-    @Column(name = "column_id")
+    @Column(name = "column_id", nullable = false)
     private long dictColumnId;
 
-    @Column(name = "date")
+    @Column(name = "en_column", nullable = false)
+    private String enColumn;
+
+    @Column(name = "ch_column", nullable = false)
+    private String chColumn;
+
+    @Column(name = "date", nullable = false)
     private Date updateDate;
 
-    @Column(name = "is_defect")
+    @Column(name = "is_defect", nullable = false)
     private boolean defected;
 }
