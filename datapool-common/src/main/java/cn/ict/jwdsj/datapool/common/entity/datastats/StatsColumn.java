@@ -14,10 +14,12 @@ import java.util.Date;
 @Table(name = "stat_column")
 @Data
 public class StatsColumn extends BaseEntity {
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_id", nullable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictTable dictTable;
+
+    @Column(name = "database_id")
+    private long dictDatabaseId;
+
+    @Column(name = "table_id")
+    private long dictTableId;
 
     @Column(name = "column_id")
     private long dictColumnId;
