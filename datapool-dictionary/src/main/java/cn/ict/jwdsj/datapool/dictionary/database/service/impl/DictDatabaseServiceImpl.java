@@ -83,6 +83,11 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
+    public List<DictDatabase> listAll() {
+        return dictDatabaseRepo.findAll();
+    }
+
+    @Override
     public DictDatabase findById(long id) {
         return dictDatabaseRepo.findById(id).get();
     }

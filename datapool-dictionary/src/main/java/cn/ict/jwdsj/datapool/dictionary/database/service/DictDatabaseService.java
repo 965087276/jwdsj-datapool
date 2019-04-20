@@ -36,4 +36,6 @@ public interface DictDatabaseService {
      * @param updateDatabaseDTO
      */
     void update(UpdateDatabaseDTO updateDatabaseDTO);
+
+    List<DictDatabase> listAll();
 }

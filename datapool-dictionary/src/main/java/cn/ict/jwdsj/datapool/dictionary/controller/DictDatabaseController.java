@@ -96,5 +96,11 @@ public class DictDatabaseController {
         return dictDatabases;
     }
 
+    @ApiIgnore
+    @GetMapping("dict/dict_databases/all")
+    public List<DictDatabase> listAll() {
+        return dictDatabaseService.listAll();
+    }
+
 
 }
