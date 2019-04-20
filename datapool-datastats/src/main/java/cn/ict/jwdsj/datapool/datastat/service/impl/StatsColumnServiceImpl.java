@@ -163,6 +163,28 @@ public class StatsColumnServiceImpl implements StatsColumnService {
 
     }
 
+    @Override
+    public int countColumnsByTableId(long dictTableId) {
+        QStatsColumn statsColumn = QStatsColumn.statsColumn;
+        return jpaQueryFactory
+                .select(statsColumn.count())
+                .from(statsColumn)
+                .where(statsColumn.dictTableId.eq(dictTableId))
+                .fetchOne()
+                .intValue();
+    }
+
+    @Override
+    public int countDefectedColumnsByTableId(long dictTableId) {
+        QStatsColumn statsColumn = QStatsColumn.statsColumn;
+        return jpaQueryFactory
+                .select(statsColumn.count())
+                .from(statsColumn)
+                .where(statsColumn.dictTableId.eq(dictTableId).and(statsColumn.defected.eq(Boolean.TRUE)))
+                .fetchOne()
+                .intValue();
+    }
+
     /**
      * 判断表的某个字段是否为缺陷字段
      * 缺陷字段定义为90%以上的记录中该字段都为空

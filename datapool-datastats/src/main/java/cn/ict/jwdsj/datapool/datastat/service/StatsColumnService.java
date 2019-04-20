@@ -24,4 +24,18 @@ public interface StatsColumnService {
      * 更新各表的缺陷字段
      */
     void updateDefectedColumns();
+
+    /**
+     * 获取某表的字段数
+     * @param dictTableId
+     * @return
+     */
+    int countColumnsByTableId(long dictTableId);
+
+    /**
+     * 获取某表的缺陷字段数
+     * @param dictTableId
+     * @return
+     */
+    int countDefectedColumnsByTableId(long dictTableId);
 }
