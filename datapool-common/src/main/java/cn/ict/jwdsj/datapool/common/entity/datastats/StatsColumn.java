@@ -8,6 +8,7 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -30,9 +31,9 @@ public class StatsColumn extends BaseEntity {
     @Column(name = "ch_column", nullable = false)
     private String chColumn;
 
-    @Column(name = "date", nullable = false)
-    private Date updateDate;
+    @Column(name = "update_date", nullable = false)
+    private LocalDate updateDate = LocalDate.of(2019, 1,1);
 
     @Column(name = "is_defect", nullable = false)
-    private boolean defected;
+    private boolean defected = false;
 }
