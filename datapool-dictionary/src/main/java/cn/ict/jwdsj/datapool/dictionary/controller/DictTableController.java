@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.dictionary.web.controller;
+package cn.ict.jwdsj.datapool.dictionary.controller;
 
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
