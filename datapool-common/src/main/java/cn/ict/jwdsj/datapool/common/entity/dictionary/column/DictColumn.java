@@ -14,15 +14,19 @@ import javax.persistence.*;
 @Data
 public class DictColumn extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "database_id")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictDatabase dictDatabase;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "database_id")
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private DictDatabase dictDatabase;
+    @Column(name = "database_id")
+    private long dictDatabaseId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "table_id")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictTable dictTable;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "table_id")
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private DictTable dictTable;
+    @Column(name = "table_id")
+    private long dictTableId;
 
     @Column(name = "en_column")
     private String enColumn;
