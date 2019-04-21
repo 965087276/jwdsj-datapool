@@ -20,6 +20,15 @@ spring:
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
+    #Kafka
+    kafka:
+      bootstrap-servers: 172.16.8.240:9092
+#      consumer:
+#        max-poll-records: 1000
+#        enable-auto-commit: true
+#        auto-offset-reset: latest
+#      listener:
+#        concurrency: 4
 eureka:
   client:
     service-url:
