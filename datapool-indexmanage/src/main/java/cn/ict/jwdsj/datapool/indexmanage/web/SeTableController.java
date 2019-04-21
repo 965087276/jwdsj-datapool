@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 /**
  * 搜索引擎表信息的管理
  */
@@ -23,7 +25,7 @@ public class SeTableController {
     @ApiOperation(value = "表信息管理--添加表至搜索引擎--添加表及字段信息")
     @ApiImplicitParam(name = "seTableAddDTO", value = "表对象,包括库名,表名,各字段", required = true, dataType = "SeTableAddDTO")
     @PostMapping("index_manage/se_tables")
-    public ResponseEntity add(@RequestBody SeTableAddDTO seTableAddDTO) {
+    public ResponseEntity add(@Valid @RequestBody SeTableAddDTO seTableAddDTO) {
         seTableService.save(seTableAddDTO);
         return ResponseEntity.ok();
     }
