@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class EsIndexServiceImpl implements EsIndexService {
@@ -35,5 +36,10 @@ public class EsIndexServiceImpl implements EsIndexService {
     @Override
     public EsIndex findById(long indexId) {
         return esIndexRepo.findById(indexId);
+    }
+
+    @Override
+    public List<EsIndex> listAll() {
+        return esIndexRepo.findAll();
     }
 }

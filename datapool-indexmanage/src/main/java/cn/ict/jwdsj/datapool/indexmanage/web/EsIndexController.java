@@ -1,17 +1,20 @@
 package cn.ict.jwdsj.datapool.indexmanage.web;
 
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.EsIndexDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class EsIndexController {
@@ -25,4 +28,12 @@ public class EsIndexController {
         esIndexService.createIndex(esIndexDTO);
         return ResponseEntity.ok();
     }
+
+    @ApiOperation(value = "索引信息管理--索引列表")
+    @GetMapping("index_manage/indexes")
+    public ResponseEntity<List<EsIndex>> addIndex() {
+        List<EsIndex> list = esIndexService.listAll();
+        return ResponseEntity.ok(list);
+    }
+
 }
