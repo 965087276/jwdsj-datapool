@@ -56,7 +56,7 @@ public class MappingTableServiceImpl implements MappingTableService {
 
         // 更新se_table表的is_sync字段为true
         QSeTable seTable = QSeTable.seTable;
-        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.dictTable.id.eq(dictTableId)).execute();
+        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.dictTableId.eq(dictTableId)).execute();
 
     }
 
