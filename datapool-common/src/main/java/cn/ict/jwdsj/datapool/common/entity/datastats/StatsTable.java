@@ -1,18 +1,11 @@
 package cn.ict.jwdsj.datapool.common.entity.datastats;
 
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import com.sun.org.glassfish.external.statistics.Stats;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Table(name = "stat_table")
