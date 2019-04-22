@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.indexmanage.db.entity.dto;
 
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -17,6 +18,7 @@ public class SeTableAddDTO {
     @Min(value = 1)
     private long tableId;
 
+    @Valid
     @NotEmpty(message = "字段为空，请先加入字段的中英对照")
     List<MappingColumnDTO> columns;
 }
