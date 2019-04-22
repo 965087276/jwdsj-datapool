@@ -6,6 +6,13 @@ import javax.validation.constraints.*;
 
 @Data
 public class MappingColumnDTO {
+    @NotBlank
+    private String enColumn;
+
+    @NotBlank
+    private String chColumn;
+
+    @Min(value = 1)
     private long dictColumnId;
 
     @NotNull
@@ -19,5 +26,5 @@ public class MappingColumnDTO {
 
     @DecimalMin(value = "0.1", message = "权重不能小于0.1")
     @DecimalMax(value = "10.0", message = "权重不能超过10")
-    private double boost;
+    private float boost;
 }

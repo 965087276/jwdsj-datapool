@@ -47,9 +47,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
         columnsGroupByType.forEach((typeEnum, list) -> {
             for (int i = 0; i < list.size(); ++i) {
                 MappingColumnDTO mappingColumnDTO = list.get(i);
-
                 MappingColumn mappingColumn = BeanUtil.toBean(mappingColumnDTO, MappingColumn.class);
-                mappingColumn.setDictColumnId(mappingColumnDTO.getDictColumnId());
                 mappingColumn.setDictTableId(seTableAddDTO.getTableId());
                 mappingColumn.setEsColumn(typeEnum.name() + "-" + (i+1));
                 mappingColumn.setType(typeEnum.name());

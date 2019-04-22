@@ -19,15 +19,21 @@ public class MappingColumn extends BaseEntity {
 //    @NotFound(action = NotFoundAction.IGNORE)
 //    private DictTable dictTable;\
 
-    @Column(name = "table_id")
+    @Column(name = "table_id", nullable = false)
     private long dictTableId;
 
-    @Column(name = "column_id")
+    @Column(name = "column_id", nullable = false)
 //    @NotFound(action = NotFoundAction.IGNORE)
     private long dictColumnId;
 
     @Column(name = "es_column", nullable = false)
     private String esColumn;
+
+    @Column(name = "en_column", nullable = false)
+    private String enColumn;
+
+    @Column(name = "ch_column", nullable = false)
+    private String chColumn;
 
     @Column(name = "type", nullable = false)
     private String type;
