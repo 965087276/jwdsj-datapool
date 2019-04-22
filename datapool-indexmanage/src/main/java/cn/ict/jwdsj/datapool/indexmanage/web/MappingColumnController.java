@@ -36,6 +36,18 @@ public class MappingColumnController {
         return ResponseEntity.ok(columns);
     }
 
+    @ApiOperation(value = "表信息管理--查看字段--字段列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "tableId", value = "表id", paramType = "query", required = true)
+    })
+    @GetMapping("index_manage/mapping_columns")
+    ResponseEntity<List<MappingColumnVO>> listMappingColumnVOs(
+            @RequestParam(value = "tableId", required = true) long tableId
+    ) {
+        List<MappingColumnVO> columns = mappingColumnService.listMappingColumnVOs(tableId);
+        return ResponseEntity.ok(columns);
+    }
+
     /**
      * 获取全量读取数据时的字段信息
      * @return 字段信息。包括要加入到搜索引擎的字段列表，表字段到索引字段的映射。
@@ -51,6 +63,7 @@ public class MappingColumnController {
      * @param tableId 表id
      * @return
      */
+    @ApiIgnore
     @GetMapping("index_manage/col_displayed_dtos")
     List<ColDisplayedDTO> listColDisplayedDTOByTableId(@RequestParam(value = "tableId") long tableId) {
 

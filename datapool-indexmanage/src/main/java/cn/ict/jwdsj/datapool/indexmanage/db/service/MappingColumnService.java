@@ -37,4 +37,11 @@ public interface MappingColumnService {
      * @return
      */
     List<ColDisplayedDTO> listColDisplayedDTOByTableId(long tableId);
+
+    /**
+     * 表信息管理--查看字段
+     * @param tableId
+     * @return
+     */
+    List<MappingColumnVO> listMappingColumnVOs(long tableId);
 }

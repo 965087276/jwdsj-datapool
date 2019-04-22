@@ -141,6 +141,21 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 表信息管理--查看字段
+     *
+     * @param tableId
+     * @return
+     */
+    @Override
+    public List<MappingColumnVO> listMappingColumnVOs(long tableId) {
+        return mappingColumnRepo.findByDictTableId(tableId)
+                .stream()
+                .map(this::convertToMappingColumnVO)
+                .collect(Collectors.toList());
+
+    }
+
     private ColDisplayedDTO convertToColDisplayedDTO(MappingColumn mappingColumn) {
         ColDisplayedDTO result = new ColDisplayedDTO();
         result.setBoost(mappingColumn.getBoost());
@@ -148,6 +163,10 @@ public class MappingColumnServiceImpl implements MappingColumnService {
         result.setEsColumn(mappingColumn.getEsColumn());
         result.setSearched(mappingColumn.isSearched());
         return result;
+    }
+
+    private MappingColumnVO convertToMappingColumnVO(MappingColumn mappingColumn) {
+        return BeanUtil.toBean(mappingColumn, MappingColumnVO.class);
     }
 
     private MappingColumnVO convertToMappingColumnVO(DictColumn dictColumn) {
