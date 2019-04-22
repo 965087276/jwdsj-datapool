@@ -1,6 +1,8 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.SeTableVO;
+import org.springframework.data.domain.Page;
 
 public interface SeTableService {
     /**
@@ -9,4 +11,14 @@ public interface SeTableService {
      * @param seTableAddDTO
      */
     void save(SeTableAddDTO seTableAddDTO);
+
+    /**
+     * 表信息管理页 -- 表列表
+     * @param curPage
+     * @param pageSize
+     * @param databaseId
+     * @param nameLike 表名过滤
+     * @return
+     */
+    Page<SeTableVO> listSeTableVO(int curPage, int pageSize, long databaseId, String nameLike);
 }
