@@ -8,7 +8,9 @@ import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
+import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
+import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableDTO;
@@ -22,6 +24,7 @@ import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +36,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.TABLE;
+
 @Service
 public class DictTableServiceImpl implements DictTableService {
     @Autowired
@@ -41,6 +46,10 @@ public class DictTableServiceImpl implements DictTableService {
     private JPAQueryFactory jpaQueryFactory;
     @Autowired
     private DictDatabaseService dictDatabaseService;
+    @Autowired
+    private KafkaSender kafkaSender;
+    @Value("${kafka.topic-name.dict-update}")
+    private String kafkaUpdateTopic;
 
     @Override
     public void save(DictTable dictTable) {
@@ -148,6 +157,7 @@ public class DictTableServiceImpl implements DictTableService {
         DictTable dictTable = dictTableRepo.getOne(updateTableDTO.getTableId());
         dictTable.setChTable(updateTableDTO.getChTable());
         dictTableRepo.save(dictTable);
+        kafkaSender.send(kafkaUpdateTopic, new DictUpdateMsg(TABLE, updateTableDTO.getTableId()));
     }
 
 //    @Override

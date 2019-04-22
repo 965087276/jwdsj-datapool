@@ -6,17 +6,20 @@ import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
+import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
+import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateColumnDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -24,6 +27,8 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.COLUMN;
+import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.TABLE;
 import static java.util.stream.Collectors.groupingBy;
 
 @Service
@@ -36,6 +41,10 @@ public class DictColumnServiceImpl implements DictColumnService {
     private DictTableService dictTableService;
     @Autowired
     private DictDatabaseService dictDatabaseService;
+    @Autowired
+    private KafkaSender kafkaSender;
+    @Value("${kafka.topic-name.dict-update}")
+    private String kafkaUpdateTopic;
 
     public List<String> getEnTableByDictDatabaseId(long dictDatabaseId) {
         return this.listTableNameDTOByDatabaseId(dictDatabaseId)
@@ -132,6 +141,7 @@ public class DictColumnServiceImpl implements DictColumnService {
         DictColumn dictColumn = dictColumnRepo.getOne(updateColumnDTO.getColumnId());
         dictColumn.setChColumn(updateColumnDTO.getChColumn());
         dictColumnRepo.save(dictColumn);
+        kafkaSender.send(kafkaUpdateTopic, new DictUpdateMsg(COLUMN, updateColumnDTO.getColumnId()));
     }
 
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
