@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.indexmanage.db.service.feignclient;
+package cn.ict.jwdsj.datapool.indexmanage.client;
 
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;

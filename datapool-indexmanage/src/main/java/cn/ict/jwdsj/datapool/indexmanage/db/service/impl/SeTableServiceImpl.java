@@ -1,6 +1,5 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
-import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.SeTable;
@@ -25,9 +24,10 @@ public class SeTableServiceImpl implements SeTableService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(SeTableAddDTO seTableAddDTO) {
+
         SeTable seTable = new SeTable();
-        seTable.setDictDatabase(DictDatabase.buildById(seTableAddDTO.getDatabaseId()));
-        seTable.setDictTable(DictTable.builtById(seTableAddDTO.getTableId()));
+        seTable.setDictDatabaseId(seTableAddDTO.getDatabaseId());
+        seTable.setDictTableId(seTableAddDTO.getTableId());
 
         seTableRepo.save(seTable);
         mappingColumnService.saveAll(seTableAddDTO);

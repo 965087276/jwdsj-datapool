@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.indexmanage.db.service.feignclient;
+package cn.ict.jwdsj.datapool.indexmanage.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
