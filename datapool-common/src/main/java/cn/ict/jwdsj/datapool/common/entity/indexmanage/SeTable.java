@@ -17,15 +17,27 @@ import javax.persistence.*;
 @Table(name = "se_table")
 @Data
 public class SeTable extends BaseEntity {
-    @ManyToOne
-    @JoinColumn(name = "database_id")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictDatabase dictDatabase;
+//    @ManyToOne
+//    @JoinColumn(name = "database_id")
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private DictDatabase dictDatabase;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "table_id")
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private DictTable dictTable;
 
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    @NotFound(action = NotFoundAction.IGNORE)
-    private DictTable dictTable;
+    @Column(name = "database_id")
+    private long dictDatabaseId;
+
+    @Column(name = "table_id")
+    private long dictTableId;
+
+    @Column(name = "en_table")
+    private String enTable;
+
+    @Column(name = "ch_table")
+    private String chTable;
 
     @Column(name = "is_sync")
     private boolean sync = false;

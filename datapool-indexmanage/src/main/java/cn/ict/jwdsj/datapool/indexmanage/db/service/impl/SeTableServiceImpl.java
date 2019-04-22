@@ -3,6 +3,7 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.SeTable;
+import cn.ict.jwdsj.datapool.indexmanage.client.DictClient;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.SeTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
@@ -20,6 +21,8 @@ public class SeTableServiceImpl implements SeTableService {
     private MappingColumnService mappingColumnService;
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
+    @Autowired
+    private DictClient dictClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -28,7 +31,9 @@ public class SeTableServiceImpl implements SeTableService {
         SeTable seTable = new SeTable();
         seTable.setDictDatabaseId(seTableAddDTO.getDatabaseId());
         seTable.setDictTableId(seTableAddDTO.getTableId());
-
+        DictTable table = dictClient.findDictTableById(seTableAddDTO.getTableId());
+        table.setEnTable(table.getEnTable());
+        table.setChTable(table.getChTable());
         seTableRepo.save(seTable);
         mappingColumnService.saveAll(seTableAddDTO);
         // 更新dict_table表is_add_to_se字段为true（已加入搜索引擎模块）
