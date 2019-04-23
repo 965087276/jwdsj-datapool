@@ -2,13 +2,13 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QSeTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.SeTable;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
-import cn.ict.jwdsj.datapool.indexmanage.client.DictClient;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.SeTableVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.SeTableRepo;
@@ -55,7 +55,7 @@ public class SeTableServiceImpl implements SeTableService {
     @Override
     public Page<SeTableVO> listSeTableVO(int curPage, int pageSize, long databaseId, String nameLike) {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
-        DictDatabase dictDatabase = dictClient.findDictDatabaseBy(databaseId);
+        DictDatabase dictDatabase = dictClient.findDictDatabaseById(databaseId);
         QSeTable seTable = QSeTable.seTable;
 
         Predicate predicate = seTable.dictDatabaseId.eq(databaseId);

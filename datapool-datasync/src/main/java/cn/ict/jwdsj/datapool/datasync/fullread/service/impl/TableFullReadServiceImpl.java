@@ -2,9 +2,9 @@ package cn.ict.jwdsj.datapool.datasync.fullread.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
+import cn.ict.jwdsj.datapool.api.feign.IndexManageClient;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
-import cn.ict.jwdsj.datapool.datasync.fullread.client.IndexManageClient;
 import cn.ict.jwdsj.datapool.datasync.fullread.entity.TableSyncMsg;
 import cn.ict.jwdsj.datapool.datasync.fullread.kafka.KafkaTableFullReadProducer;
 import cn.ict.jwdsj.datapool.datasync.fullread.service.TableFullReadService;

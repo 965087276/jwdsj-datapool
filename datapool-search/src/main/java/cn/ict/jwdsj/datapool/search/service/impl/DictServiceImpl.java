@@ -1,9 +1,9 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
-import cn.ict.jwdsj.datapool.search.client.DictClient;
 import cn.ict.jwdsj.datapool.search.service.DictService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;

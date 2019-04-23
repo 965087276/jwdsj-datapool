@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.indexmanage;
 
+import cn.ict.jwdsj.datapool.api.ApiCommonConfig;
 import cn.ict.jwdsj.datapool.common.DataPoolCommonConfig;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.SpringApplication;
@@ -12,8 +13,10 @@ import javax.persistence.EntityManager;
 
 @SpringBootApplication
 @EnableFeignClients
-@ComponentScan(basePackageClasses = {DataPoolCommonConfig.class,
-        IndexManageApplication.class})
+@ComponentScan(basePackageClasses = {
+        DataPoolCommonConfig.class,
+        IndexManageApplication.class,
+        ApiCommonConfig.class})
 public class IndexManageApplication {
 
     public static void main(String[] args) {

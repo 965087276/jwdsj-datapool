@@ -1,7 +1,7 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
+import cn.ict.jwdsj.datapool.api.feign.StatsClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
-import cn.ict.jwdsj.datapool.search.client.StatsClient;
 import cn.ict.jwdsj.datapool.search.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;

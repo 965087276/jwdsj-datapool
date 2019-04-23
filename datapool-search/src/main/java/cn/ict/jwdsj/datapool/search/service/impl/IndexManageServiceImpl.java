@@ -1,15 +1,12 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
+import cn.ict.jwdsj.datapool.api.feign.IndexManageClient;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
-import cn.ict.jwdsj.datapool.search.client.IndexManageClient;
 import cn.ict.jwdsj.datapool.search.service.IndexManageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 @Service
 public class IndexManageServiceImpl implements IndexManageService {

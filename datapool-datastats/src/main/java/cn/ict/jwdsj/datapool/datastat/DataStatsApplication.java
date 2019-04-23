@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.datastat;
 
+import cn.ict.jwdsj.datapool.api.ApiCommonConfig;
 import cn.ict.jwdsj.datapool.common.DataPoolCommonConfig;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,8 +15,10 @@ import javax.persistence.EntityManager;
 @SpringBootApplication
 @EnableScheduling
 @EnableFeignClients
-@ComponentScan(basePackageClasses = {DataPoolCommonConfig.class,
-        DataStatsApplication.class})
+@ComponentScan(basePackageClasses = {
+        DataPoolCommonConfig.class,
+        DataStatsApplication.class,
+        ApiCommonConfig.class})
 public class DataStatsApplication {
 
     public static void main(String[] args) {

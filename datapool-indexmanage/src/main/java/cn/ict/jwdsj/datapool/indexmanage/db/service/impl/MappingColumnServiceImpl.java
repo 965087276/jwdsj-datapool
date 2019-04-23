@@ -1,6 +1,8 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
+import cn.ict.jwdsj.datapool.api.feign.StatsClient;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
@@ -11,9 +13,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingColumnDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
-import cn.ict.jwdsj.datapool.indexmanage.client.DictClient;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
-import cn.ict.jwdsj.datapool.indexmanage.client.StatClient;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Autowired private MappingColumnRepo mappingColumnRepo;
     @Autowired private JPAQueryFactory jpaQueryFactory;
     @Autowired private DictClient dictClient;
-    @Autowired private StatClient statClient;
+    @Autowired private StatsClient statsClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -83,7 +83,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
         List<DictColumn> dictColumns = dictClient.listDictColumnsByTableId(tableId);
         // 缺陷字段
-        List<String> defectColumns = statClient.getDefectColumnsByTable(tableId);
+        List<String> defectColumns = statsClient.getDefectColumnsByTable(tableId);
 
         return dictColumns
                 .stream().filter(dictColumn -> !defectColumns.contains(dictColumn.getEnColumn())) // 过滤缺陷字段

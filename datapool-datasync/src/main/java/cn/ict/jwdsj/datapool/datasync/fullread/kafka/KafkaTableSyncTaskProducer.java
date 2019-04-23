@@ -1,7 +1,7 @@
 package cn.ict.jwdsj.datapool.datasync.fullread.kafka;
 
+import cn.ict.jwdsj.datapool.api.feign.IndexManageClient;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
-import cn.ict.jwdsj.datapool.datasync.fullread.client.IndexManageClient;
 import cn.ict.jwdsj.datapool.datasync.fullread.entity.TableSyncMsg;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;

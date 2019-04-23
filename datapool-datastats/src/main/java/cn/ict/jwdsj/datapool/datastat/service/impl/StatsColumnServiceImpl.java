@@ -1,19 +1,16 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsColumn;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsColumn;
-import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsColumnRepo;
-import cn.ict.jwdsj.datapool.datastat.service.DictClient;
 import cn.ict.jwdsj.datapool.datastat.service.StatsColumnService;
-import cn.ict.jwdsj.datapool.datastat.service.StatsDatabaseService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +40,7 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     @Override
     public List<String> initAndListDefectedColumns(long tableId) {
         DictTable dictTable = dictClient.findDictTableById(tableId);
-        DictDatabase dictDatabase = dictClient.findDictDatabaseBy(dictTable.getDictDatabase().getId());
+        DictDatabase dictDatabase = dictClient.findDictDatabaseById(dictTable.getDictDatabase().getId());
         String database = "`" + dictDatabase.getEnDatabase() + "`";
         String table = "`" + dictTable.getEnTable() + "`";
 

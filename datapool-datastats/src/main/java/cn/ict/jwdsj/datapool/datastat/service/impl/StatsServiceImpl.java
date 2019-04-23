@@ -1,9 +1,9 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.datastat.service.DictClient;
 import cn.ict.jwdsj.datapool.datastat.service.StatsService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Service
 public class StatsServiceImpl implements StatsService {

@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.datasync;
 
+import cn.ict.jwdsj.datapool.api.ApiCommonConfig;
 import cn.ict.jwdsj.datapool.common.DataPoolCommonConfig;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -22,8 +23,10 @@ import java.util.Map;
 @EnableFeignClients
 @EnableScheduling
 @EnableAsync
-@ComponentScan(basePackageClasses = {DataPoolCommonConfig.class,
-        DataSyncApplication.class})
+@ComponentScan(basePackageClasses = {
+        DataPoolCommonConfig.class,
+        DataSyncApplication.class,
+        ApiCommonConfig.class})
 public class DataSyncApplication {
 
     public static void main(String[] args) {

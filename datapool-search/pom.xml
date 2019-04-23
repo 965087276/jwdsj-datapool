@@ -19,6 +19,11 @@
             <artifactId>datapool-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>cn.ict.jwdsj.datapool</groupId>
+            <artifactId>datapool-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!-- feign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

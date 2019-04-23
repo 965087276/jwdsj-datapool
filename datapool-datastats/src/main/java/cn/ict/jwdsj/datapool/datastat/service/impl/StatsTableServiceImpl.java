@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
@@ -7,7 +8,6 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsTableRepo;
-import cn.ict.jwdsj.datapool.datastat.service.DictClient;
 import cn.ict.jwdsj.datapool.datastat.service.StatsTableService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +52,7 @@ public class StatsTableServiceImpl implements StatsTableService {
 
         DictTable table = dictClient.findDictTableById(tableId);
 
-        DictDatabase dictDb = dictClient.findDictDatabaseBy(table.getDictDatabase().getId());
+        DictDatabase dictDb = dictClient.findDictDatabaseById(table.getDictDatabase().getId());
 
         String enTable = table.getEnTable();
         String enDatabase = dictDb.getEnDatabase();
