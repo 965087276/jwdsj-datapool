@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.dictionary.table.entity.dto;
+package cn.ict.jwdsj.datapool.dictionary.column.entity.dto;
 
 import lombok.Data;
 

@@ -15,7 +15,7 @@ import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateColumnDTO;
+import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.UpdateColumnDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.COLUMN;
-import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.TABLE;
 import static java.util.stream.Collectors.groupingBy;
 
 @Service

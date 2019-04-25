@@ -2,13 +2,12 @@ package cn.ict.jwdsj.datapool.dictionary.controller;
 
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColExcelService;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateColumnDTO;
+import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.UpdateColumnDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

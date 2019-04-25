@@ -5,7 +5,7 @@ import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateColumnDTO;
+import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.UpdateColumnDTO;
 
 import java.util.List;
 
