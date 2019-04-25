@@ -20,7 +20,7 @@ public class MappingTable extends BaseEntity {
 //    @NotFound(action = NotFoundAction.IGNORE)
 //    private DictDatabase dictDatabase;
 
-    @Column(name = "database_id")
+    @Column(name = "database_id", nullable = false)
     private long dictDatabaseId;
 
 //    @ManyToOne
@@ -28,13 +28,25 @@ public class MappingTable extends BaseEntity {
 //    @NotFound(action = NotFoundAction.IGNORE)
 //    private DictTable dictTable;
 
-    @Column(name = "table_id")
+    @Column(name = "table_id", nullable = false)
     private long dictTableId;
 
-    @ManyToOne
-    @JoinColumn(name = "index_id", nullable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
-    private EsIndex esIndex;
+    @Column(name = "index_id", nullable = false)
+    private long indexId;
+
+    @Column(name = "en_table", nullable = false)
+    private String enTable;
+
+    @Column(name = "ch_table", nullable = false)
+    private String chTable;
+
+    @Column(name = "index_name", nullable = false)
+    private String indexName;
+
+//    @ManyToOne
+//    @JoinColumn(name = "index_id", nullable = false)
+//    @NotFound(action = NotFoundAction.IGNORE)
+//    private EsIndex esIndex;
 
     @Column(name = "table_records", nullable = false)
     private long tableRecords = 0L;
@@ -48,4 +60,14 @@ public class MappingTable extends BaseEntity {
     @Column(name = "update_date", nullable = false)
     private LocalDate updateDate = LocalDate.of(2009, 1, 1);
 
+    public void setDictTable(DictTable dictTable) {
+        this.setDictTableId(dictTable.getId());
+        this.setEnTable(dictTable.getEnTable());
+        this.setChTable(dictTable.getChTable());
+    }
+
+    public void setEsIndex(EsIndex esIndex) {
+        this.setIndexId(esIndex.getId());
+        this.setIndexName(esIndex.getIndexName());
+    }
 }

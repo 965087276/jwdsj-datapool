@@ -41,7 +41,7 @@ public class KafkaTableSyncTaskProducer {
             msg.setDatabaseName(jdbcTemplate.queryForObject(dbSql, String.class));
             msg.setTableId(mappingTable.getDictTableId());
             msg.setTableName(jdbcTemplate.queryForObject(tbSql, String.class));
-            msg.setIndexName(mappingTable.getEsIndex().getIndexName());
+            msg.setIndexName(mappingTable.getIndexName());
             msg.setId(++id);
             kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
             log.info("the msg have sent to kafka, {}", msg.getId());

@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
@@ -35,19 +36,27 @@ public class MappingTableServiceImpl implements MappingTableService {
     private ElasticRestService elasticRestService;
     @Autowired
     private EsIndexService esIndexService;
+    @Autowired
+    private DictClient dictClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(MappingTableAddDTO mappingTableAddDTO) throws IOException {
-        EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
+
         long dictTableId = mappingTableAddDTO.getTableId();
         long dictDatabaseId = mappingTableAddDTO.getDatabaseId();
+        long indexId = mappingTableAddDTO.getIndexId();
+
+        EsIndex esIndex = esIndexService.findById(indexId);
+        DictTable dictTable = dictClient.findDictTableById(dictTableId);
 
         MappingTable mappingTable = new MappingTable();
-        mappingTable.setEsIndex(esIndex);
-        mappingTable.setDictTableId(dictTableId);
         mappingTable.setDictDatabaseId(dictDatabaseId);
         mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
+        mappingTable.setEsIndex(esIndex);
+        mappingTable.setDictTable(dictTable);
+
+
         mappingTableRepo.save(mappingTable);
         // 为该索引添加一个别名，别名为"{alias-prefix}-表id"，别名指向这个表（即filter出elastic_table_id为该表id的文档）
         elasticRestService.addAlias(esIndex.getIndexName(), dictTableId);
