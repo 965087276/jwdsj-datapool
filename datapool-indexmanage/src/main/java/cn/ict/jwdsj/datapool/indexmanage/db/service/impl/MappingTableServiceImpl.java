@@ -4,8 +4,6 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.api.feign.StatsClient;
-import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
@@ -112,7 +110,7 @@ public class MappingTableServiceImpl implements MappingTableService {
     }
 
     @Override
-    @Scheduled(initialDelay = 10000, fixedRate = 86400000)
+    @Scheduled(initialDelay = 10000, fixedRate = 100000)
     public void getRecordsSchedule() {
         QMappingTable mappingTable = QMappingTable.mappingTable;
         List<Long> dictTableIds = jpaQueryFactory
@@ -127,10 +125,7 @@ public class MappingTableServiceImpl implements MappingTableService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            jpaQueryFactory.update(mappingTable)
-                    .set(mappingTable.tableRecords, tableRecords)
-                    .set(mappingTable.indexRecords, indexRecords)
-                    .execute();
+            mappingTableRepo.updateRecords(dictTableId, indexRecords, tableRecords);
         });
     }
 
