@@ -1,23 +1,35 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
+import cn.ict.jwdsj.datapool.api.feign.StatsClient;
+import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QSeTable;
+import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Ops;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +50,8 @@ public class MappingTableServiceImpl implements MappingTableService {
     private EsIndexService esIndexService;
     @Autowired
     private DictClient dictClient;
+    @Autowired
+    private StatsClient statsClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -82,6 +96,42 @@ public class MappingTableServiceImpl implements MappingTableService {
                         Expressions.currentDate(), mappingTable.updateDate).goe(mappingTable.updatePeriod)
         );
         return jpaQueryFactory.selectFrom(mappingTable).where(builder).fetch();
+    }
+
+    @Override
+    public Page<MappingTableVO> listMappingTableVO(int curPage, int pageSize, long databaseId, String nameLike) {
+        Pageable pageable = PageRequest.of(curPage-1, pageSize);
+        QMappingTable mappingTable = QMappingTable.mappingTable;
+        Predicate predicate = mappingTable.dictDatabaseId.eq(databaseId);
+        // 根据输入的待查询表名是中文还是英文来判断搜索哪个字段
+        predicate = StrUtil.isBlank(nameLike) ? predicate : StrJudgeUtil.isContainChinese(nameLike) ?
+                ExpressionUtils.and(predicate, mappingTable.chTable.like('%' + nameLike + '%')) :
+                ExpressionUtils.and(predicate, mappingTable.enTable.like('%' + nameLike + '%'));
+
+        return mappingTableRepo.findAll(predicate, pageable).map(tb -> BeanUtil.toBean(tb, MappingTableVO.class));
+    }
+
+    @Override
+    @Scheduled(initialDelay = 10000, fixedRate = 86400000)
+    public void getRecordsSchedule() {
+        QMappingTable mappingTable = QMappingTable.mappingTable;
+        List<Long> dictTableIds = jpaQueryFactory
+                .select(mappingTable.dictTableId)
+                .from(mappingTable)
+                .fetch();
+        dictTableIds.parallelStream().forEach(dictTableId -> {
+            long tableRecords = statsClient.getTableRecords(dictTableId);
+            long indexRecords = 0;
+            try {
+                indexRecords = elasticRestService.getRecordsByDictTableId(dictTableId);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            jpaQueryFactory.update(mappingTable)
+                    .set(mappingTable.tableRecords, tableRecords)
+                    .set(mappingTable.indexRecords, indexRecords)
+                    .execute();
+        });
     }
 
 

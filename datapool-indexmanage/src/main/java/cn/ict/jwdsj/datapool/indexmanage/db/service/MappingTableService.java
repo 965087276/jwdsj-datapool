@@ -2,6 +2,8 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Query;
 
 import java.io.IOException;
@@ -16,4 +18,11 @@ public interface MappingTableService {
     void save(MappingTableAddDTO mappingTableAddDTO) throws IOException;
 
     List<MappingTable> listTableNeedToUpdate();
+
+    Page<MappingTableVO> listMappingTableVO(int curPage, int pageSize, long databaseId, String nameLike);
+
+    /**
+     * 定时任务，计算某表的记录数和其在搜索引擎中的记录数
+     */
+    void getRecordsSchedule();
 }

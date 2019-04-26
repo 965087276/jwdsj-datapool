@@ -3,14 +3,14 @@ package cn.ict.jwdsj.datapool.indexmanage.web;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
@@ -29,6 +29,24 @@ public class MappingTableController {
     public ResponseEntity addTableMapping(@Valid @RequestBody MappingTableAddDTO mappingTableAddDTO) throws IOException {
         mappingTableService.save(mappingTableAddDTO);
         return ResponseEntity.ok();
+    }
+
+    @ApiOperation(value = "数据同步管理--表列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "curPage", value = "第几页", paramType = "query", required = true),
+            @ApiImplicitParam(name = "pageSize", value = "每页多少条", paramType = "query", required = true),
+            @ApiImplicitParam(name = "databaseId", value = "数据库id", paramType = "query", required = true),
+            @ApiImplicitParam(name = "nameLike", value = "表名搜索", paramType = "query", required = false)
+    })
+    @GetMapping("index_manage/mapping_tables")
+    public ResponseEntity<Page<MappingTableVO>> listAll(
+            @RequestParam(value = "curPage", required = true) int curPage,
+            @RequestParam(value = "pageSize", required = true) int pageSize,
+            @RequestParam(value = "databaseId", required = true) long databaseId,
+            @RequestParam(value = "nameLike", required = false) String nameLike) {
+
+        Page<MappingTableVO> mappingTableVOS = mappingTableService.listMappingTableVO(curPage, pageSize, databaseId, nameLike);
+        return ResponseEntity.ok(mappingTableVOS);
     }
 
     @ApiIgnore
