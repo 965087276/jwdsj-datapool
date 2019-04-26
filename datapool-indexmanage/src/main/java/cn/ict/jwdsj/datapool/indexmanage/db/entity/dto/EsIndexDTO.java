@@ -10,6 +10,7 @@ import javax.validation.constraints.Pattern;
 public class EsIndexDTO {
 
     @NotEmpty
+    @Pattern(regexp = "^[a-z][a-z0-9_-]*$")
     private String indexName;
 
     @Range(min = 1, max = 8)
