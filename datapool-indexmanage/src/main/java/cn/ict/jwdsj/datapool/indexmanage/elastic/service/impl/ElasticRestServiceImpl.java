@@ -10,6 +10,8 @@ import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
+import org.elasticsearch.action.search.SearchRequest;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
@@ -102,5 +104,21 @@ public class ElasticRestServiceImpl implements ElasticRestService {
 
         client.indices().updateAliases(request, RequestOptions.DEFAULT);
 
+    }
+
+    /**
+     * 查询某表在搜索引擎中的记录数
+     *
+     * @param dictTableId 表id
+     * @return
+     */
+    @Override
+    public long getRecordsByDictTableId(long dictTableId) throws IOException {
+        // 该表的索引别名
+        String indexAlias = aliasPrefix + dictTableId;
+        SearchRequest request = new SearchRequest(indexAlias);
+        return client.search(request, RequestOptions.DEFAULT)
+                .getHits()
+                .totalHits;
     }
 }

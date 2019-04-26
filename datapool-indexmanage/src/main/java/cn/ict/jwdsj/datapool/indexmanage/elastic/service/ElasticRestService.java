@@ -26,4 +26,11 @@ public interface ElasticRestService {
      * @param tableId 表id
      */
     void addAlias(String indexName, long tableId) throws IOException;
+
+    /**
+     * 查询某表在搜索引擎中的记录数
+     * @param dictTableId 表id
+     * @return
+     */
+    long getRecordsByDictTableId(long dictTableId) throws IOException;
 }
