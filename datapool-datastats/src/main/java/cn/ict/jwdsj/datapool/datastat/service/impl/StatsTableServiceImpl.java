@@ -41,6 +41,11 @@ public class StatsTableServiceImpl implements StatsTableService {
     }
 
     @Override
+    public StatsTable findByDictTableId(long dictTableId) {
+        return statsTableRepo.findByDictTableId(dictTableId);
+    }
+
+    @Override
     public List<StatsTable> listAll() {
         return statsTableRepo.findAll();
     }

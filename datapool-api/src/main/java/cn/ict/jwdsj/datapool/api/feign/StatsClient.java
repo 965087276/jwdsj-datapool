@@ -14,4 +14,7 @@ public interface StatsClient {
 
     @GetMapping("stats/stats_column/defect_column_names/tableId/{tableId}")
     List<String> getDefectColumnsByTable(@PathVariable("tableId") long tableId);
+
+    @GetMapping("stats/stats_table/records/tableId/{tableId}")
+    long getTableRecords(@PathVariable("tableId") long tableId);
 }

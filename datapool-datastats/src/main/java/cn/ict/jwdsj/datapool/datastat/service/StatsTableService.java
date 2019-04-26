@@ -14,6 +14,8 @@ public interface StatsTableService {
 
     void update(StatsTable statsTable);
 
+    StatsTable findByDictTableId(long dictTableId);
+
     List<StatsTable> listAll();
 
     /**
