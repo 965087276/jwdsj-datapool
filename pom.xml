@@ -46,6 +46,7 @@
         <module>datapool-datasync</module>
         <module>datapool-search</module>
         <module>datapool-api</module>
+        <module>datapool-gateway</module>
     </modules>
 
     <dependencies>
