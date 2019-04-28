@@ -30,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,6 +61,14 @@ public class MappingTableServiceImpl implements MappingTableService {
         long indexId = mappingTableAddDTO.getIndexId();
 
         EsIndex esIndex = esIndexService.findById(indexId);
+
+        // 若索引中存在该表的数据，则说明之前的delete by query还没有执行完毕，因此拒绝这次增加请求
+        long totalDocs = elasticRestService.getRecordsByDictTableIdInIndex(esIndex.getIndexName(), dictTableId);
+        if (totalDocs != 0) {
+            elasticRestService.deleteDocsByDictTableId(esIndex.getIndexName(), dictTableId);
+        }
+        Assert.isTrue(totalDocs == 0L, "数据正在删除中，请稍后尝试加入");
+
         DictTable dictTable = dictClient.findDictTableById(dictTableId);
 
         MappingTable mappingTable = new MappingTable();
