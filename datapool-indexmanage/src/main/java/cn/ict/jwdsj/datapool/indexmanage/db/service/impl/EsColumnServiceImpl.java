@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -34,10 +35,12 @@ public class EsColumnServiceImpl implements EsColumnService {
         EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
         long dictTableId = mappingTableAddDTO.getTableId();
 
+        Set<String> esColumnsAll = esColumnRepo.findByEsIndex(esIndex).stream().map(EsColumn::getName).collect(Collectors.toSet());
+
         // 筛选出该表在mapping_column中但不在es_column中的字段，这些字段需要加入elasticsearch与es_column中
         List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByDictTableId(dictTableId)
                 .stream()
-                .filter(columnTypeDTO -> !(esColumnRepo.existsByEsIndexAndName(esIndex, columnTypeDTO.getName())))
+                .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getName()))) // 这里效率低，需要优化
                 .map(columnTypeDTO -> BeanUtil.toBean(columnTypeDTO, EsColumn.class))
                 .collect(Collectors.toList());
         esColumns.forEach(esColumn -> esColumn.setEsIndex(esIndex));
