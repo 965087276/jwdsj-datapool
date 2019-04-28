@@ -121,12 +121,29 @@ public class MappingTableServiceImpl implements MappingTableService {
             long tableRecords = statsClient.getTableRecords(dictTableId);
             long indexRecords = 0;
             try {
-                indexRecords = elasticRestService.getRecordsByDictTableId(dictTableId);
+                indexRecords = elasticRestService.getRecordsByDictTableIdInAlias(dictTableId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             mappingTableRepo.updateRecords(dictTableId, indexRecords, tableRecords);
         });
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByDictTableId(long dictTableId) throws IOException {
+        String indexName = mappingTableRepo.findByDictTableId(dictTableId).getIndexName();
+
+        mappingTableRepo.deleteByDictTableId(dictTableId);
+
+        QSeTable seTable = QSeTable.seTable;
+        // 更新seTable表的sync字段为false
+        jpaQueryFactory.update(seTable).set(seTable.sync, false).where(seTable.dictTableId.eq(dictTableId)).execute();
+        // 在elasticsearch删除该表的索引别名
+        elasticRestService.deleteAliasByIndexNameAndDictTableId(indexName, dictTableId);
+        // 在elasticsearch删除该表的数据
+        elasticRestService.deleteDocsByDictTableId(indexName, dictTableId);
+
     }
 
 

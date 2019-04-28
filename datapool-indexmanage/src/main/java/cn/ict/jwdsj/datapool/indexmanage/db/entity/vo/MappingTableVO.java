@@ -9,6 +9,7 @@ public class MappingTableVO {
     private long id;
     private String enTable;
     private String chTable;
+    private long dictTableId;
     private String indexName;
     private long tableRecords;
     private long indexRecords;

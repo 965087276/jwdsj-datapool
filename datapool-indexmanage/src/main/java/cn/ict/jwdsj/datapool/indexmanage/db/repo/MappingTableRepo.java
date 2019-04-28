@@ -1,9 +1,6 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.repo;
 
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
-import com.querydsl.core.group.GroupBy;
-import com.querydsl.core.types.Predicate;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +22,8 @@ public interface MappingTableRepo extends JpaRepository<MappingTable, Long>, Que
     @Modifying
     @Query("update MappingTable r set r.indexRecords = :indexRecords, r.tableRecords = :tableRecords where r.dictTableId = :dictTableId")
     void updateRecords(@Param("dictTableId") long dictTableId, @Param("indexRecords") long indexRecords, @Param("tableRecords") long tableRecords);
+
+    void deleteByDictTableId(long dictTableId);
+
+    MappingTable findByDictTableId(long dictTableId);
 }

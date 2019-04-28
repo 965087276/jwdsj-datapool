@@ -25,4 +25,6 @@ public interface MappingTableService {
      * 定时任务，计算某表的记录数和其在搜索引擎中的记录数
      */
     void getRecordsSchedule();
+
+    void deleteByDictTableId(long dictTableId) throws IOException;
 }
