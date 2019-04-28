@@ -28,9 +28,30 @@ public interface ElasticRestService {
     void addAlias(String indexName, long tableId) throws IOException;
 
     /**
-     * 查询某表在搜索引擎中的记录数
+     * 查询某表在搜索引擎中的记录数（使用索引别名查找）
      * @param dictTableId 表id
      * @return
      */
-    long getRecordsByDictTableId(long dictTableId) throws IOException;
+    long getRecordsByDictTableIdInAlias(long dictTableId) throws IOException;
+
+    /**
+     * 查询某表在搜索引擎中的记录数（使用索引名查找）
+     * @param dictTableId 表id
+     * @return
+     */
+    long getRecordsByDictTableIdInIndex(String indexName, long dictTableId) throws IOException;
+
+    /**
+     * 删除某表的索引别名和表id
+     * @param indexName 该表所在的索引
+     * @param dictTableId 表id
+     */
+    void deleteAliasByIndexNameAndDictTableId(String indexName, long dictTableId) throws IOException;
+
+    /**
+     * 删除某表的数据
+     * @param indexName
+     * @param dictTableId 表id
+     */
+    void deleteDocsByDictTableId(String indexName, long dictTableId);
 }

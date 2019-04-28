@@ -6,17 +6,23 @@ import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.EsIndexDTO;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest.AliasActions;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermQueryBuilder;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +36,7 @@ import java.util.Map;
 import static cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum.*;
 
 @Service
+@Slf4j
 public class ElasticRestServiceImpl implements ElasticRestService {
 
     @Autowired
@@ -95,8 +102,8 @@ public class ElasticRestServiceImpl implements ElasticRestService {
     public void addAlias(String indexName, long tableId) throws IOException {
         IndicesAliasesRequest request = new IndicesAliasesRequest();
 
-        IndicesAliasesRequest.AliasActions aliasActions =
-                new IndicesAliasesRequest.AliasActions(IndicesAliasesRequest.AliasActions.Type.ADD)
+        AliasActions aliasActions =
+                new AliasActions(AliasActions.Type.ADD)
                 .index(indexName)
                 .alias(aliasPrefix + tableId)
                 .filter(QueryBuilders.termQuery("elastic_table_id", tableId));
@@ -107,13 +114,13 @@ public class ElasticRestServiceImpl implements ElasticRestService {
     }
 
     /**
-     * 查询某表在搜索引擎中的记录数
+     * 查询某表在搜索引擎中的记录数（使用索引别名查找）
      *
      * @param dictTableId 表id
      * @return
      */
     @Override
-    public long getRecordsByDictTableId(long dictTableId) throws IOException {
+    public long getRecordsByDictTableIdInAlias(long dictTableId) throws IOException {
         // 该表的索引别名
         String indexAlias = aliasPrefix + dictTableId;
         SearchRequest request = new SearchRequest(indexAlias);
@@ -121,4 +128,62 @@ public class ElasticRestServiceImpl implements ElasticRestService {
                 .getHits()
                 .totalHits;
     }
+
+    /**
+     * 查询某表在搜索引擎中的记录数（使用索引名查找）
+     *
+     * @param dictTableId 表id
+     * @return
+     */
+    @Override
+    public long getRecordsByDictTableIdInIndex(String indexName, long dictTableId) throws IOException {
+        SearchRequest request = new SearchRequest(indexName);
+        SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
+        sourceBuilder.query(new TermQueryBuilder("elastic_table_id", dictTableId)).size(0);
+        request.source(sourceBuilder);
+        return client.search(request, RequestOptions.DEFAULT).getHits().totalHits;
+    }
+
+    /**
+     * 删除某表的索引别名
+     *
+     * @param indexName 索引名
+     * @param dictTableId 表id
+     */
+    @Override
+    public void deleteAliasByIndexNameAndDictTableId(String indexName, long dictTableId) throws IOException {
+        IndicesAliasesRequest request = new IndicesAliasesRequest();
+        AliasActions removeAction =
+                new AliasActions(AliasActions.Type.REMOVE)
+                        .index(indexName)
+                        .alias(aliasPrefix + dictTableId);
+        request.addAliasAction(removeAction);
+        client.indices().updateAliases(request, RequestOptions.DEFAULT);
+    }
+
+    /**
+     * 删除某表的数据
+     *
+     * @param indexName
+     * @param dictTableId 表id
+     */
+    @Override
+    public void deleteDocsByDictTableId(String indexName, long dictTableId) {
+        DeleteByQueryRequest request = new DeleteByQueryRequest(indexName);
+        request.setQuery(new TermQueryBuilder("elastic_table_id", dictTableId));
+        request.setConflicts("proceed");
+        request.setBatchSize(2000);
+        client.deleteByQueryAsync(request, RequestOptions.DEFAULT, new ActionListener<BulkByScrollResponse>() {
+            @Override
+            public void onResponse(BulkByScrollResponse bulkByScrollResponse) {
+                log.info("删除索引数据成功，表id为{}", dictTableId);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                log.error("删除索引数据失败，表id为{}，异常为{}", dictTableId, e.getMessage());
+            }
+        });
+    }
+
 }
