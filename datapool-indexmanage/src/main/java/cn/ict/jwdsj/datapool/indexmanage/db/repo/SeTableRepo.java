@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SeTableRepo extends JpaRepository<SeTable, Long>, QuerydslPredicateExecutor<SeTable> {
+    SeTable findByDictTableId(long dictTableId);
+
+    void deleteByDictTableId(long dictTableId);
 }

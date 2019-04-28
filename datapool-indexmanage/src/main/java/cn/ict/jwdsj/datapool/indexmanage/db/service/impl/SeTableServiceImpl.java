@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @Service
 public class SeTableServiceImpl implements SeTableService {
@@ -65,6 +66,15 @@ public class SeTableServiceImpl implements SeTableService {
                 ExpressionUtils.and(predicate, seTable.enTable.like('%' + nameLike + '%'));
 
         return seTableRepo.findAll(predicate, pageable).map(seTable1 -> this.convertToSeTableVO(dictDatabase, seTable1));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByDictTableId(long dictTableId) {
+        SeTable seTable = seTableRepo.findByDictTableId(dictTableId);
+        Assert.isTrue(!seTable.isSync(), "该表在数据同步任务列表中，请先从同步列表中删除");
+        mappingColumnService.deleteByDictTableId(dictTableId);
+        seTableRepo.deleteByDictTableId(dictTableId);
     }
 
     private SeTableVO convertToSeTableVO(DictDatabase dictDatabase, SeTable seTable1) {

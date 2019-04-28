@@ -21,4 +21,6 @@ public interface SeTableService {
      * @return
      */
     Page<SeTableVO> listSeTableVO(int curPage, int pageSize, long databaseId, String nameLike);
+
+    void deleteByDictTableId(long dictTableId);
 }

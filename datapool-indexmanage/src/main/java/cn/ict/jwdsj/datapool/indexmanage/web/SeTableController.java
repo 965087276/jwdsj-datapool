@@ -29,6 +29,14 @@ public class SeTableController {
         return ResponseEntity.ok();
     }
 
+    @ApiOperation(value = "表信息管理--删除表")
+    @ApiImplicitParam(name = "dictTableId", value = "表id", paramType = "path", required = true)
+    @DeleteMapping("index_manage/se_tables/dictTableId/{dictTableId}")
+    public ResponseEntity delete(@PathVariable("dictTableId") long dictTableId) {
+        seTableService.deleteByDictTableId(dictTableId);
+        return ResponseEntity.ok();
+    }
+
     @ApiOperation(value = "表信息管理页--表列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "curPage", value = "第几页", paramType = "query", required = true),

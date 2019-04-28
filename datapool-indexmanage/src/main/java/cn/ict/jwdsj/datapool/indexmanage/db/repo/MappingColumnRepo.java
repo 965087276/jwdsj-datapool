@@ -11,4 +11,5 @@ import java.util.List;
 public interface MappingColumnRepo extends JpaRepository<MappingColumn, Long> {
     List<MappingColumn> findByDictTableId(long dictTableId);
     List<MappingColumn> findByDictTableIdAndDisplayed(long dictTableId, boolean displayed);
+    void deleteByDictTableId(long dictTableId);
 }

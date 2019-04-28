@@ -156,6 +156,12 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByDictTableId(long dictTableId) {
+        mappingColumnRepo.deleteByDictTableId(dictTableId);
+    }
+
     private ColDisplayedDTO convertToColDisplayedDTO(MappingColumn mappingColumn) {
         ColDisplayedDTO result = new ColDisplayedDTO();
         result.setBoost(mappingColumn.getBoost());

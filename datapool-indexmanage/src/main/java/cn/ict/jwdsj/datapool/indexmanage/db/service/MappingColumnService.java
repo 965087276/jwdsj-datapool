@@ -44,4 +44,6 @@ public interface MappingColumnService {
      * @return
      */
     List<MappingColumnVO> listMappingColumnVOs(long tableId);
+
+    void deleteByDictTableId(long dictTableId);
 }
