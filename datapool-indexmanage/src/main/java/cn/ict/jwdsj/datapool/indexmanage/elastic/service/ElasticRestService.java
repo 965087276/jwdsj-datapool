@@ -54,4 +54,10 @@ public interface ElasticRestService {
      * @param dictTableId 表id
      */
     void deleteDocsByDictTableId(String indexName, long dictTableId);
+
+    /**
+     * 删除索引
+     * @param indexName 索引名
+     */
+    void deleteIndex(String indexName) throws IOException;
 }

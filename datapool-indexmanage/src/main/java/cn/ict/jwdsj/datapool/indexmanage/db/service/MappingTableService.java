@@ -34,4 +34,11 @@ public interface MappingTableService {
      * @param mappingTableUpdateDTO
      */
     void update(MappingTableUpdateDTO mappingTableUpdateDTO);
+
+    /**
+     * 判断某索引下是否有表存在
+     * @param indexId
+     * @return
+     */
+    boolean existsByIndexId(long indexId);
 }

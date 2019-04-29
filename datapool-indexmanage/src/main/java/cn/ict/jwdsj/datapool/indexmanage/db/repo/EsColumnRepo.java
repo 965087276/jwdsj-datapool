@@ -11,4 +11,6 @@ import java.util.List;
 public interface EsColumnRepo extends JpaRepository<EsColumn, Long> {
 
     List<EsColumn> findByEsIndex(EsIndex esIndex);
+
+    void deleteByEsIndex(EsIndex esIndex);
 }

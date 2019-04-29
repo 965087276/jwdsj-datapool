@@ -7,10 +7,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -26,6 +23,14 @@ public class EsIndexController {
     @PostMapping("index_manage/indexes")
     public ResponseEntity addIndex(@Valid @RequestBody EsIndexDTO esIndexDTO) throws IOException {
         esIndexService.createIndex(esIndexDTO);
+        return ResponseEntity.ok();
+    }
+
+    @ApiOperation(value = "索引信息管理--删除索引")
+    @ApiImplicitParam(name = "indexId", value = "索引id", paramType = "path", required = true)
+    @DeleteMapping("index_manage/indexes/indexId/{indexId}")
+    public ResponseEntity deleteIndex(@PathVariable("indexId") long indexId) throws IOException {
+        esIndexService.deleteIndexById(indexId);
         return ResponseEntity.ok();
     }
 

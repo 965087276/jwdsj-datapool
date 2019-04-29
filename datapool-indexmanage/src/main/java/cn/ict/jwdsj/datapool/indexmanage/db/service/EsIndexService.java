@@ -12,4 +12,10 @@ public interface EsIndexService {
     EsIndex findById(long indexId);
 
     List<EsIndex> listAll();
+
+    /**
+     * 删除索引
+     * @param indexId
+     */
+    void deleteIndexById(long indexId) throws IOException;
 }

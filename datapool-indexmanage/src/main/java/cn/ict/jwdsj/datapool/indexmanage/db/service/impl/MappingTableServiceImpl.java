@@ -171,5 +171,16 @@ public class MappingTableServiceImpl implements MappingTableService {
         }
     }
 
+    /**
+     * 判断某索引下是否有表存在
+     *
+     * @param indexId
+     * @return
+     */
+    @Override
+    public boolean existsByIndexId(long indexId) {
+        return mappingTableRepo.existsByIndexId(indexId);
+    }
+
 
 }

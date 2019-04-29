@@ -12,6 +12,7 @@ import org.elasticsearch.action.admin.indices.alias.Alias;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequest.AliasActions;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.client.RequestOptions;
@@ -184,6 +185,17 @@ public class ElasticRestServiceImpl implements ElasticRestService {
                 log.error("删除索引数据失败，表id为{}，异常为{}", dictTableId, e.getMessage());
             }
         });
+    }
+
+    /**
+     * 删除索引
+     *
+     * @param indexName 索引名
+     */
+    @Override
+    public void deleteIndex(String indexName) throws IOException {
+        DeleteIndexRequest request = new DeleteIndexRequest(indexName);
+        client.indices().delete(request, RequestOptions.DEFAULT);
     }
 
 }

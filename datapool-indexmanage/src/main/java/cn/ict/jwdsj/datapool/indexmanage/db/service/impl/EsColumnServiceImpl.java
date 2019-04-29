@@ -50,4 +50,16 @@ public class EsColumnServiceImpl implements EsColumnService {
 
     }
 
+    /**
+     * 删除某索引下的字段
+     *
+     * @param indexId 索引的id
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByIndexId(long indexId) {
+        EsIndex esIndex = esIndexService.findById(indexId);
+        esColumnRepo.deleteByEsIndex(esIndex);
+    }
+
 }

@@ -23,6 +23,13 @@ public interface MappingTableRepo extends JpaRepository<MappingTable, Long>, Que
     @Query("update MappingTable r set r.indexRecords = :indexRecords, r.tableRecords = :tableRecords where r.dictTableId = :dictTableId")
     void updateRecords(@Param("dictTableId") long dictTableId, @Param("indexRecords") long indexRecords, @Param("tableRecords") long tableRecords);
 
+    /**
+     * 判断某索引下是否有表存在
+     * @param indexId
+     * @return
+     */
+    boolean existsByIndexId(long indexId);
+
     void deleteByDictTableId(long dictTableId);
 
     MappingTable findByDictTableId(long dictTableId);
