@@ -9,8 +9,6 @@ import java.util.List;
 
 @Repository
 public interface EsColumnRepo extends JpaRepository<EsColumn, Long> {
-    int countByEsIndexAndType(EsIndex esIndex, String type);
-    boolean existsByEsIndexAndName(EsIndex esIndex, String name);
-    List<EsColumn> findByEsIndex(EsIndex esIndex);
 
+    List<EsColumn> findByEsIndex(EsIndex esIndex);
 }
