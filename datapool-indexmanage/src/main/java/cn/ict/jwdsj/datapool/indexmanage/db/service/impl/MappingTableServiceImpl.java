@@ -11,6 +11,7 @@ import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QSeTable;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableUpdateDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
@@ -153,6 +154,21 @@ public class MappingTableServiceImpl implements MappingTableService {
         // 在elasticsearch删除该表的数据
         elasticRestService.deleteDocsByDictTableId(indexName, dictTableId);
 
+    }
+
+    /**
+     * 更新表（表的同步周期）
+     *
+     * @param mappingTableUpdateDTO
+     */
+    @Override
+    public void update(MappingTableUpdateDTO mappingTableUpdateDTO) {
+        MappingTable mappingTable = mappingTableRepo.findByDictTableId(mappingTableUpdateDTO.getTableId());
+        // 发生变化时才去更新
+        if (mappingTable.getUpdatePeriod() != mappingTableUpdateDTO.getUpdatePeriod()) {
+            mappingTable.setUpdatePeriod(mappingTableUpdateDTO.getUpdatePeriod());
+            mappingTableRepo.save(mappingTable);
+        }
     }
 
 

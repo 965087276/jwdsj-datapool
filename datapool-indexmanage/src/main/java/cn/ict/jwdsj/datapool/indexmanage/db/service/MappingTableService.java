@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableUpdateDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,10 @@ public interface MappingTableService {
     void getRecordsSchedule();
 
     void deleteByDictTableId(long dictTableId) throws IOException;
+
+    /**
+     * 更新表（表的同步周期）
+     * @param mappingTableUpdateDTO
+     */
+    void update(MappingTableUpdateDTO mappingTableUpdateDTO);
 }

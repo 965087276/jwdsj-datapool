@@ -3,6 +3,7 @@ package cn.ict.jwdsj.datapool.indexmanage.web;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableUpdateDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,6 +29,14 @@ public class MappingTableController {
     @PostMapping("index_manage/mapping_tables")
     public ResponseEntity addTableMapping(@Valid @RequestBody MappingTableAddDTO mappingTableAddDTO) throws IOException {
         mappingTableService.save(mappingTableAddDTO);
+        return ResponseEntity.ok();
+    }
+
+    @ApiOperation(value = "数据同步管理--编辑表")
+    @ApiImplicitParam(name = "mappingTableUpdateDTO", value = "表对象，包括表id、更新周期", required = true, dataType = "MappingTableUpdateDTO")
+    @PutMapping("index_manage/mapping_tables")
+    public ResponseEntity updateTableMapping(@Valid @RequestBody MappingTableUpdateDTO mappingTableUpdateDTO) throws IOException {
+        mappingTableService.update(mappingTableUpdateDTO);
         return ResponseEntity.ok();
     }
 
