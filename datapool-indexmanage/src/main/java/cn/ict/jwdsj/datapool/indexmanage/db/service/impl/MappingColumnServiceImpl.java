@@ -51,7 +51,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
         // 若该操作为在已存在的表上新增字段，且该表已加入了数据同步，那么不能增加新字段
         Optional.ofNullable(seTableService.findByDictTableId(seTableAddDTO.getTableId()))
                 .ifPresent(seTable -> {
-                    Assert.isTrue(seTable.isSync(), "该表在数据同步任务中，不能添加新字段");
+                    Assert.isTrue(!seTable.isSync(), "该表在数据同步任务中，不能添加新字段");
                 });
 
         // 字段的类型及其数量
