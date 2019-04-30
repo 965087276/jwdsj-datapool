@@ -117,6 +117,13 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .collect(toMap(tuple -> tuple.get(mappingColumn.type), tuple -> tuple.get(mappingColumn.count().intValue())));
     }
 
+    /**
+     * 表搜索引擎管理--表信息增加--加载该表的字段
+     * 需要剔除空字段
+     * @param databaseId 库id
+     * @param tableId 表id
+     * @return
+     */
     @Override
     public List<MappingColumnVO> getInitMappingColumns(long databaseId, long tableId) {
 
@@ -232,6 +239,21 @@ public class MappingColumnServiceImpl implements MappingColumnService {
             mappingColumns.add(colUpd);
         }
         mappingColumnRepo.saveAll(mappingColumns);
+    }
+
+    /**
+     * 表信息管理--字段编辑--新增字段--返回未添加的字段列表
+     *
+     * @param databaseId
+     * @param tableId
+     * @return
+     */
+    @Override
+    public List<MappingColumnVO> getMappingColumnsNotAdd(long databaseId, long tableId) {
+        // 可以加入搜索引擎中的所有字段（包含已增加的和未增加的）
+        var columnsAll = this.getInitMappingColumns(databaseId, tableId);
+        Set<String> columnsAdd = mappingColumnRepo.findByDictTableId(tableId).stream().map(MappingColumn::getEnColumn).collect(Collectors.toSet());
+        return columnsAll.stream().filter(col -> !columnsAdd.contains(col.getEnColumn())).collect(Collectors.toList());
     }
 
 
