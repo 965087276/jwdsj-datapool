@@ -3,18 +3,17 @@ package cn.ict.jwdsj.datapool.indexmanage.web;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
+import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +27,7 @@ public class MappingColumnController {
             @ApiImplicitParam(name = "tableId", value = "表id", paramType = "query", required = true)
     })
     @GetMapping("index_manage/mapping_columns_init")
-    ResponseEntity<List<MappingColumnVO>> getInitMappingColumns(
+    public ResponseEntity<List<MappingColumnVO>> getInitMappingColumns(
             @RequestParam(value = "databaseId", required = true) long databaseId,
             @RequestParam(value = "tableId", required = true) long tableId
     ) {
@@ -41,11 +40,19 @@ public class MappingColumnController {
             @ApiImplicitParam(name = "tableId", value = "表id", paramType = "query", required = true)
     })
     @GetMapping("index_manage/mapping_columns")
-    ResponseEntity<List<MappingColumnVO>> listMappingColumnVOs(
+    public ResponseEntity<List<MappingColumnVO>> listMappingColumnVOs(
             @RequestParam(value = "tableId", required = true) long tableId
     ) {
         List<MappingColumnVO> columns = mappingColumnService.listMappingColumnVOs(tableId);
         return ResponseEntity.ok(columns);
+    }
+
+    @ApiOperation(value = "表信息管理--查看字段--新增字段")
+    @ApiImplicitParam(name = "seTableAddDTO", value = "表对象,包括库名,表名,各字段", required = true, dataType = "SeTableAddDTO")
+    @PostMapping("index_manage/mapping_columns")
+    public ResponseEntity add(@Valid @RequestBody SeTableAddDTO seTableAddDTO) {
+        mappingColumnService.saveAll(seTableAddDTO);
+        return ResponseEntity.ok();
     }
 
     /**
@@ -54,7 +61,7 @@ public class MappingColumnController {
      */
     @ApiIgnore
     @GetMapping("index_manage/table_full_read_dtos/tableId/{tableId}")
-    TableFullReadDTO getTableFullReadDTOByTableId(@PathVariable("tableId") long tableId) {
+    public TableFullReadDTO getTableFullReadDTOByTableId(@PathVariable("tableId") long tableId) {
         return mappingColumnService.getTableFullReadDTOByTableId(tableId);
     }
 
@@ -65,8 +72,7 @@ public class MappingColumnController {
      */
     @ApiIgnore
     @GetMapping("index_manage/col_displayed_dtos")
-    List<ColDisplayedDTO> listColDisplayedDTOByTableId(@RequestParam(value = "tableId") long tableId) {
-
+    public List<ColDisplayedDTO> listColDisplayedDTOByTableId(@RequestParam(value = "tableId") long tableId) {
         return mappingColumnService.listColDisplayedDTOByTableId(tableId);
     }
 

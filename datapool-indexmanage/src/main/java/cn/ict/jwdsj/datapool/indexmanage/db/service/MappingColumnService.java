@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
+import cn.hutool.core.lang.Pair;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColumnTypeDTO;
@@ -7,12 +8,23 @@ import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MappingColumnService {
 
+    /**
+     * 添加字段
+     * @param seTableAddDTO
+     */
     void saveAll(SeTableAddDTO seTableAddDTO);
 
     List<ColumnTypeDTO> listColumnTypeDTOByDictTableId(long dictTableId);
+
+    /**
+     * 将某表的字段按照类型和数目进行group by
+     * @return
+     */
+    Map<String, Integer> groupWithTypeAndCountByDictTableId(long dictTableId);
 
     /**
      * 表搜索引擎管理--表信息增加--加载该表的字段
@@ -46,4 +58,5 @@ public interface MappingColumnService {
     List<MappingColumnVO> listMappingColumnVOs(long tableId);
 
     void deleteByDictTableId(long dictTableId);
+
 }

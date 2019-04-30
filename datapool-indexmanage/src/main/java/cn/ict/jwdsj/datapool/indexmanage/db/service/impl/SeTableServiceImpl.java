@@ -68,13 +68,30 @@ public class SeTableServiceImpl implements SeTableService {
         return seTableRepo.findAll(predicate, pageable).map(seTable1 -> this.convertToSeTableVO(dictDatabase, seTable1));
     }
 
+    /**
+     * 通过dictTableId查找
+     *
+     * @param dictTableId
+     * @return
+     */
+    @Override
+    public SeTable findByDictTableId(long dictTableId) {
+        return seTableRepo.findByDictTableId(dictTableId);
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByDictTableId(long dictTableId) {
         SeTable seTable = seTableRepo.findByDictTableId(dictTableId);
         Assert.isTrue(!seTable.isSync(), "该表在数据同步任务列表中，请先从同步列表中删除");
+        // 删除该表设置的mappingColumn字段
         mappingColumnService.deleteByDictTableId(dictTableId);
+
         seTableRepo.deleteByDictTableId(dictTableId);
+
+        // 将dictTable表中的addToSe字段设为false
+        QDictTable dictTable = QDictTable.dictTable;
+        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, false).where(dictTable.id.eq(dictTableId)).execute();
     }
 
     private SeTableVO convertToSeTableVO(DictDatabase dictDatabase, SeTable seTable1) {

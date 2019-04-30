@@ -1,12 +1,14 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Pair;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.api.feign.StatsClient;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingColumn;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
@@ -14,18 +16,19 @@ import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingColumnDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
+import cn.ict.jwdsj.datapool.indexmanage.db.service.SeTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum.KEYWORD;
+import static cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum.TEXT;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
@@ -35,22 +38,42 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Autowired private JPAQueryFactory jpaQueryFactory;
     @Autowired private DictClient dictClient;
     @Autowired private StatsClient statsClient;
+    @Autowired private SeTableService seTableService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveAll(SeTableAddDTO seTableAddDTO) {
-        Map<EsColumnTypeEnum, List<MappingColumnDTO>> columnsGroupByType = seTableAddDTO.getColumns()
+        Map<String, List<MappingColumnDTO>> columnsGroupByType = seTableAddDTO.getColumns()
                 .stream()
                 .collect(groupingBy(this::getColumnType));
+
+        // 若该操作为在已存在的表上新增字段，且该表已加入了数据同步，那么新增的字段不能含有被搜索的字段
+        Optional.ofNullable(seTableService.findByDictTableId(seTableAddDTO.getTableId()))
+                .ifPresent(seTable -> {
+                     if (seTable.isSync()) {
+                         // 若columnsGroupByType中有被搜索或分词的字段
+                         Assert.isTrue(columnsGroupByType.containsKey(KEYWORD.toString()) || columnsGroupByType.containsKey(TEXT.toString()), "该表在数据同步任务中，不能添加被搜索或被分词的字段");
+                     }
+                });
+
+
+        // 字段的类型及其数量
+        Map<String, Integer> typeAndCount = this.groupWithTypeAndCountByDictTableId(seTableAddDTO.getTableId());
+
         List<MappingColumn> mappingColumns = new ArrayList<>();
 
-        columnsGroupByType.forEach((typeEnum, list) -> {
+        columnsGroupByType.forEach((type, list) -> {
+            // 数据库中已有的typeEnum字段类型的数量
+            int typeCount = Optional.ofNullable(typeAndCount.get(type))
+                    .orElse(new Integer(0))
+                    .intValue();
+
             for (int i = 0; i < list.size(); ++i) {
                 MappingColumnDTO mappingColumnDTO = list.get(i);
                 MappingColumn mappingColumn = BeanUtil.toBean(mappingColumnDTO, MappingColumn.class);
                 mappingColumn.setDictTableId(seTableAddDTO.getTableId());
-                mappingColumn.setEsColumn(typeEnum.name() + "-" + (i+1));
-                mappingColumn.setType(typeEnum.name());
+                mappingColumn.setEsColumn(type + "-" + (++typeCount));
+                mappingColumn.setType(type);
 
                 mappingColumns.add(mappingColumn);
             }
@@ -76,6 +99,25 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                         .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 将某表的字段按照类型和数目进行group by
+     *
+     * @param dictTableId
+     * @return
+     */
+    @Override
+    public Map<String, Integer> groupWithTypeAndCountByDictTableId(long dictTableId) {
+        QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
+        return jpaQueryFactory
+                .select(mappingColumn.type, mappingColumn.count())
+                .from(mappingColumn)
+                .where(mappingColumn.dictTableId.eq(dictTableId))
+                .groupBy(mappingColumn.type)
+                .fetch()
+                .stream()
+                .collect(toMap(tuple -> tuple.get(mappingColumn.type), tuple -> tuple.get(mappingColumn.count().intValue())));
     }
 
     @Override
@@ -162,6 +204,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
         mappingColumnRepo.deleteByDictTableId(dictTableId);
     }
 
+
     private ColDisplayedDTO convertToColDisplayedDTO(MappingColumn mappingColumn) {
         ColDisplayedDTO result = new ColDisplayedDTO();
         result.setBoost(mappingColumn.getBoost());
@@ -187,17 +230,17 @@ public class MappingColumnServiceImpl implements MappingColumnService {
         return columnVO;
     }
 
-    private EsColumnTypeEnum getColumnType(MappingColumnDTO column) {
+    private String getColumnType(MappingColumnDTO column) {
         boolean searched = column.isSearched();
         boolean analyzed = column.isAnalyzed();
         boolean displayed = column.isDisplayed();
 
         if (!searched || !displayed) {
-            return EsColumnTypeEnum.NOT_SEARCH;
+            return EsColumnTypeEnum.NOT_SEARCH.toString();
         } else if (!analyzed) {
-            return EsColumnTypeEnum.KEYWORD;
+            return KEYWORD.toString();
         } else {
-            return EsColumnTypeEnum.TEXT;
+            return TEXT.toString();
         }
 
     }
