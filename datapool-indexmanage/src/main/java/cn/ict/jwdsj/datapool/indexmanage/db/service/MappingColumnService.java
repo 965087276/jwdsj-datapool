@@ -59,4 +59,17 @@ public interface MappingColumnService {
 
     void deleteByDictTableId(long dictTableId);
 
+    /**
+     * 更新字段（未配置数据同步，可任意增删改字段）
+     * 前台传输所有字段
+     * @param seTableAddDTO
+     */
+    void updateColumnsNotSync(SeTableAddDTO seTableAddDTO);
+
+    /**
+     * 更新字段（已配置数据同步，可配置权重、非搜索字段的是否展示）
+     * 前台只传输发生更新的字段
+     * @param seTableAddDTO
+     */
+    void updateColumnsHasSync(SeTableAddDTO seTableAddDTO);
 }

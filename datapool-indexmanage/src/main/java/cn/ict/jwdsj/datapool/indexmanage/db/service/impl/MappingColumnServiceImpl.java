@@ -19,6 +19,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.SeTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,15 +48,11 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .stream()
                 .collect(groupingBy(this::getColumnType));
 
-        // 若该操作为在已存在的表上新增字段，且该表已加入了数据同步，那么新增的字段不能含有被搜索的字段
+        // 若该操作为在已存在的表上新增字段，且该表已加入了数据同步，那么不能增加新字段
         Optional.ofNullable(seTableService.findByDictTableId(seTableAddDTO.getTableId()))
                 .ifPresent(seTable -> {
-                     if (seTable.isSync()) {
-                         // 若columnsGroupByType中有被搜索或分词的字段
-                         Assert.isTrue(columnsGroupByType.containsKey(KEYWORD.toString()) || columnsGroupByType.containsKey(TEXT.toString()), "该表在数据同步任务中，不能添加被搜索或被分词的字段");
-                     }
+                    Assert.isTrue(seTable.isSync(), "该表在数据同步任务中，不能添加新字段");
                 });
-
 
         // 字段的类型及其数量
         Map<String, Integer> typeAndCount = this.groupWithTypeAndCountByDictTableId(seTableAddDTO.getTableId());
@@ -202,6 +199,39 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteByDictTableId(long dictTableId) {
         mappingColumnRepo.deleteByDictTableId(dictTableId);
+    }
+
+    /**
+     * 更新字段（未配置数据同步，可任意增删改字段）
+     * 前台传输所有字段
+     * @param seTableAddDTO
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateColumnsNotSync(SeTableAddDTO seTableAddDTO) {
+        long dictTableId = seTableAddDTO.getTableId();
+        mappingColumnRepo.deleteByDictTableId(dictTableId);
+        this.saveAll(seTableAddDTO);
+    }
+
+    /**
+     * 更新字段（已配置数据同步，可配置权重、非搜索字段的是否展示）
+     * 前台只传输发生更新的字段
+     * @param seTableAddDTO
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateColumnsHasSync(SeTableAddDTO seTableAddDTO) {
+        long dictTableId = seTableAddDTO.getTableId();
+        var columns = seTableAddDTO.getColumns();
+        List<MappingColumn> mappingColumns = new ArrayList<>();
+        for (var column : columns) {
+            MappingColumn colUpd = mappingColumnRepo.findByDictColumnId(column.getDictColumnId());
+            colUpd.setDisplayed(column.isDisplayed());
+            colUpd.setBoost(column.getBoost());
+            mappingColumns.add(colUpd);
+        }
+        mappingColumnRepo.saveAll(mappingColumns);
     }
 
 

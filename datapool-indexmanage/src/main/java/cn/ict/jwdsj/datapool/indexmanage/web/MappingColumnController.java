@@ -55,6 +55,22 @@ public class MappingColumnController {
         return ResponseEntity.ok();
     }
 
+    @ApiOperation(value = "表信息管理--查看字段--更新字段（未配置数据同步，可任意增删改字段）前台只传输发生更新的字段")
+    @ApiImplicitParam(name = "seTableAddDTO", value = "表对象,包括库名,表名,各字段", required = true, dataType = "SeTableAddDTO")
+    @PutMapping("index_manage/mapping_columns/not_sync")
+    public ResponseEntity updateColumnsNotSync(@Valid @RequestBody SeTableAddDTO seTableAddDTO) {
+        mappingColumnService.updateColumnsNotSync(seTableAddDTO);
+        return ResponseEntity.ok();
+    }
+
+    @ApiOperation(value = "表信息管理--查看字段--更新字段（已配置数据同步，可配置权重、非搜索字段的是否展示）前台传输所有字段")
+    @ApiImplicitParam(name = "seTableAddDTO", value = "表对象,包括库名,表名,各字段", required = true, dataType = "SeTableAddDTO")
+    @PutMapping("index_manage/mapping_columns/has_sync")
+    public ResponseEntity updateColumnsHasSync(@Valid @RequestBody SeTableAddDTO seTableAddDTO) {
+        mappingColumnService.updateColumnsHasSync(seTableAddDTO);
+        return ResponseEntity.ok();
+    }
+
     /**
      * 获取全量读取数据时的字段信息
      * @return 字段信息。包括要加入到搜索引擎的字段列表，表字段到索引字段的映射。
