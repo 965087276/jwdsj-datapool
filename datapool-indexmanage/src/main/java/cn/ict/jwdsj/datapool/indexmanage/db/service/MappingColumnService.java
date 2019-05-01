@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
 import cn.hutool.core.lang.Pair;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
@@ -17,6 +18,13 @@ public interface MappingColumnService {
      * @param seTableAddDTO
      */
     void saveAll(SeTableAddDTO seTableAddDTO);
+
+    /**
+     * 通过dictColumnId查找
+     * @param dictColumnId
+     * @return
+     */
+    MappingColumn findByDictColumnId(long dictColumnId);
 
     List<ColumnTypeDTO> listColumnTypeDTOByDictTableId(long dictTableId);
 
@@ -57,6 +65,10 @@ public interface MappingColumnService {
      */
     List<MappingColumnVO> listMappingColumnVOs(long tableId);
 
+    /**
+     * 根据dictTableId删除数据
+     * @param dictTableId
+     */
     void deleteByDictTableId(long dictTableId);
 
     /**

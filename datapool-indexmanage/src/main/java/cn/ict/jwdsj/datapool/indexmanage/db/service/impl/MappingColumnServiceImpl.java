@@ -81,6 +81,11 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     }
 
     @Override
+    public MappingColumn findByDictColumnId(long dictColumnId) {
+        return mappingColumnRepo.findByDictColumnId(dictColumnId);
+    }
+
+    @Override
     public List<ColumnTypeDTO> listColumnTypeDTOByDictTableId(long dictTableId) {
         QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
         return jpaQueryFactory
