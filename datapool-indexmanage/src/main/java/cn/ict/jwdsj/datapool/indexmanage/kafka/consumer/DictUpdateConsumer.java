@@ -5,10 +5,6 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.*;
 import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
-import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType;
-import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
-import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
-import cn.ict.jwdsj.datapool.indexmanage.db.service.SeTableService;
 import com.alibaba.fastjson.JSONObject;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -40,30 +36,28 @@ public class DictUpdateConsumer {
             switch (msg.getType()) {
 
                 case TABLE:
-                    Optional.ofNullable(dictClient.findDictTableById(msg.getObjectId())).ifPresent(dictTable -> {
-                        QSeTable seTable = QSeTable.seTable;
-                        QMappingTable mappingTable = QMappingTable.mappingTable;
-                        jpaQueryFactory.update(seTable)
-                                .set(seTable.enTable, dictTable.getEnTable())
-                                .set(seTable.chTable, dictTable.getChTable())
-                                .where(seTable.dictTableId.eq(dictTable.getId()))
-                                .execute();
-                        jpaQueryFactory.update(mappingTable)
-                                .set(mappingTable.enTable, dictTable.getEnTable())
-                                .set(mappingTable.chTable, dictTable.getChTable())
-                                .where(mappingTable.dictTableId.eq(dictTable.getId()))
-                                .execute();
-                    });
+                    DictTable dictTable = dictClient.findDictTableById(msg.getObjectId());
+                    QSeTable seTable = QSeTable.seTable;
+                    QMappingTable mappingTable = QMappingTable.mappingTable;
+                    jpaQueryFactory.update(seTable)
+                            .set(seTable.enTable, dictTable.getEnTable())
+                            .set(seTable.chTable, dictTable.getChTable())
+                            .where(seTable.dictTableId.eq(dictTable.getId()))
+                            .execute();
+                    jpaQueryFactory.update(mappingTable)
+                            .set(mappingTable.enTable, dictTable.getEnTable())
+                            .set(mappingTable.chTable, dictTable.getChTable())
+                            .where(mappingTable.dictTableId.eq(dictTable.getId()))
+                            .execute();
                     break;
 
                 case COLUMN:
-                    Optional.ofNullable(dictClient.findDictColumnById(msg.getObjectId())).ifPresent(dictColumn -> {
-                        QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
-                        jpaQueryFactory.update(mappingColumn)
-                                .set(mappingColumn.enColumn, dictColumn.getEnColumn())
-                                .set(mappingColumn.chColumn, dictColumn.getChColumn())
-                                .execute();
-                    });
+                    DictColumn dictColumn = dictClient.findDictColumnById(msg.getObjectId());
+                    QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
+                    jpaQueryFactory.update(mappingColumn)
+                            .set(mappingColumn.enColumn, dictColumn.getEnColumn())
+                            .set(mappingColumn.chColumn, dictColumn.getChColumn())
+                            .execute();
                     break;
 
                 case DATABASE:
