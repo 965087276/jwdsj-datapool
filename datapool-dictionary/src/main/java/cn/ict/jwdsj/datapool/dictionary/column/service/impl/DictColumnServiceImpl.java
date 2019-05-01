@@ -148,6 +148,19 @@ public class DictColumnServiceImpl implements DictColumnService {
         return dictColumnRepo.getOne(id);
     }
 
+    /**
+     * 通过id删除字段
+     *
+     * @param id
+     */
+    @Override
+    public void delete(long id) {
+        DictColumn dictColumn = dictColumnRepo.getOne(id);
+        // 该字段所在表不能加入到搜索引擎中
+        Assert.isTrue(!dictTableService.findById(dictColumn.getDictTableId()).isAddToSe(), "该字段所在的表已经加入到搜索引擎表中，请从搜索引擎表中删除该表");
+        dictColumnRepo.deleteById(id);
+    }
+
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
         DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
         dictColumnVO.setColumnId(dictColumn.getId());

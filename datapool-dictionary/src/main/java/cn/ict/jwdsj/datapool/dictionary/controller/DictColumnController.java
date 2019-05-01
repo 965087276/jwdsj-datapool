@@ -88,10 +88,16 @@ public class DictColumnController {
         return ResponseEntity.ok();
     }
 
+    @ApiOperation(value = "字段信息管理页--删除字段")
+    @ApiImplicitParam(name = "id", value = "字段id", paramType = "path", required = true)
+    @DeleteMapping(("dict/dict_columns/id/{id}"))
+    public ResponseEntity deleteById(@PathVariable("id") long id) {
+        dictColumnService.delete(id);
+    }
 
     @ApiIgnore
     @GetMapping("dict/dict_columns/id/{id}")
-    DictColumn findDictColumnById(@PathVariable("id") long id) {
+    public DictColumn findDictColumnById(@PathVariable("id") long id) {
         return dictColumnService.findById(id);
     }
 

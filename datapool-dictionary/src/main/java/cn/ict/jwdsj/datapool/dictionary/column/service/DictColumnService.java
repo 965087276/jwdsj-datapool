@@ -17,6 +17,10 @@ public interface DictColumnService {
      */
     List<String> getEnTableByDictDatabaseId(long dictDatabaseId);
 
+    /**
+     * 保存多个字段
+     * @param dictColumns
+     */
     void saveAll(List<DictColumn> dictColumns);
 
     /**
@@ -27,6 +31,10 @@ public interface DictColumnService {
      */
     List<DictColumnVO> listDictColumnVOs(long databaseId, long tableId);
 
+    /**
+     * 前端页面手动添加多个字段
+     * @param dictColumnMultiAddDTO
+     */
     void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO);
 
 
@@ -48,5 +56,16 @@ public interface DictColumnService {
      */
     void update(UpdateColumnDTO updateColumnDTO);
 
+    /**
+     * 通过id查找
+     * @param id
+     * @return
+     */
     DictColumn findById(long id);
+
+    /**
+     * 通过id删除字段
+     * @param id
+     */
+    void delete(long id);
 }
