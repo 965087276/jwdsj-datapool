@@ -32,8 +32,10 @@ spring:
   kafka:
     bootstrap-servers: 172.16.8.240:9092
     consumer:
-      enable-auto-commit: true
+      enable-auto-commit: false
       auto-offset-reset: latest
+    listener:
+      ack-mode: manual
 eureka:
   client:
     service-url:
