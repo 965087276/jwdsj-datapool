@@ -88,6 +88,13 @@ public class DictColumnController {
         return ResponseEntity.ok();
     }
 
+
+    @ApiIgnore
+    @GetMapping("dict/dict_columns/id/{id}")
+    DictColumn findDictColumnById(@PathVariable("id") long id) {
+        return dictColumnService.findById(id);
+    }
+
     @ApiIgnore
     @GetMapping("dict/dict_columns/tableId/{tableId}")
     public List<DictColumn> listByTableId(@PathVariable("tableId") long tableId) {

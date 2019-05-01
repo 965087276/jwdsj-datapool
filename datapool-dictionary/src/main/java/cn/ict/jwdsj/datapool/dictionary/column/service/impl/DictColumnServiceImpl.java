@@ -143,6 +143,11 @@ public class DictColumnServiceImpl implements DictColumnService {
         kafkaSender.send(kafkaUpdateTopic, new DictUpdateMsg(COLUMN, updateColumnDTO.getColumnId()));
     }
 
+    @Override
+    public DictColumn findById(long id) {
+        return dictColumnRepo.getOne(id);
+    }
+
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
         DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
         dictColumnVO.setColumnId(dictColumn.getId());

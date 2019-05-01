@@ -47,4 +47,6 @@ public interface DictColumnService {
      * @param updateColumnDTO
      */
     void update(UpdateColumnDTO updateColumnDTO);
+
+    DictColumn findById(long id);
 }

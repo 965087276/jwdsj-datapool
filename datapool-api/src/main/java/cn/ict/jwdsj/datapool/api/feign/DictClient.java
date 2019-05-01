@@ -31,6 +31,14 @@ public interface DictClient {
     DictDatabase findDictDatabaseById(@PathVariable("id") long id);
 
     /**
+     * 通过字段id查字段信息
+     * @param id
+     * @return
+     */
+    @GetMapping("dict/dict_columns/id/{id}")
+    DictColumn findDictColumnById(@PathVariable("id") long id);
+
+    /**
      * 通过表id查所有字段
      * @param tableId
      * @return
