@@ -93,6 +93,7 @@ public class DictColumnController {
     @DeleteMapping(("dict/dict_columns/id/{id}"))
     public ResponseEntity deleteById(@PathVariable("id") long id) {
         dictColumnService.delete(id);
+        return ResponseEntity.ok();
     }
 
     @ApiIgnore
