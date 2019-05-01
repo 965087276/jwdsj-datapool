@@ -75,6 +75,13 @@ public interface DictTableService {
      */
     void delete(long id);
 
+    /**
+     * 判断某个库下是否有表
+     * @param dictDatabase
+     * @return
+     */
+    boolean existsByDictDatabase(DictDatabase dictDatabase);
+
 //    /**
 //     * 表信息管理--列表页--库下拉框
 //     * @return 返回dict_table表中的所有数据库信息

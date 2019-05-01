@@ -73,6 +73,14 @@ public class DictDatabaseController {
         return ResponseEntity.ok();
     }
 
+    @ApiOperation(value = "库信息管理页--删除库")
+    @ApiImplicitParam(name = "id", value = "库id", paramType = "path", required = true)
+    @DeleteMapping(("dict/dict_databases/id/{id}"))
+    public ResponseEntity deleteById(@PathVariable("id") long id) {
+        dictDatabaseService.delete(id);
+        return ResponseEntity.ok();
+    }
+
 
     @ApiOperation(value = "库信息管理页--添加库--excel添加")
     @PostMapping("dict/dict_databases_file")

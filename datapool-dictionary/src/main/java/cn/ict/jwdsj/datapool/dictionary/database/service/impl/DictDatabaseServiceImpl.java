@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.database.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
@@ -12,6 +13,7 @@ import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.repo.DictDatabaseRepo;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.dto.UpdateDatabaseDTO;
+import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     private DictDatabaseRepo dictDatabaseRepo;
     @Autowired
     private KafkaSender kafkaSender;
+    @Autowired
+    private DictTableService dictTableService;
 
     @Value("${kafka.topic-name.dict-update}")
     private String kafkaUpdateTopic;
@@ -94,6 +98,19 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     @Override
     public List<DictDatabase> listAll() {
         return dictDatabaseRepo.findAll();
+    }
+
+    /**
+     * 删除库信息
+     *
+     * @param id
+     */
+    @Override
+    public void delete(long id) {
+        DictDatabase dictDatabase = DictDatabase.buildById(id);
+        // 该库下不能有表
+        Assert.isTrue(!dictTableService.existsByDictDatabase(dictDatabase), "该库下还有表，请先删除表信息管理中该库的所有表");
+        dictDatabaseRepo.deleteById(id);
     }
 
     @Override

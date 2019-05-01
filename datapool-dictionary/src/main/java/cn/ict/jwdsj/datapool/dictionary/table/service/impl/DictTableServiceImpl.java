@@ -180,6 +180,17 @@ public class DictTableServiceImpl implements DictTableService {
         dictTableRepo.deleteById(id);
     }
 
+    /**
+     * 判断某个库下是否有表
+     *
+     * @param dictDatabase
+     * @return
+     */
+    @Override
+    public boolean existsByDictDatabase(DictDatabase dictDatabase) {
+        return dictTableRepo.existsByDictDatabase(dictDatabase);
+    }
+
 //    @Override
 //    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
 //        QDictTable dictTable = QDictTable.dictTable;
