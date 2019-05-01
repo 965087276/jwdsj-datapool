@@ -94,6 +94,11 @@ public class SeTableServiceImpl implements SeTableService {
         jpaQueryFactory.update(dictTable).set(dictTable.addToSe, false).where(dictTable.id.eq(dictTableId)).execute();
     }
 
+    @Override
+    public void save(SeTable seTable) {
+        seTableRepo.save(seTable);
+    }
+
     private SeTableVO convertToSeTableVO(DictDatabase dictDatabase, SeTable seTable1) {
         SeTableVO seTableVO = BeanUtil.toBean(seTable1, SeTableVO.class);
         seTableVO.setEnDatabase(dictDatabase.getEnDatabase());

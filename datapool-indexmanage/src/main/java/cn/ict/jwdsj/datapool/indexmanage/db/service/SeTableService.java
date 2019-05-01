@@ -31,4 +31,6 @@ public interface SeTableService {
     SeTable findByDictTableId(long dictTableId);
 
     void deleteByDictTableId(long dictTableId);
+
+    void save(SeTable seTable);
 }

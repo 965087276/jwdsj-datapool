@@ -18,6 +18,8 @@ public interface MappingTableService {
      */
     void save(MappingTableAddDTO mappingTableAddDTO) throws IOException;
 
+    MappingTable findByDictTableId(long dictTableId);
+
     List<MappingTable> listTableNeedToUpdate();
 
     Page<MappingTableVO> listMappingTableVO(int curPage, int pageSize, long databaseId, String nameLike);
@@ -41,4 +43,6 @@ public interface MappingTableService {
      * @return
      */
     boolean existsByIndexId(long indexId);
+
+    void save(MappingTable mappingTable);
 }

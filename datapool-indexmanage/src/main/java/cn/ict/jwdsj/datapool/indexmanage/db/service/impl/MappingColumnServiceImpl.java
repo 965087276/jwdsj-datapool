@@ -261,6 +261,16 @@ public class MappingColumnServiceImpl implements MappingColumnService {
         return columnsAll.stream().filter(col -> !columnsAdd.contains(col.getEnColumn())).collect(Collectors.toList());
     }
 
+    /**
+     * 插入/更新单条数据
+     *
+     * @param mappingColumn
+     */
+    @Override
+    public void save(MappingColumn mappingColumn) {
+        mappingColumnRepo.save(mappingColumn);
+    }
+
 
     private ColDisplayedDTO convertToColDisplayedDTO(MappingColumn mappingColumn) {
         ColDisplayedDTO result = new ColDisplayedDTO();

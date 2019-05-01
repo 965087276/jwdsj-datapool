@@ -92,4 +92,10 @@ public interface MappingColumnService {
      * @return
      */
     List<MappingColumnVO> getMappingColumnsNotAdd(long databaseId, long tableId);
+
+    /**
+     * 插入/更新单条数据
+     * @param mappingColumn
+     */
+    void save(MappingColumn mappingColumn);
 }

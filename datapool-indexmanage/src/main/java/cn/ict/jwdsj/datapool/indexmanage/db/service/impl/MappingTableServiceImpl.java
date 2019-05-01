@@ -92,6 +92,11 @@ public class MappingTableServiceImpl implements MappingTableService {
     }
 
     @Override
+    public MappingTable findByDictTableId(long dictTableId) {
+        return mappingTableRepo.findByDictTableId(dictTableId);
+    }
+
+    @Override
     public List<MappingTable> listTableNeedToUpdate() {
         QMappingTable mappingTable = QMappingTable.mappingTable;
         BooleanBuilder builder = new BooleanBuilder();
@@ -180,6 +185,11 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Override
     public boolean existsByIndexId(long indexId) {
         return mappingTableRepo.existsByIndexId(indexId);
+    }
+
+    @Override
+    public void save(MappingTable mappingTable) {
+        mappingTableRepo.save(mappingTable);
     }
 
 
