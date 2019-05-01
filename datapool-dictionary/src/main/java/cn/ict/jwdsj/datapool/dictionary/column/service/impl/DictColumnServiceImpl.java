@@ -161,6 +161,17 @@ public class DictColumnServiceImpl implements DictColumnService {
         dictColumnRepo.deleteById(id);
     }
 
+    /**
+     * 删除某表下的所有字段
+     *
+     * @param dictTableId
+     */
+    @Override
+    @Transactional
+    public void deleteByDictTableId(long dictTableId) {
+        dictColumnRepo.deleteAllByDictTableId(dictTableId);
+    }
+
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
         DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
         dictColumnVO.setColumnId(dictColumn.getId());

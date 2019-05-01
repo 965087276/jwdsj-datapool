@@ -10,6 +10,7 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
+import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
@@ -46,6 +47,8 @@ public class DictTableServiceImpl implements DictTableService {
     private JPAQueryFactory jpaQueryFactory;
     @Autowired
     private DictDatabaseService dictDatabaseService;
+    @Autowired
+    private DictColumnService dictColumnService;
     @Autowired
     private KafkaSender kafkaSender;
     @Value("${kafka.topic-name.dict-update}")
@@ -158,6 +161,23 @@ public class DictTableServiceImpl implements DictTableService {
         dictTable.setChTable(updateTableDTO.getChTable());
         dictTableRepo.save(dictTable);
         kafkaSender.send(kafkaUpdateTopic, new DictUpdateMsg(TABLE, updateTableDTO.getTableId()));
+    }
+
+    /**
+     * 通过id删除
+     *
+     * @param id
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(long id) {
+        DictTable dictTable = dictTableRepo.getOne(id);
+        // 若该表已加入搜索引擎，则不能删除
+        Assert.isTrue(!dictTable.isAddToSe(), "该表已加入搜索引擎表中，不能被删除");
+        // 删除所有字段
+        dictColumnService.deleteByDictTableId(id);
+        // 删除该表
+        dictTableRepo.deleteById(id);
     }
 
 //    @Override

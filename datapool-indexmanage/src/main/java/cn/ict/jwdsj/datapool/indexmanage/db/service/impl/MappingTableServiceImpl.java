@@ -144,6 +144,9 @@ public class MappingTableServiceImpl implements MappingTableService {
         });
     }
 
+    /**
+     * 取消数据同步
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByDictTableId(long dictTableId) throws IOException {

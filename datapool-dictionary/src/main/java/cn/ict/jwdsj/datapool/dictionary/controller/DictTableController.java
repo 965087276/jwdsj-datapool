@@ -95,6 +95,14 @@ public class DictTableController {
         return ResponseEntity.ok();
     }
 
+    @ApiOperation(value = "表信息管理页--删除表")
+    @ApiImplicitParam(name = "id", value = "表id", paramType = "path", required = true)
+    @DeleteMapping(("dict/dict_tables/id/{id}"))
+    public ResponseEntity deleteById(@PathVariable("id") long id) {
+        dictTableService.delete(id);
+        return ResponseEntity.ok();
+    }
+
     @ApiIgnore
     @GetMapping("dict/dict_tables/id/{id}")
     public DictTable findById(@PathVariable("id") long id) {

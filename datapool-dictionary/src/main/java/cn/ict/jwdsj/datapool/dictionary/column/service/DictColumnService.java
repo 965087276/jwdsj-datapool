@@ -68,4 +68,10 @@ public interface DictColumnService {
      * @param id
      */
     void delete(long id);
+
+    /**
+     * 删除某表下的所有字段
+     * @param dictTableId
+     */
+    void deleteByDictTableId(long dictTableId);
 }

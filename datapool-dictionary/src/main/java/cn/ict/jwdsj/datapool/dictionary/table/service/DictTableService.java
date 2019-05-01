@@ -69,6 +69,12 @@ public interface DictTableService {
      */
     void update(UpdateTableDTO updateTableDTO);
 
+    /**
+     * 通过id删除
+     * @param id
+     */
+    void delete(long id);
+
 //    /**
 //     * 表信息管理--列表页--库下拉框
 //     * @return 返回dict_table表中的所有数据库信息
