@@ -57,6 +57,7 @@ public class DictUpdateConsumer {
                     jpaQueryFactory.update(mappingColumn)
                             .set(mappingColumn.enColumn, dictColumn.getEnColumn())
                             .set(mappingColumn.chColumn, dictColumn.getChColumn())
+                            .where(mappingColumn.dictColumnId.eq(dictColumn.getId()))
                             .execute();
                     break;
 
