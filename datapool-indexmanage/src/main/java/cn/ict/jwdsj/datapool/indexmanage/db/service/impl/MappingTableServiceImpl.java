@@ -2,8 +2,11 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.ict.jwdsj.datapool.api.feign.DataSyncClient;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.api.feign.StatsClient;
+import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
+import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
@@ -28,12 +31,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -49,9 +55,13 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Autowired
     private EsIndexService esIndexService;
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Autowired
     private DictClient dictClient;
     @Autowired
     private StatsClient statsClient;
+    @Autowired
+    private DataSyncClient dataSyncClient;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -124,23 +134,53 @@ public class MappingTableServiceImpl implements MappingTableService {
         return mappingTableRepo.findAll(predicate, pageable).map(tb -> BeanUtil.toBean(tb, MappingTableVO.class));
     }
 
+    /**
+     * 定时任务
+     * 更新表记录数和索引记录数
+     * 并将需要更新数据的表发送给datasync模块
+     */
     @Override
-    @Scheduled(initialDelay = 10000, fixedRate = 100000)
-    public void getRecordsSchedule() {
+    @Scheduled(initialDelay = 10000, fixedRate = 10000)
+    public void calRecordsSchedule() {
         QMappingTable mappingTable = QMappingTable.mappingTable;
         List<Long> dictTableIds = jpaQueryFactory
                 .select(mappingTable.dictTableId)
                 .from(mappingTable)
                 .fetch();
         dictTableIds.parallelStream().forEach(dictTableId -> {
-            long tableRecords = statsClient.getTableRecords(dictTableId);
-            long indexRecords = 0;
+
+            MappingTable mtb = mappingTableRepo.findByDictTableId(dictTableId);
+            long oldTableRecords = mtb.getTableRecords();
+            long newTableRecords = statsClient.getTableRecords(dictTableId);
+            long newIndexRecords = 0;
+            // 当前日期
+            LocalDate currentDate = jdbcTemplate.queryForObject("select current_date", LocalDate.class);
+            // 该表的最后更新日期
+            LocalDate updateDate = mtb.getUpdateDate();
+            // 上面两个日期的日期差
+            int daysDiff = (int) ChronoUnit.DAYS.between(updateDate, currentDate);
             try {
-                indexRecords = elasticRestService.getRecordsByDictTableIdInAlias(dictTableId);
+                newIndexRecords = elasticRestService.getRecordsByDictTableIdInAlias(dictTableId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            mappingTableRepo.updateRecords(dictTableId, indexRecords, tableRecords);
+            // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
+            if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
+                DictDatabase dictDatabase = dictClient.findDictDatabaseById(mtb.getDictDatabaseId());
+                TableSyncMsg msg = new TableSyncMsg();
+                msg.setDatabaseId(dictDatabase.getId());
+                msg.setDatabaseName(dictDatabase.getEnDatabase());
+                msg.setIndexId(mtb.getIndexId());
+                msg.setIndexName(mtb.getIndexName());
+                msg.setTableId(mtb.getDictTableId());
+                msg.setTableName(mtb.getEnTable());
+                dataSyncClient.syncTable(msg);
+
+            }
+
+            // 更新 索引记录数 表记录数
+            mappingTableRepo.updateRecords(dictTableId, newIndexRecords, newTableRecords);
+
         });
     }
 

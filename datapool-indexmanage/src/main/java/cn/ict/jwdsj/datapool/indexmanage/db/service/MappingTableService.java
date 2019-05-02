@@ -20,14 +20,17 @@ public interface MappingTableService {
 
     MappingTable findByDictTableId(long dictTableId);
 
+    @Deprecated
     List<MappingTable> listTableNeedToUpdate();
 
     Page<MappingTableVO> listMappingTableVO(int curPage, int pageSize, long databaseId, String nameLike);
 
     /**
-     * 定时任务，计算某表的记录数和其在搜索引擎中的记录数
+     * 定时任务
+     * 更新表记录数和索引记录数
+     * 并将需要更新数据的表发送给datasync模块
      */
-    void getRecordsSchedule();
+    void calRecordsSchedule();
 
     void deleteByDictTableId(long dictTableId) throws IOException;
 
