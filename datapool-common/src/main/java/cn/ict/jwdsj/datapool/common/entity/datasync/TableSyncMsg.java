@@ -1,10 +1,9 @@
-package cn.ict.jwdsj.datapool.datasync.fullread.entity;
+package cn.ict.jwdsj.datapool.common.entity.datasync;
 
 import lombok.Data;
 
 @Data
 public class TableSyncMsg {
-    private int id;
 
     private long databaseId;
     private String databaseName;

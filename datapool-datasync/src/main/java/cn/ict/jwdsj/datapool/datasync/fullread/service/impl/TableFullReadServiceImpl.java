@@ -3,9 +3,8 @@ package cn.ict.jwdsj.datapool.datasync.fullread.service.impl;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.ict.jwdsj.datapool.api.feign.IndexManageClient;
-import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
-import cn.ict.jwdsj.datapool.datasync.fullread.entity.TableSyncMsg;
+import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import cn.ict.jwdsj.datapool.datasync.fullread.kafka.KafkaTableFullReadProducer;
 import cn.ict.jwdsj.datapool.datasync.fullread.service.TableFullReadService;
 import com.alibaba.fastjson.JSONObject;
@@ -18,7 +17,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

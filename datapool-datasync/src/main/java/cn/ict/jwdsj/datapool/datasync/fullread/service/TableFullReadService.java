@@ -1,6 +1,6 @@
 package cn.ict.jwdsj.datapool.datasync.fullread.service;
 
-import cn.ict.jwdsj.datapool.datasync.fullread.entity.TableSyncMsg;
+import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 
 import java.sql.SQLException;
 

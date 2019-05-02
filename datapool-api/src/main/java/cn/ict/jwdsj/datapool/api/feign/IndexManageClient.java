@@ -31,6 +31,7 @@ public interface IndexManageClient {
      * 获取需要更新的表
      * @return
      */
+    @Deprecated
     @GetMapping("index_manage/mapping_table/need_to_update")
     List<MappingTable> getTableNeedToUpdate();
 }

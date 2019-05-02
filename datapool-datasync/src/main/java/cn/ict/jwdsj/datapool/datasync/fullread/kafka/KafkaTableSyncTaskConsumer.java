@@ -1,12 +1,11 @@
 package cn.ict.jwdsj.datapool.datasync.fullread.kafka;
 
-import cn.ict.jwdsj.datapool.datasync.fullread.entity.TableSyncMsg;
+import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import cn.ict.jwdsj.datapool.datasync.fullread.service.TableFullReadService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
