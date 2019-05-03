@@ -81,7 +81,7 @@ public class StatsTableServiceImpl implements StatsTableService {
         QStatsTable statsTable = QStatsTable.statsTable;
 
         List<StatsTable> tablesNotAdd =  jpaQueryFactory
-                .selectDistinct(dictTable.dictDatabase.id, dictTable.id, dictTable.enTable, dictTable.chTable)
+                .select(dictTable.dictDatabase.id, dictTable.id, dictTable.enTable, dictTable.chTable)
                 .from(dictTable)
                 .leftJoin(statsTable)
                 .on(dictTable.id.eq(statsTable.dictTableId))
@@ -107,7 +107,7 @@ public class StatsTableServiceImpl implements StatsTableService {
         QStatsTable statsTable = QStatsTable.statsTable;
 
         List<StatsTable> statsTables = jpaQueryFactory
-                .selectDistinct(statsTable.id)
+                .select(statsTable.id)
                 .from(statsTable)
                 .leftJoin(dictTable)
                 .on(statsTable.dictTableId.eq(dictTable.id))
