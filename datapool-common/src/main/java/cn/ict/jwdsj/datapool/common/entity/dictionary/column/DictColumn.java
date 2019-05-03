@@ -3,6 +3,7 @@ package cn.ict.jwdsj.datapool.common.entity.dictionary.column;
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "dict_column")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class DictColumn extends BaseEntity {
 
 //    @ManyToOne(fetch = FetchType.LAZY)
