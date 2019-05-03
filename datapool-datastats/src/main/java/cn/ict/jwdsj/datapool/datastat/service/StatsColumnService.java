@@ -1,5 +1,7 @@
 package cn.ict.jwdsj.datapool.datastat.service;
 
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatsColumn;
+
 import java.util.List;
 
 public interface StatsColumnService {
@@ -38,4 +40,12 @@ public interface StatsColumnService {
      * @return
      */
     int countDefectedColumnsByTableId(long dictTableId);
+
+    /**
+     * 字段列表展示
+     * @param databaseId 库id
+     * @param tableId 表id
+     * @return
+     */
+    List<StatsColumn> listAll(long databaseId, long tableId);
 }

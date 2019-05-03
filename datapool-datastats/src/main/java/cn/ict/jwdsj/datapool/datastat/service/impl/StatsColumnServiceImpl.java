@@ -183,6 +183,18 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     }
 
     /**
+     * 字段列表展示
+     *
+     * @param databaseId 库id
+     * @param tableId    表id
+     * @return
+     */
+    @Override
+    public List<StatsColumn> listAll(long databaseId, long tableId) {
+        return statsColumnRepo.findByDictTableId(tableId);
+    }
+
+    /**
      * 判断表的某个字段是否为缺陷字段
      * 缺陷字段定义为90%以上的记录中该字段都为空
      * @param column 字段名

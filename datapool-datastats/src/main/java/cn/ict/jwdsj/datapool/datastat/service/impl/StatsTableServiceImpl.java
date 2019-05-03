@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.datastat.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
@@ -7,10 +8,16 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
+import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsTableRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatsTableService;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -110,6 +117,29 @@ public class StatsTableServiceImpl implements StatsTableService {
                 .map(id -> new StatsTable().id(id))
                 .collect(Collectors.toList());
         statsTableRepo.deleteAll(statsTables);
+    }
+
+    /**
+     * 表信息列表
+     *
+     * @param curPage    第几页
+     * @param pageSize   每页多少条
+     * @param databaseId 库的dict_id
+     * @param nameLike   表名搜索
+     * @return
+     */
+    @Override
+    public Page<StatsTable> listAll(int curPage, int pageSize, long databaseId, String nameLike) {
+        Pageable pageable = PageRequest.of(curPage-1, pageSize);
+        QStatsTable statsTable = QStatsTable.statsTable;
+
+        Predicate predicate = statsTable.dictDatabaseId.eq(databaseId);
+        // 根据输入的待查询表名是中文还是英文来判断搜索哪个字段
+        predicate = StrUtil.isBlank(nameLike) ? predicate : StrJudgeUtil.isContainChinese(nameLike) ?
+                ExpressionUtils.and(predicate, statsTable.chTable.like('%' + nameLike + '%')) :
+                ExpressionUtils.and(predicate, statsTable.enTable.like('%' + nameLike + '%'));
+
+        return statsTableRepo.findAll(predicate, pageable);
     }
 
 }

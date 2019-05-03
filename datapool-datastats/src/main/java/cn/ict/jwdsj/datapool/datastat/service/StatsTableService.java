@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.datastat.service;
 
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -36,4 +37,13 @@ public interface StatsTableService {
      */
     void deleteTablesNotExist();
 
+    /**
+     * 表信息列表
+     * @param curPage 第几页
+     * @param pageSize 每页多少条
+     * @param databaseId 库的dict_id
+     * @param nameLike 表名搜索
+     * @return
+     */
+    Page<StatsTable> listAll(int curPage, int pageSize, long databaseId, String nameLike);
 }

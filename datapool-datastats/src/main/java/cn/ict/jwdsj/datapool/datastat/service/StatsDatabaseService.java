@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.datastat.service;
 
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -29,4 +30,13 @@ public interface StatsDatabaseService {
     void deleteDatabasesNotExist();
 
     List<StatsDatabase> listByDictDatabaseIds(String ids);
+
+    /**
+     * 库统计列表
+     * @param curPage 第几页
+     * @param pageSize 每页多少条
+     * @param nameLike 库名搜索
+     * @return
+     */
+    Page<StatsDatabase> listAll(int curPage, int pageSize, String nameLike);
 }
