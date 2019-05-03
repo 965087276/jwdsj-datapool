@@ -1,7 +1,6 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Pair;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.api.feign.StatsClient;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
@@ -244,21 +243,6 @@ public class MappingColumnServiceImpl implements MappingColumnService {
             mappingColumns.add(colUpd);
         }
         mappingColumnRepo.saveAll(mappingColumns);
-    }
-
-    /**
-     * 表信息管理--字段编辑--新增字段--返回未添加的字段列表
-     *
-     * @param databaseId
-     * @param tableId
-     * @return
-     */
-    @Override
-    public List<MappingColumnVO> getMappingColumnsNotAdd(long databaseId, long tableId) {
-        // 可以加入搜索引擎中的所有字段（包含已增加的和未增加的）
-        var columnsAll = this.getInitMappingColumns(databaseId, tableId);
-        Set<String> columnsAdd = mappingColumnRepo.findByDictTableId(tableId).stream().map(MappingColumn::getEnColumn).collect(Collectors.toSet());
-        return columnsAll.stream().filter(col -> !columnsAdd.contains(col.getEnColumn())).collect(Collectors.toList());
     }
 
     /**

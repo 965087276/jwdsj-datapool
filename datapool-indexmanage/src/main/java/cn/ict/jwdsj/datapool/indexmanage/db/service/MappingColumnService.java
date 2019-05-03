@@ -86,14 +86,6 @@ public interface MappingColumnService {
     void updateColumnsHasSync(SeTableAddDTO seTableAddDTO);
 
     /**
-     * 表信息管理--字段编辑--新增字段--返回未添加的字段列表
-     * @param databaseId
-     * @param tableId
-     * @return
-     */
-    List<MappingColumnVO> getMappingColumnsNotAdd(long databaseId, long tableId);
-
-    /**
      * 插入/更新单条数据
      * @param mappingColumn
      */

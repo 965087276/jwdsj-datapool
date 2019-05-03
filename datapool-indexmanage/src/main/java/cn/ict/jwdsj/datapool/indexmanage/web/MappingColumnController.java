@@ -35,20 +35,6 @@ public class MappingColumnController {
         return ResponseEntity.ok(columns);
     }
 
-    @ApiOperation(value = "表信息管理--字段编辑--新增字段--返回未添加的字段列表")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "databaseId", value = "数据库id", paramType = "query", required = true),
-            @ApiImplicitParam(name = "tableId", value = "表id", paramType = "query", required = true)
-    })
-    @GetMapping("index_manage/mapping_columns/not_add")
-    public ResponseEntity<List<MappingColumnVO>> getMappingColumnsNotAdd(
-            @RequestParam(value = "databaseId", required = true) long databaseId,
-            @RequestParam(value = "tableId", required = true) long tableId
-    ) {
-        List<MappingColumnVO> columns = mappingColumnService.getMappingColumnsNotAdd(databaseId, tableId);
-        return ResponseEntity.ok(columns);
-    }
-
     @ApiOperation(value = "表信息管理--查看字段--字段列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "tableId", value = "表id", paramType = "query", required = true)
