@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   application:
     name: datapool-dictionary
@@ -14,8 +16,6 @@ kafka:
 
 
 ---
-server:
-  port: 8081
 spring:
   profiles: dev
   datasource:
@@ -32,12 +32,29 @@ spring:
   kafka:
     bootstrap-servers: 172.16.8.240:9092
 
-#      consumer:
-#        max-poll-records: 1000
-#        enable-auto-commit: true
-#        auto-offset-reset: latest
-#      listener:
-#        concurrency: 4
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/
+
+
+---
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8
+    username: businessuseratdbpool
+    password: dbpool
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  #Kafka
+  kafka:
+    bootstrap-servers: 10.10.169.141:9092
+
 eureka:
   client:
     service-url:

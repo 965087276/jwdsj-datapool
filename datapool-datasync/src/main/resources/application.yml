@@ -1,12 +1,19 @@
+server:
+  port: 8084
 spring:
   application:
     name: datapool-datasync
   profiles:
     active: dev
 
+#kafka个人配置
+kafka:
+  topic-name:
+    table-sync-task: sync-table-task
+    table-full-read: table-full-read
+    table-after-mapping: table-after-mapping
+
 ---
-server:
-  port: 8084
 spring:
   profiles: dev
   datasource:
@@ -33,11 +40,36 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:1025/eureka/
-#kafka个人配置
-kafka:
-  topic-name:
-    table-sync-task: sync-table-task
-    table-full-read: table-full-read
-    table-after-mapping: table-after-mapping
+
 elasticsearch:
   hosts: 172.16.8.240:9200
+
+---
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8
+    username: businessuseratdbpool
+    password: dbpool
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  #Kafka
+  kafka:
+    bootstrap-servers: 10.10.169.141:9092
+    consumer:
+      #      max-poll-records: 1000
+      enable-auto-commit: true
+      auto-offset-reset: latest
+#    listener:
+#      concurrency: 4
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/
+elasticsearch:
+  hosts: 10.10.169.142:9200,10.10.169.147:9200,10.10.169.164:9200

@@ -1,3 +1,6 @@
+server:
+  port: 8082
+
 spring:
   application:
     name: datapool-indexmanage
@@ -14,8 +17,6 @@ kafka:
 
 
 ---
-server:
-  port: 8082
 spring:
   profiles: dev
   datasource:
@@ -42,5 +43,35 @@ eureka:
       defaultZone: http://localhost:1025/eureka/
 elasticsearch:
   hosts: 172.16.8.240:9200
+  index-prefix: jwdsj-datapool-index-
+  alias-prefix: jwdsj-datapool-alias-
+
+---
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8
+    username: businessuseratdbpool
+    password: dbpool
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  #Kafka
+  kafka:
+    bootstrap-servers: 10.10.169.141:9092
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: latest
+    listener:
+      ack-mode: manual
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/
+elasticsearch:
+  hosts: 10.10.169.142:9200,10.10.169.147:9200,10.10.169.164:9200
   index-prefix: jwdsj-datapool-index-
   alias-prefix: jwdsj-datapool-alias-

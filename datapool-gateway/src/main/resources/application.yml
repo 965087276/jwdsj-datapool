@@ -1,3 +1,5 @@
+server:
+  port: 8888
 spring:
   application:
     name: datapool-gateway
@@ -10,10 +12,16 @@ ribbon:
 
 
 ---
-server:
-  port: 8888
 spring:
   profiles: dev
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/
+
+---
+spring:
+  profiles: test
 eureka:
   client:
     service-url:
