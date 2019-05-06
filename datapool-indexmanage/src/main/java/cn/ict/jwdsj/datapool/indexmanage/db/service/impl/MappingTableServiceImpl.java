@@ -175,7 +175,7 @@ public class MappingTableServiceImpl implements MappingTableService {
                 msg.setTableId(mtb.getDictTableId());
                 msg.setTableName(mtb.getEnTable());
                 dataSyncClient.syncTable(msg);
-
+                mappingTableRepo.updateUpdateDate(dictTableId);
             }
 
             // 更新 索引记录数 表记录数
