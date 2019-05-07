@@ -11,7 +11,7 @@
  Target Server Version : 100215
  File Encoding         : 65001
 
- Date: 23/04/2019 14:12:38
+ Date: 07/05/2019 11:53:00
 */
 
 SET NAMES utf8mb4;
@@ -25,6 +25,8 @@ CREATE TABLE `dict_column`  (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `database_id` bigint(20) UNSIGNED NOT NULL DEFAULT 3 COMMENT '外键，关联dict_database表',
   `table_id` bigint(20) NOT NULL COMMENT '外键，关联dict_table表',
+  `en_database` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '英文库名(冗余字段)',
+  `en_table` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '英文表名(冗余字段)',
   `en_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表字段英文名',
   `ch_column` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '表字段中文名',
   `gmt_create` datetime(0) NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
@@ -32,7 +34,7 @@ CREATE TABLE `dict_column`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`, `en_column`) USING BTREE,
   INDEX `table_id_2`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 170 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字段中英对照信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字段中英对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for dict_database
@@ -47,7 +49,7 @@ CREATE TABLE `dict_database`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `en_database`(`en_database`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库中英对照信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库中英对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for dict_table
@@ -56,15 +58,16 @@ DROP TABLE IF EXISTS `dict_table`;
 CREATE TABLE `dict_table`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `database_id` bigint(20) NOT NULL COMMENT '外键,关联dict_database',
+  `en_database` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '英文库名(冗余字段）',
   `en_table` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '英文表名',
   `ch_table` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '中文表名',
   `is_add_to_se` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否加入到搜索引擎',
   `gmt_create` datetime(0) NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
-  `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() COMMENT '修改时间',
+  `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `database_id`(`database_id`, `en_table`) USING BTREE,
   INDEX `database_id_2`(`database_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表中英对照信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表中英对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for es_column
@@ -77,7 +80,8 @@ CREATE TABLE `es_column`  (
   `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '字段类型(text、keyword、not_search)',
   `gmt_create` datetime(0) NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `index_id`(`index_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '索引字段信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -91,7 +95,7 @@ CREATE TABLE `es_index`  (
   `gmt_create` datetime(0) NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '索引信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '索引信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mapping_column
@@ -114,8 +118,9 @@ CREATE TABLE `mapping_column`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `column_id`(`column_id`) USING BTREE,
   UNIQUE INDEX `table_id_2`(`table_id`, `es_column`) USING BTREE,
-  INDEX `table_id`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 279 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表字段与索引字段对照信息表' ROW_FORMAT = Dynamic;
+  INDEX `table_id`(`table_id`) USING BTREE,
+  INDEX `type`(`type`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表字段与索引字段对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mapping_table
@@ -126,6 +131,9 @@ CREATE TABLE `mapping_table`  (
   `database_id` bigint(20) NOT NULL COMMENT '外键，关联dict_database',
   `table_id` bigint(20) UNSIGNED NOT NULL COMMENT '外键，关联dict_table',
   `index_id` bigint(20) UNSIGNED NOT NULL COMMENT '所在索引, 关联es_index',
+  `en_table` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '英文表名（冗余字段）',
+  `ch_table` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '中文表名（冗余字段）',
+  `index_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '索引名（冗余字段）',
   `table_records` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '表记录数',
   `index_records` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '索引中的记录数',
   `update_date` date NOT NULL COMMENT '上次更新日期',
@@ -152,7 +160,7 @@ CREATE TABLE `se_table`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`) USING BTREE,
   INDEX `database_id`(`database_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '搜索引擎的表的集合。包括了已加入到同步队列中的表和未加入到同步队列中的表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '搜索引擎的表的集合。包括了已加入到同步队列中的表和未加入到同步队列中的表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for stat_column
@@ -173,7 +181,7 @@ CREATE TABLE `stat_column`  (
   UNIQUE INDEX `column_id`(`column_id`) USING BTREE,
   INDEX `database_id`(`database_id`) USING BTREE,
   INDEX `table_id`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 339 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for stat_database
@@ -191,7 +199,7 @@ CREATE TABLE `stat_database`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `database_id`(`database_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库数据统计' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库数据统计' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for stat_table
@@ -212,6 +220,6 @@ CREATE TABLE `stat_table`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表数据统计' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表数据统计' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
