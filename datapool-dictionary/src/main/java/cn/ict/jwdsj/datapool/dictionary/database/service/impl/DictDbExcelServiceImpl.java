@@ -10,6 +10,7 @@ import cn.ict.jwdsj.datapool.dictionary.database.entity.dto.DictDbExcelDTO;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDbExcelService;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaDatabaseService;
+import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,7 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
     private MetaDatabaseService metaDatabaseService;
 
     private final String WRONG_HEADER = "表头错误";
-    private final String WRONG_ENDATABASE = "enDatabase列的元素有误";
+    private String WRONG_ENDATABASE = "enDatabase列的元素有误";
     private final String EMPRY_CHDATABASE = "chDatabase列存在空值";
     private final String DUPLICATE_OBJECT = "存在重复对象";
     private final String EXISTS_OBJECT = "库中已存在某enDatabase";
@@ -51,7 +53,7 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
         Assert.isTrue(dictDatabaseDTOs.size() == dictDatabaseDTOs.stream().distinct().count(), DUPLICATE_OBJECT);
 
         // 数据库必须是真实存在的库
-        Assert.isTrue(dictDatabaseDTOs.stream().map(DictDbExcelDTO::getEnDatabase).allMatch(metaDatabaseService::exists), WRONG_ENDATABASE);
+        Assert.isTrue(this.judgeDatabaseExists(dictDatabaseDTOs), WRONG_ENDATABASE);
 
         // dict_database表中不能有这个库
         Assert.isTrue(dictDatabaseDTOs.stream().map(DictDbExcelDTO::getEnDatabase).noneMatch(dictDatabaseService::exists), EXISTS_OBJECT);
@@ -62,6 +64,23 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
                 .collect(Collectors.toList());
 
         dictDatabaseService.saveAll(dictDatabases);
+    }
+
+    /**
+     * 判断数据库是否真实存在
+     * @param dbs 数据库列表
+     * @return
+     */
+    private boolean judgeDatabaseExists(List<DictDbExcelDTO> dbs) {
+        WRONG_ENDATABASE = "enDatabase列的元素有误: ";
+        List<String> notExists = new ArrayList<>();
+        for (var db : dbs) {
+            if (!metaDatabaseService.exists(db.getEnDatabase())) {
+                notExists.add(db.getEnDatabase());
+            }
+        }
+        WRONG_ENDATABASE += notExists.stream().collect(Collectors.joining(","));
+        return notExists.isEmpty();
     }
 
 }
