@@ -30,6 +30,12 @@ public class DictColumn extends BaseEntity {
     @Column(name = "table_id")
     private long dictTableId;
 
+    @Column(name = "en_database")
+    private String enDatabase;
+
+    @Column(name = "en_table")
+    private String enTable;
+
     @Column(name = "en_column")
     private String enColumn;
 

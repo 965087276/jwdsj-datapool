@@ -144,8 +144,8 @@ public class DictColExcelServiceImpl implements DictColExcelService {
     }
 
     private List<DictColumn> mapColExcelsToDictColumns(DictDatabase dictDatabase, List<DictColExcelDTO> colExcelDTOList, List<TbIdNameDTO> tbIdNameDTOList) {
-        Map<String, Long> tableAndId = tbIdNameDTOList.stream()
-                .collect(Collectors.toMap(TbIdNameDTO::getEnTable, TbIdNameDTO::getId));
+        Map<String, TbIdNameDTO> tableAndId = tbIdNameDTOList.stream()
+                .collect(Collectors.toMap(TbIdNameDTO::getEnTable, tbIdNameDTO -> tbIdNameDTO));
         return colExcelDTOList
                 .stream()
                 .map(colExcelDTO -> getDictColByColExcelAndTableId(colExcelDTO, tableAndId.get(colExcelDTO.getEnTable()), dictDatabase))
@@ -153,10 +153,12 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
     }
 
-    private DictColumn getDictColByColExcelAndTableId(DictColExcelDTO colExcelDTO, long tableId, DictDatabase dictDatabase) {
+    private DictColumn getDictColByColExcelAndTableId(DictColExcelDTO colExcelDTO, TbIdNameDTO tbIdNameDTO, DictDatabase dictDatabase) {
         DictColumn dictColumn = BeanUtil.toBean(colExcelDTO, DictColumn.class);
-        dictColumn.setDictTableId(tableId);
+        dictColumn.setDictTableId(tbIdNameDTO.getId());
+        dictColumn.setEnTable(tbIdNameDTO.getEnTable());
         dictColumn.setDictDatabaseId(dictDatabase.getId());
+        dictColumn.setEnDatabase(dictDatabase.getEnDatabase());
         return dictColumn;
     }
 

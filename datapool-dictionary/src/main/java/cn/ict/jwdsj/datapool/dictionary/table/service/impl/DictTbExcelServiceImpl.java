@@ -97,10 +97,20 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
         Assert.isTrue(allTableNotExistsInDictTable(dictDatabase, tbExcelDTOS), EXISTS_IN_DICT_TABLE);
 
         List<DictTable> dictTables = tbExcelDTOS.stream()
-                .map(tbExcelDTO -> BeanUtil.toBean(tbExcelDTO, DictTable.class))
+                .map(tbExcelDTO -> this.convertToDictTable(tbExcelDTO, dictDatabase))
                 .collect(Collectors.toList());
-        dictTables.forEach(dictTable -> dictTable.setDictDatabase(dictDatabase));
+
         dictTableService.saveAll(dictTables);
+    }
+
+    private DictTable convertToDictTable(DictTbExcelDTO tbExcelDTO, DictDatabase dictDatabase) {
+        DictTable dictTable = new DictTable();
+        dictTable.setEnDatabase(dictDatabase.getEnDatabase());
+        dictTable.setDictDatabase(dictDatabase);
+        dictTable.setEnTable(tbExcelDTO.getEnTable());
+        dictTable.setChTable(tbExcelDTO.getChTable());
+        dictTable.setAddToSe(false);
+        return dictTable;
     }
 
     private boolean allTableNotExistsInDictTable(DictDatabase dictDatabase, List<DictTbExcelDTO> tbExcelDTOS) {

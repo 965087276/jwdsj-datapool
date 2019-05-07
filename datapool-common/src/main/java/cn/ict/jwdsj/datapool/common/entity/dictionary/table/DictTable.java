@@ -17,6 +17,9 @@ public class DictTable extends BaseEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     private DictDatabase dictDatabase;
 
+    @Column(name = "en_database")
+    private String enDatabase;
+
     @Column(name = "en_table")
     private String enTable;
 

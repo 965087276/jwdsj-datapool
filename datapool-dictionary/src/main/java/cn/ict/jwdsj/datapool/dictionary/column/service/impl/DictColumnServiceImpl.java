@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.COLUMN;
-import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class DictColumnServiceImpl implements DictColumnService {
@@ -73,19 +72,17 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO) {
-//        DictDatabase dictDatabase = dictDatabaseService.findById(dictColumnMultiAddDTO.getDatabaseId());
-//        DictTable dictTable = dictTableService.findById(dictColumnMultiAddDTO.getTableId());
-//        // 判断库id、表id的合法性
-//        Assert.isTrue(!BeanUtil.isEmpty(dictDatabase), "数据库不存在");
-//        Assert.isTrue(!BeanUtil.isEmpty(dictTable), "数据表不存在");
-        long databaseId = dictColumnMultiAddDTO.getDatabaseId();
-        long tableId = dictColumnMultiAddDTO.getTableId();
+        DictDatabase dictDatabase = dictDatabaseService.findById(dictColumnMultiAddDTO.getDatabaseId());
+        DictTable dictTable = dictTableService.findById(dictColumnMultiAddDTO.getTableId());
+
+//        long databaseId = dictColumnMultiAddDTO.getDatabaseId();
+//        long tableId = dictColumnMultiAddDTO.getTableId();
 
         // 判断是否有重复元素
         Assert.isTrue(dictColumnMultiAddDTO.getDictColumnAddDTOS().size() == dictColumnMultiAddDTO.getDictColumnAddDTOS().stream().distinct().count(), "有重复元素");
         List<DictColumn> dictColumns = dictColumnMultiAddDTO.getDictColumnAddDTOS()
                 .stream()
-                .map(dictColumnAddDTO -> this.convertToDictColumn(databaseId, tableId, dictColumnAddDTO))
+                .map(dictColumnAddDTO -> this.convertToDictColumn(dictDatabase, dictTable, dictColumnAddDTO))
                 .collect(Collectors.toList());
         dictColumnRepo.saveAll(dictColumns);
     }
@@ -182,10 +179,12 @@ public class DictColumnServiceImpl implements DictColumnService {
         return dictColumnVO;
     }
 
-    private DictColumn convertToDictColumn(long databaseId, long tableId, DictColumnAddDTO dictColumnAddDTO) {
+    private DictColumn convertToDictColumn(DictDatabase dictDatabase, DictTable dictTable, DictColumnAddDTO dictColumnAddDTO) {
         DictColumn dictColumn = BeanUtil.toBean(dictColumnAddDTO, DictColumn.class);
-        dictColumn.setDictTableId(tableId);
-        dictColumn.setDictDatabaseId(databaseId);
+        dictColumn.setDictTableId(dictTable.getId());
+        dictColumn.setDictDatabaseId(dictDatabase.getId());
+        dictColumn.setEnDatabase(dictDatabase.getEnDatabase());
+        dictColumn.setEnTable(dictTable.getEnTable());
         return dictColumn;
     }
 }

@@ -122,7 +122,7 @@ public class DictTableServiceImpl implements DictTableService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveAll(DictTableMultiAddDTO dictTableMultiAddDTO) {
-        DictDatabase dictDatabase = DictDatabase.buildById(dictTableMultiAddDTO.getDatabaseId());
+        DictDatabase dictDatabase = dictDatabaseService.findById(dictTableMultiAddDTO.getDatabaseId());
         List<DictTableDTO> dictTableDTOS = dictTableMultiAddDTO.getDictTables();
         // 不能有重复元素
         Assert.isTrue(dictTableDTOS.stream().distinct().count() == dictTableDTOS.size(), "有重复元素");
@@ -217,6 +217,7 @@ public class DictTableServiceImpl implements DictTableService {
     private DictTable convertToDictTable(DictTableDTO dictTableDTO, DictDatabase dictDatabase) {
         DictTable dictTable = BeanUtil.toBean(dictTableDTO, DictTable.class);
         dictTable.setDictDatabase(dictDatabase);
+        dictTable.setEnDatabase(dictDatabase.getEnDatabase());
         return dictTable;
     }
 }
