@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(exclude = {"chTable"})
 public class DictTbExcelDTO {
+    private String enDatabase;
     private String enTable;
     private String chTable;
 }

@@ -34,6 +34,7 @@ public interface DictDatabaseService {
 //    List<DatabaseNameDTO> listDatabaseNameDTOByIds(List<Long> ids);
 
     DictDatabase findById(long id);
+    DictDatabase findByEnDatabase(String enDatabase);
 
     List<DictDatabase> listByIds(String ids);
 

@@ -119,6 +119,11 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     @Override
+    public DictDatabase findByEnDatabase(String enDatabase) {
+        return dictDatabaseRepo.findByEnDatabase(enDatabase);
+    }
+
+    @Override
     public List<DictDatabase> listByIds(String ids) {
         List<Long> idList = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
         return dictDatabaseRepo.findByIdIn(idList);

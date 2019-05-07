@@ -89,9 +89,8 @@ public class DictTableController {
     })
     @PostMapping("dict/dict_tables_file")
     public ResponseEntity fileUpload(
-            @RequestParam(name = "databaseId", required = true) long databaseId,
             @RequestParam("file") MultipartFile file) throws IOException {
-        dictTbExcelService.saveAll(databaseId, file);
+        dictTbExcelService.saveAll(file);
         return ResponseEntity.ok();
     }
 
