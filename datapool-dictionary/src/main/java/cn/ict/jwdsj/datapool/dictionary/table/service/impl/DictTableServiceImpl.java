@@ -77,6 +77,11 @@ public class DictTableServiceImpl implements DictTableService {
     }
 
     @Override
+    public DictTable findByEnDatabaseAndEnTable(String enDatabase, String enTable) {
+        return dictTableRepo.findByEnDatabaseAndEnTable(enDatabase, enTable);
+    }
+
+    @Override
     public List<TbIdNameDTO> listTbIdNameDTOByDictDatabase(DictDatabase dictDatabase) {
         QDictTable dictTable = QDictTable.dictTable;
         return jpaQueryFactory

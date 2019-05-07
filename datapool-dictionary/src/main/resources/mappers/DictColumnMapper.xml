@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.ict.jwdsj.datapool.dictionary.column.mapper.DictColumnMapper">
+    <sql id="dictColumn">
+        database_id, table_id, en_database, en_table, en_column, ch_column
+    </sql>
+
+    <insert id="insertIgnore" parameterType="java.util.List">
+        INSERT IGNORE INTO
+        dict_column
+        (
+        <include refid="dictColumn"/>
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.dictDatabaseId},
+            #{item.dictTableId},
+            #{item.enDatabase},
+            #{item.enTable},
+            #{item.enColumn},
+            #{item.chColumn}
+            )
+        </foreach>
+    </insert>
+</mapper>

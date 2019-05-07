@@ -20,4 +20,6 @@ public interface DictTableRepo extends JpaRepository<DictTable, Long>, QuerydslP
 
     boolean existsByDictDatabase(DictDatabase dictDatabase);
 
+    DictTable findByEnDatabaseAndEnTable(String enDatabase, String enTable);
+
 }

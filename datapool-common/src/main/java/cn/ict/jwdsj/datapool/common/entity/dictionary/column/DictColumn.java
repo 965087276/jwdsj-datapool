@@ -4,9 +4,13 @@ import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.SQLInsert;
 
 import javax.persistence.*;
 
@@ -14,6 +18,10 @@ import javax.persistence.*;
 @Table(name = "dict_column")
 @Data
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+
 public class DictColumn extends BaseEntity {
 
 //    @ManyToOne(fetch = FetchType.LAZY)

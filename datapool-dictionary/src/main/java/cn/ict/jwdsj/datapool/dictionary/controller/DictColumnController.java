@@ -61,14 +61,10 @@ public class DictColumnController {
     }
 
     @ApiOperation(value = "字段信息管理页--添加字段--excel添加")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "databaseId", value = "数据库id", paramType = "query", required = true)
-    })
     @PostMapping("dict/dict_columns_file")
     public ResponseEntity fileUpload(
-            @RequestParam(name = "databaseId", required = true) long databaseId,
             @RequestParam("file") MultipartFile file) throws IOException {
-        dictColExcelService.saveAll(databaseId, file);
+        dictColExcelService.saveAll(file);
         return ResponseEntity.ok();
     }
 

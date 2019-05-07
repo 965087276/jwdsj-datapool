@@ -29,6 +29,8 @@ public interface DictTableService {
      */
     List<String> listEnTablesByDictDatabase(DictDatabase dictDatabase);
 
+    DictTable findByEnDatabaseAndEnTable(String enDatabase, String enTable);
+
     /**
      * 列出某库下所有表的id与enTable
      * @param dictDatabase
