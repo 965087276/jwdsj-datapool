@@ -70,6 +70,6 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:1025/eureka/
+      defaultZone: http://192.168.0.32:1025/eureka/
 elasticsearch:
   hosts: 10.10.169.142:9200,10.10.169.147:9200,10.10.169.164:9200
