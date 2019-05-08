@@ -1,7 +1,7 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
 import cn.ict.jwdsj.datapool.api.feign.IndexManageClient;
-import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.search.service.IndexManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ public class IndexManageServiceImpl implements IndexManageService {
      * @return
      */
     @Override
-    public List<ColDisplayedDTO> listColDisplayedDTOByTableId(long tableId) {
-        List<ColDisplayedDTO> list = indexManageClient.listColDisplayedDTOByTableId(tableId);
+    public List<MappingColumn> listMappingColumnByTableId(long tableId) {
+        List<MappingColumn> list = indexManageClient.listMappingColumnByTableId(tableId);
         return list;
     }
 }

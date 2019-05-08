@@ -1,9 +1,7 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service;
 
-import cn.hutool.core.lang.Pair;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
-import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColumnTypeDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
@@ -56,7 +54,7 @@ public interface MappingColumnService {
      * @param tableId 表id
      * @return
      */
-    List<ColDisplayedDTO> listColDisplayedDTOByTableId(long tableId);
+    List<MappingColumn> listMappingColumnByTableId(long tableId);
 
     /**
      * 表信息管理--查看字段

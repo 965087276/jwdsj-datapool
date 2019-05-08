@@ -6,20 +6,26 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
 public class SearchTableVO {
+    /**
+     * 搜索耗时
+     */
     private String took;
+    /**
+     * 命中结果数
+     */
     private long totalHit;
-    List<String> columns;
+    /**
+     * 字段中英对照
+     */
+    private Map<String, String> fields;
+    /**
+     * 搜索结果
+     */
     private List<JSONObject> contents;
 
-    public void setContents(List<JSONObject> contents) {
-        this.contents = contents;
-        this.columns = new ArrayList<>();
-        if (CollectionUtil.isNotEmpty(contents)) {
-            this.columns = contents.get(0).keySet().stream().collect(Collectors.toList());
-        }
-    }
 }

@@ -1,7 +1,7 @@
 package cn.ict.jwdsj.datapool.indexmanage.web;
 
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
-import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
@@ -88,8 +88,8 @@ public class MappingColumnController {
      */
     @ApiIgnore
     @GetMapping("index_manage/col_displayed_dtos")
-    public List<ColDisplayedDTO> listColDisplayedDTOByTableId(@RequestParam(value = "tableId") long tableId) {
-        return mappingColumnService.listColDisplayedDTOByTableId(tableId);
+    public List<MappingColumn> listMappingColumnByTableId(@RequestParam(value = "tableId") long tableId) {
+        return mappingColumnService.listMappingColumnByTableId(tableId);
     }
 
 }

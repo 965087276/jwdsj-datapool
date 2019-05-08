@@ -1,8 +1,8 @@
 package cn.ict.jwdsj.datapool.api.feign;
 
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
-import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +18,7 @@ public interface IndexManageClient {
      * @return
      */
     @GetMapping("index_manage/col_displayed_dtos")
-    List<ColDisplayedDTO> listColDisplayedDTOByTableId(@RequestParam(value = "tableId") long tableId);
+    List<MappingColumn> listMappingColumnByTableId(@RequestParam(value = "tableId") long tableId);
 
     /**
      * 获取全量读取数据时的字段信息

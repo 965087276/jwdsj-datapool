@@ -1,18 +1,15 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
-import cn.ict.jwdsj.datapool.common.entity.indexmanage.dto.ColDisplayedDTO;
+import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
 import cn.ict.jwdsj.datapool.search.entity.vo.SearchTableVO;
 import cn.ict.jwdsj.datapool.search.service.*;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryShardContext;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -24,8 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -54,19 +49,17 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
 
         long startTime = System.currentTimeMillis();
 
-        // 数据库中的字段id和字段名（异步请求）
-        Future<List<ColumnNameDTO>> dbColumnReq = dictService.listColumnNameDTOByTableId(tableId);
+//        // 数据库中的字段id和字段名（异步请求）
+//        Future<List<ColumnNameDTO>> dbColumnReq = dictService.listColumnNameDTOByTableId(tableId);
 
         // 需要展示的字段
-        List<ColDisplayedDTO> esColumnDisplayed = indexManageService.listColDisplayedDTOByTableId(tableId);
-
-        log.info("esColDisplayed is {}", esColumnDisplayed);
+        List<MappingColumn> columnsDisplayed = indexManageService.listMappingColumnByTableId(tableId);
 
         // 需要搜索的字段及其权重
-        Map<String, Float> esColumnSearched = esColumnDisplayed
+        Map<String, Float> esColumnSearched = columnsDisplayed
                 .stream()
-                .filter(ColDisplayedDTO::isSearched)
-                .collect(Collectors.toMap(ColDisplayedDTO::getEsColumn, ColDisplayedDTO::getBoost));
+                .filter(MappingColumn::isSearched)
+                .collect(Collectors.toMap(MappingColumn::getEsColumn, MappingColumn::getBoost));
 
         SearchRequest request = new SearchRequest(aliasPrefix + tableId);
 
@@ -100,25 +93,26 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);
         log.info("response is {}", response);
 
-        // 数据库中的字段id和字段名
-        Map<Long, String> dbColIdAndDbColNames = dbColumnReq.get(5, TimeUnit.SECONDS)
+        // es字段名与原始字段名映射
+        Map<String, String> esColAndDbCol = columnsDisplayed
                 .stream()
-                .collect(Collectors.toMap(ColumnNameDTO::getColumnId, ColumnNameDTO::getChColumn));
+                .collect(Collectors.toMap(MappingColumn::getEsColumn, MappingColumn::getEnColumn));
 
-        // es字段名与表中文字段名映射
-        Map<String, String> esColAndChCol = esColumnDisplayed
+        // 数据表中英字段映射
+        Map<String, String> enColAndChCol = columnsDisplayed
                 .stream()
-                .collect(Collectors.toMap(k -> k.getEsColumn(), k -> dbColIdAndDbColNames.get(k.getDictColumnId())));
+                .collect(Collectors.toMap(MappingColumn::getEnColumn, MappingColumn::getChColumn));
 
         // 数据
         List<JSONObject> contents = Arrays.stream(response.getHits().getHits())
-            .map(searchHit -> this.getChineseAndHighlightFields(searchHit, esColAndChCol))
+            .map(searchHit -> this.getOriginAndHighlightFields(searchHit, esColAndDbCol))
             .collect(Collectors.toList());
 
         SearchTableVO vo = new SearchTableVO();
         // 命中结果数
         vo.setTotalHit(response.getHits().totalHits);
         vo.setContents(contents);
+        vo.setFields(enColAndChCol);
 
         long endTime = System.currentTimeMillis();
 
@@ -128,33 +122,33 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
     }
 
     /**
-     * 完成es字段到中文字段的映射以及字段的高亮展示
+     * 完成es字段到原始表字段的映射以及字段的高亮展示
      * @param documentFields 原始记录
-     * @param esColAndChCol 字段映射map
+     * @param esColAndDbCol 字段映射map
      * @return
      */
-    private JSONObject getChineseAndHighlightFields(SearchHit documentFields, Map<String, String> esColAndChCol) {
-        JSONObject doc = getChineseFields(documentFields, esColAndChCol);
+    private JSONObject getOriginAndHighlightFields(SearchHit documentFields, Map<String, String> esColAndDbCol) {
+        JSONObject doc = getOriginFields(documentFields, esColAndDbCol);
 
         // 用有高亮内容字段值替换原来的字段值
         documentFields.getHighlightFields().forEach((esCol, highlightContent) -> {
-            doc.replace(esColAndChCol.get(esCol), highlightContent.fragments()[0].toString());
+            doc.replace(esColAndDbCol.get(esCol), highlightContent.fragments()[0].toString());
         });
 
         return doc;
     }
 
     /**
-     * 完成es字段到中文字段的映射
-     * @param documentFields 原始记录
-     * @param esColAndChCol 字段映射map
+     * 完成es字段到原始表字段的映射
+     * @param documentFields 搜索结果
+     * @param esColAndDbCol 字段映射map
      * @return
      */
-    private JSONObject getChineseFields(SearchHit documentFields, Map<String, String> esColAndChCol) {
+    private JSONObject getOriginFields(SearchHit documentFields, Map<String, String> esColAndDbCol) {
         JSONObject doc = new JSONObject();
 
         documentFields.getSourceAsMap().forEach((esCol, value) -> {
-            String chName = esColAndChCol.get(esCol);
+            String chName = esColAndDbCol.get(esCol);
             if (StrUtil.isNotBlank(chName))
                 doc.put(chName, value);
         });
