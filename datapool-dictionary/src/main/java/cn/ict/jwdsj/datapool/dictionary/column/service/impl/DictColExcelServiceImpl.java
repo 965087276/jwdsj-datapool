@@ -181,8 +181,8 @@ public class DictColExcelServiceImpl implements DictColExcelService {
                     .stream()
                     .collect(groupingBy(MetaColumn::getTable, mapping(MetaColumn::getColumn, toSet())));
             // 待判断的字段的集合与真实字段的集合取并集，结果应该等于原来“真实字段的集合”的大小
-            tbAndColsReal.forEach((table, columnsTestSet) -> {
-                Set<String> columnsRealSet = tbAndColsReal.get(table);
+            tbAndColsReal.forEach((table, columnsRealSet) -> {
+                Set<String> columnsTestSet = tbAndColsTest.get(table);
                 int oldSize = columnsRealSet.size();
                 columnsRealSet.addAll(columnsTestSet);
                 int newSize = columnsRealSet.size();
