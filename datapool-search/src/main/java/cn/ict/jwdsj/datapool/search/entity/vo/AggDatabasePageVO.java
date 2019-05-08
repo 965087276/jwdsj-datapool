@@ -13,19 +13,19 @@ public class AggDatabasePageVO {
     /**
      * 耗时
      */
-    private String took;
+    private String took = "";
     /**
      * 命中的文档数
      */
-    private long docHit;
+    private long docHit = 0L;
 
     /**
      * 命中的数据库数
      */
-    private long databaseHit;
+    private long databaseHit = 0L;
 
     /**
      * 库信息列表
      */
-    private List<AggDatabaseVO> aggDatabases;
+    private List<AggDatabaseVO> aggDatabases = null;
 }

@@ -60,7 +60,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
         // 使用query_string方式查询搜索词
         QueryStringQueryBuilder queryStringQuery = buildQueryStringBuilder(searchWord, defaultSearchFields);
 
-        // 使用term_query过滤出相应数据库的记录
+        // 使用term_query过滤出相应数据库的数据
         TermQueryBuilder termQuery = QueryBuilders.termQuery("elastic_database_id", databaseId);
 
         // 前两个查询的汇总
@@ -83,6 +83,11 @@ public class AggServiceImpl extends BaseSearch implements AggService {
 
         // 返回结果
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);
+
+        // 如果结果为空，直接返回
+        if (response.getHits().totalHits == 0L) {
+            return new ArrayList<>();
+        }
 
         // 命中的数据表的聚合（存的是数据库id）
         Terms tableGroupBy = (Terms) response.getAggregations().get("数据表分类");
@@ -159,6 +164,11 @@ public class AggServiceImpl extends BaseSearch implements AggService {
         log.info("response is {}", response);
         // 所有的聚合
         Map<String, Aggregation> aggMap = response.getAggregations().asMap();
+
+        // 如果搜索结果为空，直接返回
+        if (response.getHits().totalHits == 0L) {
+            return new AggDatabasePageVO();
+        }
 
         // 命中的总文档数
         databasePageVO.setDocHit(response.getHits().getTotalHits());
