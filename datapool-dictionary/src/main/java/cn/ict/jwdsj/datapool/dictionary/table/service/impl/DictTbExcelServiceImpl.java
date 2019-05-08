@@ -94,8 +94,6 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
         Assert.isTrue(tbExcelDTOS.stream().map(DictTbExcelDTO::getChTable).allMatch(StrUtil::isNotBlank), EMPTY_CHTABLE);
         // 不能存在重复记录
         Assert.isTrue(tbExcelDTOS.size() == tbExcelDTOS.stream().distinct().count(), DUPLICATE_OBJECT);
-        // 所有表必须真实存在
-        Assert.isTrue(allTableExistsInMetaDatabase(tbExcelDTOS), NOT_EXISTS_TABLE);
 
         // excel中的所有数据库
         List<String> excelDatabases = tbExcelDTOS.stream().map(DictTbExcelDTO::getEnDatabase).distinct().collect(Collectors.toList());
@@ -106,9 +104,15 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
                 .parallelStream()
                 .filter(tb -> !dictDatabaseService.exists(tb))
                 .collect(Collectors.toList());
-
         // 若库未加入DictDatabase表，必须先加入才行
         Assert.isTrue(databasesNotAdd.isEmpty(), NOT_EXISTS_DATABASE + databasesNotAdd.stream().collect(Collectors.joining(",")));
+
+        // 所有表必须真实存在
+        Assert.isTrue(allTableExistsInMetaDatabase(tbExcelDTOS), NOT_EXISTS_TABLE);
+
+
+
+
 
         Map<String, Long> databaseNameAndId = tbExcelDTOS.stream()
                 .map(DictTbExcelDTO::getEnDatabase)

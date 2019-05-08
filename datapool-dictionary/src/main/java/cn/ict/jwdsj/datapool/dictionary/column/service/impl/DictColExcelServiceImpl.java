@@ -113,6 +113,8 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
         // Excel中的所有库
         List<String> excelDatabases = colExcelDTOList.stream().map(DictColExcelDTO::getEnDatabase).distinct().collect(Collectors.toList());
+        // 所有库必须先导入到dict_database中
+        Assert.isTrue(allDatabaseExistsInDictDatabase(excelDatabases), NOT_EXISTS_DATABASE);
 
         // Excel中的所有库
         Map<String, DictDatabase> excelDictDatabases = excelDatabases.parallelStream()
@@ -131,8 +133,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
                                     mapping(DictColExcelDTO::getEnColumn, toSet()))));
 
 
-        // 所有库必须先导入到dict_database中
-        Assert.isTrue(allDatabaseExistsInDictDatabase(excelDatabases), NOT_EXISTS_DATABASE);
+
 
         // 所有表必须先导入到dict_table中
         Assert.isTrue(allTableExistsInDictTable(excelTables, excelDictDatabases), NOT_EXISTS_TABLE);
