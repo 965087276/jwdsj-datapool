@@ -2,13 +2,10 @@ package cn.ict.jwdsj.datapool.dictionary.meta.service.impl;
 
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaTable;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.QMetaTable;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.meta.repo.MetaTableRepo;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaTableService;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +17,6 @@ import java.util.stream.Collectors;
 public class MetaTableServiceImpl implements MetaTableService {
 
     @Autowired private MetaTableRepo metaTableRepo;
-    @Autowired private JPAQueryFactory jpaQueryFactory;
     @Autowired private DictDatabaseService dictDatabaseService;
     @Autowired private DictTableService dictTableService;
 
