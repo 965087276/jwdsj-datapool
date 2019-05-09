@@ -66,6 +66,12 @@ public class MappingTableController {
         return ResponseEntity.ok(mappingTableVOS);
     }
 
+    @ApiOperation(value = "数据同步管理--手动数据同步")
+    public ResponseEntity dataSync() throws IOException {
+        mappingTableService.syncData();
+        return ResponseEntity.ok();
+    }
+
     @ApiIgnore
     @GetMapping("index_manage/mapping_table/need_to_update")
     public List<MappingTable> findTableNeedToUpdate() {

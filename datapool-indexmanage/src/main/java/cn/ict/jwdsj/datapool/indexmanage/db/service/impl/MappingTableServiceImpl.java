@@ -32,6 +32,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -140,7 +141,7 @@ public class MappingTableServiceImpl implements MappingTableService {
      * 并将需要更新数据的表发送给datasync模块
      */
     @Override
-    @Scheduled(initialDelay = 10000, fixedRate = 10000)
+    @Scheduled(initialDelay = 10000, fixedRate = 86400000)
     public void calRecordsSchedule() {
         QMappingTable mappingTable = QMappingTable.mappingTable;
         List<Long> dictTableIds = jpaQueryFactory
@@ -233,6 +234,15 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Override
     public void save(MappingTable mappingTable) {
         mappingTableRepo.save(mappingTable);
+    }
+
+    /**
+     * 手动数据同步
+     */
+    @Override
+    @Async
+    public void syncData() {
+        this.calRecordsSchedule();
     }
 
 

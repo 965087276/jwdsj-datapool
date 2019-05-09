@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.persistence.EntityManager;
@@ -15,6 +17,7 @@ import javax.persistence.EntityManager;
 @SpringBootApplication
 @EnableFeignClients
 @EnableScheduling
+@EnableAsync
 @ComponentScan(basePackageClasses = {
         DataPoolCommonConfig.class,
         IndexManageApplication.class,

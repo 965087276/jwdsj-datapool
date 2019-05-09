@@ -48,4 +48,9 @@ public interface MappingTableService {
     boolean existsByIndexId(long indexId);
 
     void save(MappingTable mappingTable);
+
+    /**
+     * 手动数据同步
+     */
+    void syncData();
 }
