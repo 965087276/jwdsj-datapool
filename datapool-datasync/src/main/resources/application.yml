@@ -48,7 +48,7 @@ elasticsearch:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8
+    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
     username: businessuseratdbpool
     password: dbpool
     driver-class-name: com.mysql.jdbc.Driver
