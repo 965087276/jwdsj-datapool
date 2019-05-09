@@ -9,6 +9,7 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
+import cn.ict.jwdsj.datapool.datastat.mapper.StatsColumnMapper;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsColumnRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatsColumnService;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -31,6 +32,8 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
+    @Autowired
+    private StatsColumnMapper statsColumnMapper;
 
     /**
      * 计算并返回缺陷字段
@@ -192,6 +195,11 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     @Override
     public List<StatsColumn> listAll(long databaseId, long tableId) {
         return statsColumnRepo.findByDictTableId(tableId);
+    }
+
+    @Override
+    public List<String> listColumnData(String enDatabase, String enTable, String enColumn) {
+        return statsColumnMapper.getColumnData(enDatabase, enTable, enColumn);
     }
 
     /**

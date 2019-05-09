@@ -61,6 +61,14 @@ public class StatsTable extends BaseEntity implements Cloneable {
         return obj;
     }
 
+    public void setUpdateDate(LocalDate date) {
+        if (date == null) {
+            this.updateDate = LocalDate.of(2009,1,1);
+        } else {
+            this.updateDate = date;
+        }
+    }
+
     public StatsTable() {}
 
     public StatsTable enTable(String enTable) {

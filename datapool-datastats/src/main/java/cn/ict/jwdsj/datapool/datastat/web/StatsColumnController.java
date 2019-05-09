@@ -33,6 +33,21 @@ public class StatsColumnController {
         return ResponseEntity.ok(dictColumns);
     }
 
+    @ApiOperation(value = "字段数据统计--查看某字段的20条数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "enDatabase", value = "库名", paramType = "query", required = true),
+            @ApiImplicitParam(name = "enTable", value = "表名", paramType = "query", required = true),
+            @ApiImplicitParam(name = "enColumn", value = "字段名", paramType = "query", required = true),
+    })
+    @GetMapping("stats/stats_columns/column_data")
+    public ResponseEntity<List<String>> listColumnData(
+            @RequestParam(value = "enDatabase", required = true) String enDatabase,
+            @RequestParam(value = "enTable", required = true) String enTable,
+            @RequestParam(value = "enColumn", required = true) String enColumn) {
+        List<String> columnDatas = statsColumnService.listColumnData(enDatabase, enTable, enColumn);
+        return ResponseEntity.ok(columnDatas);
+    }
+
     @ApiIgnore
     @GetMapping("stats/stats_column/defect_column_names/tableId/{tableId}")
     public List<String> getDefectColumnsByTable(@PathVariable("tableId") long tableId) {
