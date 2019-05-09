@@ -13,6 +13,7 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaTable;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaTableService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTbExcelDTO;
+import cn.ict.jwdsj.datapool.dictionary.table.mapper.DictTableMapper;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTbExcelService;
 import lombok.var;
@@ -36,6 +37,8 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
     private DictDatabaseService dictDatabaseService;
     @Autowired
     private MetaTableService metaTableService;
+    @Autowired
+    private DictTableMapper dictTableMapper;
 
     private final String NOT_EXISTS_DATABASE = "下列库未加中英文对照，请先加入";
     private String NOT_EXISTS_TABLE = "数据库中不存在这个表";
@@ -129,7 +132,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
                 .map(tb -> this.convertToDictTable(tb, databaseNameAndId.get(tb.getEnDatabase())))
                 .collect(Collectors.toList());
 
-        dictTableService.saveAll(dictTables);
+        dictTableMapper.insertIgnore(dictTables);
     }
 
     private DictTable convertToDictTable(DictTbExcelDTO tbExcelDTO, Long dictDatabaseId) {
