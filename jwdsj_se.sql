@@ -11,7 +11,7 @@
  Target Server Version : 100215
  File Encoding         : 65001
 
- Date: 07/05/2019 11:53:00
+ Date: 10/05/2019 02:04:13
 */
 
 SET NAMES utf8mb4;
@@ -33,8 +33,10 @@ CREATE TABLE `dict_column`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`, `en_column`) USING BTREE,
-  INDEX `table_id_2`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字段中英对照信息表' ROW_FORMAT = Dynamic;
+  UNIQUE INDEX `en_database_2`(`en_database`, `en_table`, `en_column`) USING BTREE,
+  INDEX `table_id_2`(`table_id`) USING BTREE,
+  INDEX `en_database`(`en_database`, `en_table`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1180 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '字段中英对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for dict_database
@@ -49,7 +51,7 @@ CREATE TABLE `dict_database`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `en_database`(`en_database`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库中英对照信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库中英对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for dict_table
@@ -67,7 +69,7 @@ CREATE TABLE `dict_table`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `database_id`(`database_id`, `en_table`) USING BTREE,
   INDEX `database_id_2`(`database_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表中英对照信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表中英对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for es_column
@@ -82,7 +84,7 @@ CREATE TABLE `es_column`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `index_id`(`index_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '索引字段信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 204 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '索引字段信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for es_index
@@ -95,7 +97,7 @@ CREATE TABLE `es_index`  (
   `gmt_create` datetime(0) NOT NULL DEFAULT current_timestamp() COMMENT '创建时间',
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '索引信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '索引信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mapping_column
@@ -120,7 +122,7 @@ CREATE TABLE `mapping_column`  (
   UNIQUE INDEX `table_id_2`(`table_id`, `es_column`) USING BTREE,
   INDEX `table_id`(`table_id`) USING BTREE,
   INDEX `type`(`type`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表字段与索引字段对照信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 621 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表字段与索引字段对照信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for mapping_table
@@ -142,7 +144,7 @@ CREATE TABLE `mapping_table`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表名与索引名对照信息表 同步信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '表名与索引名对照信息表 同步信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for se_table
@@ -160,7 +162,7 @@ CREATE TABLE `se_table`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`) USING BTREE,
   INDEX `database_id`(`database_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '搜索引擎的表的集合。包括了已加入到同步队列中的表和未加入到同步队列中的表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 60 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '搜索引擎的表的集合。包括了已加入到同步队列中的表和未加入到同步队列中的表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for stat_column
@@ -181,7 +183,7 @@ CREATE TABLE `stat_column`  (
   UNIQUE INDEX `column_id`(`column_id`) USING BTREE,
   INDEX `database_id`(`database_id`) USING BTREE,
   INDEX `table_id`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1537 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for stat_database
@@ -199,7 +201,7 @@ CREATE TABLE `stat_database`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `database_id`(`database_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库数据统计' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据库数据统计' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for stat_table
@@ -220,6 +222,6 @@ CREATE TABLE `stat_table`  (
   `gmt_modified` datetime(0) NOT NULL DEFAULT current_timestamp() ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `table_id`(`table_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表数据统计' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 61 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '数据表数据统计' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

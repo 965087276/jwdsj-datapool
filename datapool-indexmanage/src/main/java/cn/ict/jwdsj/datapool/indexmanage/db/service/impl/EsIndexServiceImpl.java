@@ -10,6 +10,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -24,6 +25,7 @@ public class EsIndexServiceImpl implements EsIndexService {
     @Autowired
     private ElasticRestService elasticRestService;
     @Autowired
+    @Lazy
     private MappingTableService mappingTableService;
     @Autowired
     private EsColumnService esColumnService;
