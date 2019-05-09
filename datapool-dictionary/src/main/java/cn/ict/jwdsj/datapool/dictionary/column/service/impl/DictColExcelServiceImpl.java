@@ -1,7 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -19,8 +18,6 @@ import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
-import com.netflix.discovery.converters.Auto;
-import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -43,9 +40,8 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
     private String NOT_EXISTS_DATABASE = "下列库的字典信息未导入";
     private String NOT_EXISTS_TABLE = "下列表的字典信息未导入";
-    private final String EMPTY_CHTABLE = "chTable列存在空值";
+    private final String EMPTY_CHCOLUMN = "chColumn列存在空值";
     private final String DUPLICATE_OBJECT = "存在重复对象";
-    private String EXISTS_IN_DICT_COLUMN = "某些表之前已经加入过dict_column，不能重复加入";
     private String COLUMN_NOT_EXISTS = "所有字段必须真实存在且对应到正确的表上";
     private final String WRONG_TITLE = "表头错误";
 
@@ -71,7 +67,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 //
 //
 //        // 中文字段不能为空
-//        Assert.isTrue(colExcelDTOList.stream().map(DictColExcelDTO::getChColumn).allMatch(StrUtil::isNotBlank), EMPTY_CHTABLE);
+//        Assert.isTrue(colExcelDTOList.stream().map(DictColExcelDTO::getChColumn).allMatch(StrUtil::isNotBlank), EMPTY_CHCOLUMN);
 //        // 不能存在重复记录
 //        Assert.isTrue(colExcelDTOList.size() == colExcelDTOList.stream().distinct().count(), DUPLICATE_OBJECT);
 //        // 所有表必须先导入到dict_table中
@@ -109,7 +105,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
         // 不能存在重复记录
         Assert.isTrue(colExcelDTOList.size() == colExcelDTOList.stream().distinct().count(), DUPLICATE_OBJECT);
         // 中文字段不能为空
-        Assert.isTrue(colExcelDTOList.stream().map(DictColExcelDTO::getChColumn).allMatch(StrUtil::isNotBlank), EMPTY_CHTABLE);
+        Assert.isTrue(colExcelDTOList.stream().map(DictColExcelDTO::getChColumn).allMatch(StrUtil::isNotBlank), EMPTY_CHCOLUMN);
 
         // Excel中的所有库
         List<String> excelDatabases = colExcelDTOList.stream().map(DictColExcelDTO::getEnDatabase).distinct().collect(Collectors.toList());
@@ -202,6 +198,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
      * @return
      */
     private boolean allDatabaseExistsInDictDatabase(List<String> excelDatabases) {
+        NOT_EXISTS_DATABASE = "下列库的字典信息未导入或库不存在";
         List<String> notAdd = excelDatabases.parallelStream()
                 .filter(database -> !dictDatabaseService.exists(database))
                 .collect(toList());
@@ -216,6 +213,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
      * @return
      */
     private boolean allTableExistsInDictTable(Map<String, Set<String>> excelTables, Map<String, DictDatabase> excelDictDatabases) {
+        NOT_EXISTS_TABLE = "下列表的字典信息未导入或表不存在";
         List<String> notAdd = new ArrayList<>();
         excelTables.forEach((database, tables) -> {
             Set<String> tablesInDict = dictTableService.listEnTablesByDictDatabase(excelDictDatabases.get(database)).stream().collect(toSet());
