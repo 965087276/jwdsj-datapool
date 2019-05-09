@@ -35,7 +35,7 @@ public class StatsDatabaseSubTask {
                     || updateDate != statDatabase.getUpdateDate()) {
                 statDatabase.setTotalRecords(countRecords);
                 statDatabase.setTotalTables(countTables);
-                statDatabase.setUpdateDate(LocalDate.now());
+                statDatabase.setUpdateDate(updateDate);
                 statsDatabaseService.save(statDatabase);
             }
         });

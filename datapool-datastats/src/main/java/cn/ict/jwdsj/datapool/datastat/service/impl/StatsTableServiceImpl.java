@@ -9,6 +9,7 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
+import cn.ict.jwdsj.datapool.datastat.mapper.StatsTableMapper;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsTableRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatsTableService;
 import com.querydsl.core.types.ExpressionUtils;
@@ -31,6 +32,7 @@ public class StatsTableServiceImpl implements StatsTableService {
     @Autowired private JPAQueryFactory jpaQueryFactory;
     @Autowired private JdbcTemplate jdbcTemplate;
     @Autowired private DictClient dictClient;
+    @Autowired private StatsTableMapper statsTableMapper;
 
     @Override
     public void save(StatsTable statsTable) {
@@ -59,8 +61,6 @@ public class StatsTableServiceImpl implements StatsTableService {
 
     @Override
     public LocalDate getTableCreateTime(long tableId) {
-        QDictTable dictTable = QDictTable.dictTable;
-        QDictDatabase dictDatabase = QDictDatabase.dictDatabase;
 
         DictTable table = dictClient.findDictTableById(tableId);
 
@@ -77,25 +77,12 @@ public class StatsTableServiceImpl implements StatsTableService {
 
     @Override
     public void saveTablesNotAdd() {
-        QDictTable dictTable = QDictTable.dictTable;
-        QStatsTable statsTable = QStatsTable.statsTable;
 
-        List<StatsTable> tablesNotAdd =  jpaQueryFactory
-                .select(dictTable.dictDatabase.id, dictTable.id, dictTable.enTable, dictTable.chTable)
-                .from(dictTable)
-                .leftJoin(statsTable)
-                .on(dictTable.id.eq(statsTable.dictTableId))
-                .where(statsTable.isNull())
-                .fetch()
-                .stream()
-                .map(tuple -> new StatsTable()
-                        .dictDatabaseId(tuple.get(dictTable.dictDatabase.id))
-                        .dictTableId(tuple.get(dictTable.id))
-                        .enTable(tuple.get(dictTable.enTable))
-                        .chTable(tuple.get(dictTable.chTable))
-                        .updateDate(getTableCreateTime(tuple.get(dictTable.id)))
-                )
-                .collect(Collectors.toList());
+        List<StatsTable> tablesNotAdd = statsTableMapper.listTablesNotAdd();
+
+
+
+        tablesNotAdd.forEach(table -> table.setUpdateDate(getTableCreateTime(table.getDictTableId())));
 
         statsTableRepo.saveAll(tablesNotAdd);
 

@@ -14,7 +14,7 @@ public class StatsScheduleTask {
     @Autowired
     private StatsColumnSubTask columnSubTask;
 
-    @Scheduled(initialDelay = 1000, fixedRate = 43200000)
+//    @Scheduled(initialDelay = 1000, fixedRate = 43200000)
     public void updateTableAndDatabaseCounts() {
         columnSubTask.updateStatsColumns();
         tableSubTask.updateStatTables();

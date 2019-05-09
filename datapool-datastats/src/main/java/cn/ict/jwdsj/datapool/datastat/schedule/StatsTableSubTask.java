@@ -35,7 +35,7 @@ public class StatsTableSubTask {
 
         List<StatsTable> tables = statsTableService.listAll();
 
-        tables.stream().forEach(statsTable -> {
+        tables.parallelStream().forEach(statsTable -> {
             StatsTable newStatsTable = (StatsTable) statsTable.clone();
 
             newStatsTable.setTotalRecords( statsService.countTableRecords(statsTable.getDictTableId()) );
@@ -44,7 +44,8 @@ public class StatsTableSubTask {
             newStatsTable.setDefectRate();
             log.info("newStatsTable is {}", newStatsTable);
             if (!statsTable.equals(newStatsTable)) {
-                newStatsTable.setUpdateDate(LocalDate.now());
+                if (statsTable.getTotalRecords() != 0)
+                    newStatsTable.setUpdateDate(LocalDate.now());
                 statsTableService.save(newStatsTable);
             }
 
