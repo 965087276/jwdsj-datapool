@@ -76,10 +76,10 @@ public class TableFullReadServiceImpl implements TableFullReadService {
                 record.put(esColumn, value);
             }
             // 添加一些额外信息
-            record.put("md5_id", getMD5(record));
             record.put("elastic_database_id", msg.getDatabaseId());
             record.put("elastic_table_id", msg.getTableId());
             record.put("elastic_index_name", msg.getIndexName());
+            record.put("md5_id", getMD5(record));
             kafkaTableFullReadProducer.send(record.toJSONString());
         }
 
