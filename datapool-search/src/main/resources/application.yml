@@ -49,7 +49,7 @@ eureka:
     service-url:
       defaultZone: http://192.168.0.32:1025/eureka/
 elasticsearch:
-  hosts: 10.10.169.142:9200,10.10.169.147:9200,10.10.169.164:9200
+  hosts: 10.10.169.142:9200,10.10.169.147:9200,10.10.169.164:9200,10.10.169.158:9200
   # 表聚合的最大数目
   max-table-agg: 30
   index-prefix: jwdsj-datapool-index-
