@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.api.feign.DataSyncClient;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.api.feign.StatsClient;
+import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
@@ -21,18 +22,22 @@ import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
+import com.alibaba.fastjson.JSON;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Ops;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -45,6 +50,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@Slf4j
 public class MappingTableServiceImpl implements MappingTableService {
     @Autowired
     private MappingTableRepo mappingTableRepo;
@@ -61,9 +67,9 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Autowired
     private DictClient dictClient;
     @Autowired
-    private StatsClient statsClient;
-    @Autowired
-    private DataSyncClient dataSyncClient;
+    private KafkaTemplate<String, String> kafkaTemplate;
+    @Value("${kafka.topic-name.table-sync-task}")
+    private String syncTableTaskTopic;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -145,18 +151,22 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Scheduled(initialDelay = 10000, fixedRate = 86400000)
     public void calRecordsSchedule() {
         QMappingTable mappingTable = QMappingTable.mappingTable;
+        QStatsTable statsTable = QStatsTable.statsTable;
+
         List<Long> dictTableIds = jpaQueryFactory
                 .select(mappingTable.dictTableId)
                 .from(mappingTable)
                 .fetch();
-        dictTableIds.parallelStream().forEach(dictTableId -> {
+        // 当前日期
+        LocalDate currentDate = jdbcTemplate.queryForObject("select current_date", LocalDate.class);
+        dictTableIds.stream().forEach(dictTableId -> {
 
             MappingTable mtb = mappingTableRepo.findByDictTableId(dictTableId);
             long oldTableRecords = mtb.getTableRecords();
-            long newTableRecords = statsClient.getTableRecords(dictTableId);
+            long newTableRecords = jpaQueryFactory.select(statsTable.totalRecords).from(statsTable).where(statsTable.dictTableId.eq(dictTableId)).fetchOne();
+            long oldIndexRecords = mtb.getIndexRecords();
             long newIndexRecords = 0;
-            // 当前日期
-            LocalDate currentDate = jdbcTemplate.queryForObject("select current_date", LocalDate.class);
+
             // 该表的最后更新日期
             LocalDate updateDate = mtb.getUpdateDate();
             // 上面两个日期的日期差
@@ -176,12 +186,14 @@ public class MappingTableServiceImpl implements MappingTableService {
                 msg.setIndexName(mtb.getIndexName());
                 msg.setTableId(mtb.getDictTableId());
                 msg.setTableName(mtb.getEnTable());
-                dataSyncClient.syncTable(msg);
+                kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
+                log.info("the msg have sent to kafka, table is {}.{}", msg.getTableName(), msg.getDatabaseName());
                 mappingTableRepo.updateUpdateDate(dictTableId);
             }
 
             // 更新 索引记录数 表记录数
-            mappingTableRepo.updateRecords(dictTableId, newIndexRecords, newTableRecords);
+            if (newIndexRecords != oldIndexRecords || newTableRecords != oldTableRecords)
+                mappingTableRepo.updateRecords(dictTableId, newIndexRecords, newTableRecords);
 
         });
     }

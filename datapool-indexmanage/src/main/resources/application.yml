@@ -14,6 +14,7 @@ kafka:
     #    dict-database-update: dict-database-update
     #    dict-table-update: dict-table-update
     dict-update: dict-update
+    table-sync-task: sync-table-task
 
 
 ---

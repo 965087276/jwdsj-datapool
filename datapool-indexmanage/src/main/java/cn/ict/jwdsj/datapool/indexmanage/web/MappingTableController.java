@@ -67,6 +67,7 @@ public class MappingTableController {
     }
 
     @ApiOperation(value = "数据同步管理--手动数据同步")
+    @GetMapping("index_manage/manual_sync")
     public ResponseEntity dataSync() throws IOException {
         mappingTableService.syncData();
         return ResponseEntity.ok();

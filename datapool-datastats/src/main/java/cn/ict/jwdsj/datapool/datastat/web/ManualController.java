@@ -20,4 +20,22 @@ public class ManualController {
         manualService.manualSync();
         return ResponseEntity.ok();
     }
+    @ApiOperation("手动库统计")
+    @GetMapping("datastats/manual_sync/database")
+    public ResponseEntity manualSyncDatabase() {
+        manualService.manualSyncDatabase();
+        return ResponseEntity.ok();
+    }
+    @ApiOperation("手动表统计")
+    @GetMapping("datastats/manual_sync/table")
+    public ResponseEntity manualSyncTable() {
+        manualService.manualSyncTable();
+        return ResponseEntity.ok();
+    }
+    @ApiOperation("手动字段统计")
+    @GetMapping("datastats/manual_sync/column")
+    public ResponseEntity manualSyncColumn() {
+        manualService.manualSyncColumn();
+        return ResponseEntity.ok();
+    }
 }
