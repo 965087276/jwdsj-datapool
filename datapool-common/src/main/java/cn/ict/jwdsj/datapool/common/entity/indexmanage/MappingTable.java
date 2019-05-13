@@ -34,6 +34,9 @@ public class MappingTable extends BaseEntity {
     @Column(name = "index_id", nullable = false)
     private long indexId;
 
+    @Column(name = "en_database")
+    private String enDatabase;
+
     @Column(name = "en_table", nullable = false)
     private String enTable;
 
@@ -69,5 +72,10 @@ public class MappingTable extends BaseEntity {
     public void setEsIndex(EsIndex esIndex) {
         this.setIndexId(esIndex.getId());
         this.setIndexName(esIndex.getIndexName());
+    }
+
+    public void setDictDatabase(DictDatabase dictDatabase) {
+        this.setDictDatabaseId(dictDatabase.getId());
+        this.setEnDatabase(dictDatabase.getEnDatabase());
     }
 }

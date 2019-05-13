@@ -89,12 +89,13 @@ public class MappingTableServiceImpl implements MappingTableService {
         Assert.isTrue(totalDocs == 0L, "数据正在删除中，请稍后尝试加入");
 
         DictTable dictTable = dictClient.findDictTableById(dictTableId);
+        DictDatabase dictDatabase = dictClient.findDictDatabaseById(dictDatabaseId);
 
         MappingTable mappingTable = new MappingTable();
-        mappingTable.setDictDatabaseId(dictDatabaseId);
         mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
         mappingTable.setEsIndex(esIndex);
         mappingTable.setDictTable(dictTable);
+        mappingTable.setDictDatabase(dictDatabase);
 
 
         mappingTableRepo.save(mappingTable);
@@ -178,10 +179,9 @@ public class MappingTableServiceImpl implements MappingTableService {
             }
             // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
             if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
-                DictDatabase dictDatabase = dictClient.findDictDatabaseById(mtb.getDictDatabaseId());
                 TableSyncMsg msg = new TableSyncMsg();
-                msg.setDatabaseId(dictDatabase.getId());
-                msg.setDatabaseName(dictDatabase.getEnDatabase());
+                msg.setDatabaseId(mtb.getDictDatabaseId());
+                msg.setDatabaseName(mtb.getEnDatabase());
                 msg.setIndexId(mtb.getIndexId());
                 msg.setIndexName(mtb.getIndexName());
                 msg.setTableId(mtb.getDictTableId());
