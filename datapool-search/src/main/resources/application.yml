@@ -54,3 +54,27 @@ elasticsearch:
   max-table-agg: 30
   index-prefix: jwdsj-datapool-index-
   alias-prefix: jwdsj-datapool-alias-
+
+---
+spring:
+  profiles: yk
+  datasource:
+    url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/
+elasticsearch:
+  hosts: 192.168.110.128:9200
+  # 表聚合的最大数目
+  max-table-agg: 30
+  index-prefix: jwdsj-datapool-index-
+  alias-prefix: jwdsj-datapool-alias-

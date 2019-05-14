@@ -68,3 +68,28 @@ eureka:
   client:
     service-url:
       defaultZone: http://192.168.0.32:1025/eureka/
+
+---
+spring:
+  profiles: yk
+  datasource:
+    url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password:
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  servlet:
+    multipart:
+      location: C:\\Users\\dell\\AppData\\Local\\datapool
+  #Kafka
+  kafka:
+    bootstrap-servers: 192.168.110.128:9092
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/

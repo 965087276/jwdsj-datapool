@@ -28,9 +28,18 @@ spring:
   servlet:
     multipart:
       location: /home/centos/data/temp/datapool
-
-
 eureka:
   client:
     service-url:
       defaultZone: http://192.168.0.32:1025/eureka/
+
+---
+spring:
+  profiles: yk
+  servlet:
+    multipart:
+      location: C:\\Users\\dell\\AppData\\Local\\datapool
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/
