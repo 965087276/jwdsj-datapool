@@ -177,6 +177,8 @@ public class MappingTableServiceImpl implements MappingTableService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            boolean isSync = false;
             // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
             if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
                 TableSyncMsg msg = new TableSyncMsg();
@@ -189,11 +191,12 @@ public class MappingTableServiceImpl implements MappingTableService {
                 kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
                 log.info("the msg have sent to kafka, table is {}.{}", msg.getTableName(), msg.getDatabaseName());
                 mappingTableRepo.updateUpdateDate(dictTableId);
+                isSync = true;
             }
 
             // 更新 索引记录数 表记录数
             if (newIndexRecords != oldIndexRecords || newTableRecords != oldTableRecords)
-                mappingTableRepo.updateRecords(dictTableId, newIndexRecords, newTableRecords);
+                mappingTableRepo.updateRecords(dictTableId, newIndexRecords, isSync ? newTableRecords : oldTableRecords);
 
         });
     }
