@@ -4,7 +4,7 @@
 
 <mapper namespace="cn.ict.jwdsj.datapool.dictionary.table.mapper.DictTableMapper">
     <sql id="dictTable">
-        database_id, table_id, en_database, en_table, ch_table
+        database_id, en_database, en_table, ch_table
     </sql>
 
     <insert id="insertIgnore" parameterType="java.util.List">
@@ -16,8 +16,7 @@
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
-            #{item.dictDatabaseId},
-            #{item.dictTableId},
+            #{item.dictDatabase.id},
             #{item.enDatabase},
             #{item.enTable},
             #{item.chTable}
