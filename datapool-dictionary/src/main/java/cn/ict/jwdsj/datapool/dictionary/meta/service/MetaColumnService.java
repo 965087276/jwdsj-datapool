@@ -28,5 +28,5 @@ public interface MetaColumnService {
      * @param tableId 表id
      * @return
      */
-    List<String> listColumnsNotAdd(long databaseId, long tableId);
+    List<MetaColumn> listColumnsNotAdd(long databaseId, long tableId);
 }

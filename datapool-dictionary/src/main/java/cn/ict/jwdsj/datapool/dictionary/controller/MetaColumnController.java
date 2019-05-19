@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.controller;
 
+import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaColumn;
 import cn.ict.jwdsj.datapool.common.http.ResponseEntity;
 import cn.ict.jwdsj.datapool.dictionary.meta.service.MetaColumnService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -24,10 +25,10 @@ public class MetaColumnController {
             @ApiImplicitParam(name = "tableId", value = "数据表id", paramType = "query", required = true)
     })
     @GetMapping("meta/column_names")
-    public ResponseEntity<List<String>> listDatabasesNotAdd(
+    public ResponseEntity<List<MetaColumn>> listDatabasesNotAdd(
             @RequestParam(name = "databaseId", required = true) long databaseId,
             @RequestParam(name = "tableId", required = true) long tableId) {
-        List<String> columns = metaColumnService.listColumnsNotAdd(databaseId, tableId);
+        List<MetaColumn> columns = metaColumnService.listColumnsNotAdd(databaseId, tableId);
         return ResponseEntity.ok(columns);
     }
 }

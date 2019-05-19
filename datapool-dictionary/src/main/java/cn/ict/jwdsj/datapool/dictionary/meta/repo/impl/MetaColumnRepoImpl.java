@@ -18,7 +18,7 @@ public class MetaColumnRepoImpl implements MetaColumnRepo {
     public List<MetaColumn> findByDatabaseAndTable(String database, String table) {
         return jdbcTemplate.queryForList(showColumnsSQL(database, table))
                 .stream()
-                .map(row -> new MetaColumn(database, table, (String) row.get("Field")))
+                .map(row -> new MetaColumn(database, table, (String) row.get("Field"), (String) row.get("Comment")))
                 .collect(Collectors.toList());
     }
 
@@ -32,6 +32,6 @@ public class MetaColumnRepoImpl implements MetaColumnRepo {
     }
 
     private String showColumnsSQL(String database, String table) {
-        return "show columns from `" + database + "`." + "`" + table + "`";
+        return "show full columns from `" + database + "`." + "`" + table + "`";
     }
 }

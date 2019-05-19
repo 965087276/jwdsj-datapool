@@ -14,4 +14,6 @@ public class MetaColumn {
     private String table;
 
     private String column;
+
+    private String comment;
 }

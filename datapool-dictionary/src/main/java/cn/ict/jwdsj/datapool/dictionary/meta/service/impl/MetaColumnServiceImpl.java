@@ -33,25 +33,21 @@ public class MetaColumnServiceImpl implements MetaColumnService {
     }
 
     @Override
-    public List<String> listColumnsNotAdd(long databaseId, long tableId) {
+    public List<MetaColumn> listColumnsNotAdd(long databaseId, long tableId) {
         String enDatabase = dictDatabaseService.findById(databaseId).getEnDatabase();
         String enTable = dictTableService.findById(tableId).getEnTable();
 
         // 该表的所有字段
-        Set<String> columnsAll = this.listByDatabaseAndTable(enDatabase, enTable)
-                .stream()
-                .map(MetaColumn::getColumn)
-                .collect(Collectors.toSet());
+        List<MetaColumn> columnsAll = this.listByDatabaseAndTable(enDatabase, enTable);
 
         // 已加入到字典中的字段
-        List<String> columnsAdd = dictColumnService.listColumnNameDTOsByTableId(tableId)
+        Set<String> columnsAdd = dictColumnService.listColumnNameDTOsByTableId(tableId)
                 .stream()
                 .map(ColumnNameDTO::getEnColumn)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
-        columnsAll.removeAll(columnsAdd);
 
-        return columnsAll.stream().collect(Collectors.toList());
+        return columnsAll.stream().filter(column -> !columnsAdd.contains(column.getColumn())).collect(Collectors.toList());
 
     }
 }
