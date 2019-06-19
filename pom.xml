@@ -48,7 +48,6 @@
         <module>datapool-search</module>
         <module>datapool-api</module>
         <module>datapool-gateway</module>
-        <module>datapool-data_overview</module>
     </modules>
 
     <dependencies>
