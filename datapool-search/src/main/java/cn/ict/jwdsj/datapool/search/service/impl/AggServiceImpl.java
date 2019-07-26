@@ -27,6 +27,7 @@ import org.elasticsearch.search.aggregations.metrics.cardinality.Cardinality;
 import org.elasticsearch.search.aggregations.metrics.cardinality.CardinalityAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
      * @return
      */
     @Override
+    @Cacheable(value = "库下表聚合", key = "'databaseId: ' + #databaseId + ', searchWord: ' + #searchWord")
     public List<AggTableVO> aggByTable(long databaseId, String searchWord) throws IOException {
         SearchRequest request = new SearchRequest(indexPrefix + "*");
         searchWord = wordRegular(searchWord);
@@ -131,6 +133,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
      * @return
      */
     @Override
+    @Cacheable(value = "库聚合", key = "'curPage: ' + #curPage + 'pageSize: ' + #pageSize + ', searchWord: ' + #searchWord")
     public AggDatabasePageVO aggByDatabase(String searchWord, int curPage, int pageSize) throws IOException, InterruptedException, ExecutionException, TimeoutException {
         long startTime = System.currentTimeMillis();
         searchWord = wordRegular(searchWord);

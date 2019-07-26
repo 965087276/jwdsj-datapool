@@ -14,6 +14,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -43,7 +44,8 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
      * @return
      */
     @Override
-    public SearchTableVO searchByTableId(long tableId, String searchWord, int curPage, int pageSize) throws IOException, InterruptedException, ExecutionException, TimeoutException {
+    @Cacheable(value = "单表搜索", key = "'curPage: ' + #curPage + 'pageSize: ' + #pageSize + ', searchWord: ' + #searchWord + ', tableId: ' + #tableId")
+    public SearchTableVO searchByTableId(long tableId, String searchWord, int curPage, int pageSize) throws IOException {
 
         searchWord = wordRegular(searchWord);
 

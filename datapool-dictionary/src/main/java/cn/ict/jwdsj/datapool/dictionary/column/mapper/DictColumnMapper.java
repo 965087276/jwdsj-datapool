@@ -9,5 +9,9 @@ import java.util.List;
 @Repository
 @Mapper
 public interface DictColumnMapper {
+    /**
+     * 批量插入（忽略错误）
+     * @param dictColumns
+     */
     void insertIgnore(List<DictColumn> dictColumns);
 }

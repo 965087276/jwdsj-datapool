@@ -3,13 +3,14 @@ package cn.ict.jwdsj.datapool.search.entity.vo;
 import lombok.Data;
 import org.elasticsearch.common.unit.TimeValue;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * 库聚合界面（仅是库的聚合，没有表的聚合）
  */
 @Data
-public class AggDatabasePageVO {
+public class AggDatabasePageVO implements Serializable {
     /**
      * 耗时
      */

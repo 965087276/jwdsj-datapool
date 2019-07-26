@@ -92,6 +92,7 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
         dictDatabase.setChDatabase(updateDatabaseDTO.getChDatabase());
         dictDatabase.setDetail(updateDatabaseDTO.getDetail());
         dictDatabaseRepo.save(dictDatabase);
+        // 发送变更信息
         kafkaSender.send(kafkaUpdateTopic, new DictUpdateMsg(DATABASE, updateDatabaseDTO.getDatabaseId()));
     }
 

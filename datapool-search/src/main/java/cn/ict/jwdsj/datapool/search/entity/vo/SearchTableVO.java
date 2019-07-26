@@ -4,13 +4,14 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
-public class SearchTableVO {
+public class SearchTableVO implements Serializable {
     /**
      * 搜索耗时
      */
