@@ -10,12 +10,12 @@ import java.time.LocalDate;
 @Repository
 public interface StatsTableMapper {
 
-    @Select("select max(update_date) from stat_table where database_id = #{dictDatabaseId}")
-    LocalDate getDatabaseUpdateDate(long dictDatabaseId);
+    @Select("select max(update_date) from stat_table where database_id = #{databaseId}")
+    LocalDate getDatabaseUpdateDate(long databaseId);
 
-    @Select("select sum(total_records) from stat_table where database_id = #{dictDatabaseId}")
-    long countDatabaseRecords(long dictDatabaseId);
+    @Select("select sum(total_records) from stat_table where database_id = #{databaseId}")
+    long countDatabaseRecords(long databaseId);
 
-    @Select("select count(*) from stat_table where database_id = #{dictDatabaseId}")
-    int countTablesByDatabaseId(long dictDatabaseId);
+    @Select("select count(*) from stat_table where database_id = #{databaseId}")
+    int countTablesByDatabaseId(long databaseId);
 }

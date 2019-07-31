@@ -46,7 +46,7 @@ public class StatsTableController {
     @ApiIgnore
     @GetMapping("stats/stats_table/records/tableId/{tableId}")
     long getTableRecords(@PathVariable("tableId") long tableId) {
-        return Optional.ofNullable(statsTableService.findByDictTableId(tableId))
+        return Optional.ofNullable(statsTableService.findByTableId(tableId))
                 .map(StatsTable::getTotalRecords)
                 .orElse(statsService.countTableRecords(tableId));
     }

@@ -18,19 +18,19 @@ public interface MappingColumnService {
     void saveAll(SeTableAddDTO seTableAddDTO);
 
     /**
-     * 通过dictColumnId查找
-     * @param dictColumnId
+     * 通过columnId查找
+     * @param columnId
      * @return
      */
-    MappingColumn findByDictColumnId(long dictColumnId);
+    MappingColumn findByColumnId(long columnId);
 
-    List<ColumnTypeDTO> listColumnTypeDTOByDictTableId(long dictTableId);
+    List<ColumnTypeDTO> listColumnTypeDTOByTableId(long tableId);
 
     /**
      * 将某表的字段按照类型和数目进行group by
      * @return
      */
-    Map<String, Integer> groupWithTypeAndCountByDictTableId(long dictTableId);
+    Map<String, Integer> groupWithTypeAndCountByTableId(long tableId);
 
     /**
      * 表搜索引擎管理--表信息增加--加载该表的字段
@@ -64,10 +64,10 @@ public interface MappingColumnService {
     List<MappingColumnVO> listMappingColumnVOs(long tableId);
 
     /**
-     * 根据dictTableId删除数据
-     * @param dictTableId
+     * 根据tableId删除数据
+     * @param tableId
      */
-    void deleteByDictTableId(long dictTableId);
+    void deleteByTableId(long tableId);
 
     /**
      * 更新字段（未配置数据同步，可任意增删改字段）

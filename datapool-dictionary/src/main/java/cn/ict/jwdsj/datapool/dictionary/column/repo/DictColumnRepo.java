@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface DictColumnRepo extends JpaRepository<DictColumn, Long> {
-    List<DictColumn> findByDictTableId(long dictTableId);
-    void deleteAllByDictTableId(long dictTableId);
+    List<DictColumn> findByTableId(long tableId);
+    void deleteAllByTableId(long tableId);
 }

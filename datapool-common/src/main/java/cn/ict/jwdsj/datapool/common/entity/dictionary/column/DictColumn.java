@@ -29,14 +29,14 @@ public class DictColumn extends BaseEntity {
 //    @NotFound(action = NotFoundAction.IGNORE)
 //    private DictDatabase dictDatabase;
     @Column(name = "database_id")
-    private long dictDatabaseId;
+    private long databaseId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "table_id")
 //    @NotFound(action = NotFoundAction.IGNORE)
 //    private DictTable dictTable;
     @Column(name = "table_id")
-    private long dictTableId;
+    private long tableId;
 
     @Column(name = "en_database")
     private String enDatabase;

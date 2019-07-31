@@ -14,23 +14,23 @@ public interface MappingTableRepo extends JpaRepository<MappingTable, Long>, Que
 
     /**
      * 更新记录数
-     * @param dictTableId 表id
+     * @param tableId 表id
      * @param indexRecords 索引中该表的记录数
      * @param tableRecords 数据库中该表的记录数
      */
     @Transactional
     @Modifying
-    @Query("update MappingTable r set r.indexRecords = :indexRecords, r.tableRecords = :tableRecords where r.dictTableId = :dictTableId")
-    void updateRecords(@Param("dictTableId") long dictTableId, @Param("indexRecords") long indexRecords, @Param("tableRecords") long tableRecords);
+    @Query("update MappingTable r set r.indexRecords = :indexRecords, r.tableRecords = :tableRecords where r.tableId = :tableId")
+    void updateRecords(@Param("tableId") long tableId, @Param("indexRecords") long indexRecords, @Param("tableRecords") long tableRecords);
 
     /**
      * 将更新日期更新为当前时间
-     * @param dictTableId 表id
+     * @param tableId 表id
      */
     @Transactional
     @Modifying
-    @Query("update MappingTable r set r.updateDate = current_date where r.dictTableId = :dictTableId")
-    void updateUpdateDate(@Param("dictTableId") long dictTableId);
+    @Query("update MappingTable r set r.updateDate = current_date where r.tableId = :tableId")
+    void updateUpdateDate(@Param("tableId") long tableId);
 
     /**
      * 判断某索引下是否有表存在
@@ -39,7 +39,7 @@ public interface MappingTableRepo extends JpaRepository<MappingTable, Long>, Que
      */
     boolean existsByIndexId(long indexId);
 
-    void deleteByDictTableId(long dictTableId);
+    void deleteByTableId(long tableId);
 
-    MappingTable findByDictTableId(long dictTableId);
+    MappingTable findByTableId(long tableId);
 }

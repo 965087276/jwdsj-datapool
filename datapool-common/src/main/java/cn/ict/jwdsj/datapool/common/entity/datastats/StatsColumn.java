@@ -17,13 +17,13 @@ import java.util.Date;
 public class StatsColumn extends BaseEntity {
 
     @Column(name = "database_id", nullable = false)
-    private long dictDatabaseId;
+    private long databaseId;
 
     @Column(name = "table_id", nullable = false)
-    private long dictTableId;
+    private long tableId;
 
     @Column(name = "column_id", nullable = false)
-    private long dictColumnId;
+    private long columnId;
 
     @Column(name = "en_column", nullable = false)
     private String enColumn;

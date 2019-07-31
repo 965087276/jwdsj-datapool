@@ -30,10 +30,10 @@ public class SeTableController {
     }
 
     @ApiOperation(value = "表信息管理--删除表")
-    @ApiImplicitParam(name = "dictTableId", value = "表id", paramType = "path", required = true)
-    @DeleteMapping("index_manage/se_tables/dictTableId/{dictTableId}")
-    public ResponseEntity delete(@PathVariable("dictTableId") long dictTableId) {
-        seTableService.deleteByDictTableId(dictTableId);
+    @ApiImplicitParam(name = "tableId", value = "表id", paramType = "path", required = true)
+    @DeleteMapping("index_manage/se_tables/tableId/{tableId}")
+    public ResponseEntity delete(@PathVariable("tableId") long tableId) {
+        seTableService.deleteByTableId(tableId);
         return ResponseEntity.ok();
     }
 

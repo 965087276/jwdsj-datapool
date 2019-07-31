@@ -17,12 +17,12 @@ import java.util.List;
 @Repository
 public interface StatsDatabaseRepo extends JpaRepository<StatsDatabase, Long>, QuerydslPredicateExecutor<StatsDatabase> {
 
-    List<StatsDatabase> findByDictDatabaseIdIn(List<Long> dictDatabaseIds);
+    List<StatsDatabase> findByDatabaseIdIn(List<Long> databaseIds);
 
     Page<StatsDatabase> findAll(Predicate predicate, Pageable pageable);
 
     @Transactional
     @Modifying
-    @Query("update StatsDatabase r set r.enDatabase = :enDatabase, r.chDatabase = :chDatabase where r.dictDatabaseId = :databaseId")
+    @Query("update StatsDatabase r set r.enDatabase = :enDatabase, r.chDatabase = :chDatabase where r.databaseId = :databaseId")
     void updateDatabasesInfo(@Param("databaseId") long databaseId, @Param("enDatabase") String enDatabase, @Param("chDatabase") String chDatabase);
 }

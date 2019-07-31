@@ -21,8 +21,8 @@ public class StatsServiceImpl implements StatsService {
     private StatsMapper statsMapper;
 
     @Override
-    public long countTableRecords(long dictTableId) {
-        DictTable dictTable = dictTableService.findById(dictTableId);
+    public long countTableRecords(long tableId) {
+        DictTable dictTable = dictTableService.findById(tableId);
         String database = dictTable.getDictDatabase().getEnDatabase();
         String table = dictTable.getEnTable();
         return statsMapper.countTableRecords(database, table);

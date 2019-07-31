@@ -46,8 +46,8 @@ public class StatsTableServiceImpl implements StatsTableService {
     }
 
     @Override
-    public StatsTable findByDictTableId(long dictTableId) {
-        return statsTableRepo.findByDictTableId(dictTableId);
+    public StatsTable findByTableId(long tableId) {
+        return statsTableRepo.findByTableId(tableId);
     }
 
     @Override
@@ -57,35 +57,35 @@ public class StatsTableServiceImpl implements StatsTableService {
 
     /**
      * 获取某个库下所有表的最新更新日期（这个日期作为库的更新日期）
-     * @param dictDatabaseId 库id
+     * @param databaseId 库id
      * @return
      */
     @Override
-    public LocalDate getDatabaseUpdateDate(long dictDatabaseId) {
-        LocalDate date = statsTableMapper.getDatabaseUpdateDate(dictDatabaseId);
+    public LocalDate getDatabaseUpdateDate(long databaseId) {
+        LocalDate date = statsTableMapper.getDatabaseUpdateDate(databaseId);
         return date != null ? date : LocalDate.of(2019, 1, 1);
     }
 
     /**
      * 获取某个库下的表的数目
      *
-     * @param dictDatabaseId
+     * @param databaseId
      * @return
      */
     @Override
-    public int countTablesByDatabaseId(long dictDatabaseId) {
-        return statsTableMapper.countTablesByDatabaseId(dictDatabaseId);
+    public int countTablesByDatabaseId(long databaseId) {
+        return statsTableMapper.countTablesByDatabaseId(databaseId);
     }
 
     /**
      * 获取某个库的记录数
      *
-     * @param dictDatabaseId 库id
+     * @param databaseId 库id
      * @return
      */
     @Override
-    public long countDatabaseRecords(long dictDatabaseId) {
-        return statsTableMapper.countDatabaseRecords(dictDatabaseId);
+    public long countDatabaseRecords(long databaseId) {
+        return statsTableMapper.countDatabaseRecords(databaseId);
     }
 
 
@@ -103,7 +103,7 @@ public class StatsTableServiceImpl implements StatsTableService {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
         QStatsTable statsTable = QStatsTable.statsTable;
 
-        Predicate predicate = statsTable.dictDatabaseId.eq(databaseId);
+        Predicate predicate = statsTable.databaseId.eq(databaseId);
         // 根据输入的待查询表名是中文还是英文来判断搜索哪个字段
         predicate = StrUtil.isBlank(nameLike) ? predicate : StrJudgeUtil.isContainChinese(nameLike) ?
                 ExpressionUtils.and(predicate, statsTable.chTable.like('%' + nameLike + '%')) :

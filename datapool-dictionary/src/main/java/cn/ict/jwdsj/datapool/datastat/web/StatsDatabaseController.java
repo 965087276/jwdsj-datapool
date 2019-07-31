@@ -42,8 +42,8 @@ public class StatsDatabaseController {
 
     @ApiIgnore
     @GetMapping("stats/stats_databases/ids/{ids}")
-    List<StatsDatabase> listDatabasesByDictDatabaseIds(@PathVariable("ids") String ids) {
+    List<StatsDatabase> listDatabasesByDatabaseIds(@PathVariable("ids") String ids) {
 
-        return statsDatabaseService.listByDictDatabaseIds(ids);
+        return statsDatabaseService.listByDatabaseIds(ids);
     }
 }

@@ -46,13 +46,13 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .collect(groupingBy(this::getColumnType));
 
         // 若该操作为在已存在的表上新增字段，且该表已加入了数据同步，那么不能增加新字段
-        Optional.ofNullable(seTableService.findByDictTableId(seTableAddDTO.getTableId()))
+        Optional.ofNullable(seTableService.findByTableId(seTableAddDTO.getTableId()))
                 .ifPresent(seTable -> {
                     Assert.isTrue(!seTable.isSync(), "该表在数据同步任务中，不能添加新字段");
                 });
 
         // 字段的类型及其数量
-        Map<String, Integer> typeAndCount = this.groupWithTypeAndCountByDictTableId(seTableAddDTO.getTableId());
+        Map<String, Integer> typeAndCount = this.groupWithTypeAndCountByTableId(seTableAddDTO.getTableId());
 
         List<MappingColumn> mappingColumns = new ArrayList<>();
 
@@ -65,7 +65,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
             for (int i = 0; i < list.size(); ++i) {
                 MappingColumnDTO mappingColumnDTO = list.get(i);
                 MappingColumn mappingColumn = BeanUtil.toBean(mappingColumnDTO, MappingColumn.class);
-                mappingColumn.setDictTableId(seTableAddDTO.getTableId());
+                mappingColumn.setTableId(seTableAddDTO.getTableId());
                 mappingColumn.setEsColumn(type + "-" + (++typeCount));
                 mappingColumn.setType(type);
 
@@ -78,21 +78,21 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     }
 
     @Override
-    public MappingColumn findByDictColumnId(long dictColumnId) {
-        return mappingColumnRepo.findByDictColumnId(dictColumnId);
+    public MappingColumn findByColumnId(long columnId) {
+        return mappingColumnRepo.findByColumnId(columnId);
     }
 
     @Override
-    public List<ColumnTypeDTO> listColumnTypeDTOByDictTableId(long dictTableId) {
+    public List<ColumnTypeDTO> listColumnTypeDTOByTableId(long tableId) {
         QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
         return jpaQueryFactory
-                .select(mappingColumn.dictColumnId, mappingColumn.esColumn, mappingColumn.type)
+                .select(mappingColumn.columnId, mappingColumn.esColumn, mappingColumn.type)
                 .from(mappingColumn)
-                .where(mappingColumn.dictTableId.eq(dictTableId))
+                .where(mappingColumn.tableId.eq(tableId))
                 .fetch()
                 .stream()
                 .map(tuple -> ColumnTypeDTO.builder()
-                        .dictColumnId(tuple.get(mappingColumn.dictColumnId))
+                        .columnId(tuple.get(mappingColumn.columnId))
                         .name(tuple.get(mappingColumn.esColumn))
                         .type(tuple.get(mappingColumn.type))
                         .build()
@@ -103,16 +103,16 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     /**
      * 将某表的字段按照类型和数目进行group by
      *
-     * @param dictTableId
+     * @param tableId
      * @return
      */
     @Override
-    public Map<String, Integer> groupWithTypeAndCountByDictTableId(long dictTableId) {
+    public Map<String, Integer> groupWithTypeAndCountByTableId(long tableId) {
         QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
         return jpaQueryFactory
                 .select(mappingColumn.type, mappingColumn.count())
                 .from(mappingColumn)
-                .where(mappingColumn.dictTableId.eq(dictTableId))
+                .where(mappingColumn.tableId.eq(tableId))
                 .groupBy(mappingColumn.type)
                 .fetch()
                 .stream()
@@ -148,14 +148,14 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Override
     public TableFullReadDTO getTableFullReadDTOByTableId(long tableId) {
         List<DictColumn> dictColumns = dictClient.listDictColumnsByTableId(tableId);
-        List<ColumnTypeDTO> columnTypeDTOS = listColumnTypeDTOByDictTableId(tableId);
+        List<ColumnTypeDTO> columnTypeDTOS = listColumnTypeDTOByTableId(tableId);
 
         // 表字段id与表字段名的映射
         Map<Long, String> colIdAndColNameMap = dictColumns
                 .stream().collect(toMap(DictColumn::getId, dictColumn -> dictColumn.getEnColumn()));
         // 表字段id与索引字段名的映射
         Map<Long, String> colIdAndEsColMap = columnTypeDTOS
-                .stream().collect(toMap(ColumnTypeDTO::getDictColumnId, columnTypeDTO -> columnTypeDTO.getName()));
+                .stream().collect(toMap(ColumnTypeDTO::getColumnId, columnTypeDTO -> columnTypeDTO.getName()));
 
         TableFullReadDTO tableFullReadDTO = new TableFullReadDTO();
 
@@ -183,7 +183,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
      */
     @Override
     public List<MappingColumn> listMappingColumnByTableId(long tableId) {
-        return mappingColumnRepo.findByDictTableIdAndDisplayed(tableId, true);
+        return mappingColumnRepo.findByTableIdAndDisplayed(tableId, true);
     }
 
     /**
@@ -194,7 +194,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
      */
     @Override
     public List<MappingColumnVO> listMappingColumnVOs(long tableId) {
-        return mappingColumnRepo.findByDictTableId(tableId)
+        return mappingColumnRepo.findByTableId(tableId)
                 .stream()
                 .map(this::convertToMappingColumnVO)
                 .collect(Collectors.toList());
@@ -203,8 +203,8 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByDictTableId(long dictTableId) {
-        mappingColumnRepo.deleteByDictTableId(dictTableId);
+    public void deleteByTableId(long tableId) {
+        mappingColumnRepo.deleteByTableId(tableId);
     }
 
     /**
@@ -215,8 +215,8 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateColumnsNotSync(SeTableAddDTO seTableAddDTO) {
-        long dictTableId = seTableAddDTO.getTableId();
-        mappingColumnRepo.deleteByDictTableId(dictTableId);
+        long tableId = seTableAddDTO.getTableId();
+        mappingColumnRepo.deleteByTableId(tableId);
         this.saveAll(seTableAddDTO);
     }
 
@@ -228,11 +228,11 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateColumnsHasSync(SeTableAddDTO seTableAddDTO) {
-        long dictTableId = seTableAddDTO.getTableId();
+        long tableId = seTableAddDTO.getTableId();
         var columns = seTableAddDTO.getColumns();
         List<MappingColumn> mappingColumns = new ArrayList<>();
         for (var column : columns) {
-            MappingColumn colUpd = mappingColumnRepo.findByDictColumnId(column.getDictColumnId());
+            MappingColumn colUpd = mappingColumnRepo.findByColumnId(column.getColumnId());
             colUpd.setDisplayed(column.isDisplayed());
             colUpd.setBoost(column.getBoost());
             mappingColumns.add(colUpd);
@@ -258,7 +258,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
         MappingColumnVO columnVO = new MappingColumnVO();
         columnVO.setEnColumn(dictColumn.getEnColumn());
         columnVO.setChColumn(dictColumn.getChColumn());
-        columnVO.setDictColumnId(dictColumn.getId());
+        columnVO.setColumnId(dictColumn.getId());
         columnVO.setDisplayed(true);
         columnVO.setSearched(false);
         columnVO.setAnalyzed(false);

@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ColumnTypeDTO {
-    private long dictColumnId;
+    private long columnId;
     private String name;
     private String type;
 }

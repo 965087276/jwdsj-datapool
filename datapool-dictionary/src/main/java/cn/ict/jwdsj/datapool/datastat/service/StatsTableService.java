@@ -15,7 +15,7 @@ public interface StatsTableService {
 
     void update(StatsTable statsTable);
 
-    StatsTable findByDictTableId(long dictTableId);
+    StatsTable findByTableId(long tableId);
 
     List<StatsTable> listAll();
 
@@ -23,24 +23,24 @@ public interface StatsTableService {
 
     /**
      * 获取某个库下所有表的最新更新日期（这个日期作为库的更新日期）
-     * @param dictDatabaseId 库id
+     * @param databaseId 库id
      * @return
      */
-    LocalDate getDatabaseUpdateDate(long dictDatabaseId);
+    LocalDate getDatabaseUpdateDate(long databaseId);
 
     /**
      * 获取某个库下的表的数目
-     * @param dictDatabaseId
+     * @param databaseId
      * @return
      */
-    int countTablesByDatabaseId(long dictDatabaseId);
+    int countTablesByDatabaseId(long databaseId);
 
     /**
      * 获取某个库的记录数
-     * @param dictDatabaseId 库id
+     * @param databaseId 库id
      * @return
      */
-    long countDatabaseRecords(long dictDatabaseId);
+    long countDatabaseRecords(long databaseId);
 
 
     /**

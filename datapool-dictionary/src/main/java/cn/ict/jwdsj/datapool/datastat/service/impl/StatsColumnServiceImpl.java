@@ -59,32 +59,32 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     @Override
     public void updateDefectedColumns() {
         // dict_table表中的所有表,也是stats_column中的所有表（因为已经执行了deleteColumnsNotExist和saveColumnsNotAdd方法）
-        List<Long> dictTableIds = dictTableService.listTableId();
+        List<Long> tableIds = dictTableService.listTableId();
 
-        for (Long dictTableId : dictTableIds) {
+        for (Long tableId : tableIds) {
             // 缺陷字段
-            List<String> defectColumns = this.initAndListDefectedColumns(dictTableId);
-            log.info("tableId is {}, defected columns are {}", dictTableId, defectColumns);
+            List<String> defectColumns = this.initAndListDefectedColumns(tableId);
+            log.info("tableId is {}, defected columns are {}", tableId, defectColumns);
             // 字段名与字段id的对应关系
-            Map<String, Long> dictColNameAndId = dictColumnService.listByDictTableId(dictTableId)
+            Map<String, Long> dictColNameAndId = dictColumnService.listByTableId(tableId)
                     .stream()
                     .collect(Collectors.toMap(DictColumn::getEnColumn, DictColumn::getId));
-            // 缺陷字段的dictColumnId
+            // 缺陷字段的columnId
             List<Long> defectColumnIds = defectColumns
                     .stream()
                     .filter(dictColNameAndId::containsKey) // 该字段要在字典表（同样也在字段统计表）中存在
                     .map(dictColNameAndId::get)
                     .collect(Collectors.toList());
 
-            List<StatsColumn> statsColumns = statsColumnRepo.findByDictTableId(dictTableId);
+            List<StatsColumn> statsColumns = statsColumnRepo.findByTableId(tableId);
 
             // is_defect发生改变的行
             List<StatsColumn> statsColumnsChanged = new ArrayList<>();
 
             for (StatsColumn statsColumn : statsColumns) {
-                long dictColumnId = statsColumn.getDictColumnId();
+                long columnId = statsColumn.getColumnId();
                 boolean isDefected = statsColumn.isDefected();
-                boolean existsInDefected = defectColumnIds.contains(dictColumnId);
+                boolean existsInDefected = defectColumnIds.contains(columnId);
                 // 原来存的“是否缺陷”与新算的“是否缺陷”作异或，若值不为0，则证明发生了改变
                 if (isDefected ^ existsInDefected) {
                     statsColumn.setDefected(!isDefected);
@@ -97,13 +97,13 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     }
 
     @Override
-    public int countColumnsByTableId(long dictTableId) {
-        return statsColumnMapper.countColumnsByTableId(dictTableId);
+    public int countColumnsByTableId(long tableId) {
+        return statsColumnMapper.countColumnsByTableId(tableId);
     }
 
     @Override
-    public int countDefectedColumnsByTableId(long dictTableId) {
-        return statsColumnMapper.countDefectedColumnsByTableId(dictTableId);
+    public int countDefectedColumnsByTableId(long tableId) {
+        return statsColumnMapper.countDefectedColumnsByTableId(tableId);
     }
 
     /**
@@ -115,7 +115,7 @@ public class StatsColumnServiceImpl implements StatsColumnService {
      */
     @Override
     public List<StatsColumn> listAll(long databaseId, long tableId) {
-        return statsColumnRepo.findByDictTableId(tableId);
+        return statsColumnRepo.findByTableId(tableId);
     }
 
     @Override
@@ -157,11 +157,11 @@ public class StatsColumnServiceImpl implements StatsColumnService {
 
     private StatsColumn convertToStatsColumn(DictColumn dictColumn) {
         StatsColumn statsColumn = new StatsColumn();
-        statsColumn.setDictColumnId(dictColumn.getId());
+        statsColumn.setColumnId(dictColumn.getId());
         statsColumn.setEnColumn(dictColumn.getEnColumn());
         statsColumn.setChColumn(dictColumn.getChColumn());
-        statsColumn.setDictDatabaseId(dictColumn.getDictDatabaseId());
-        statsColumn.setDictTableId(dictColumn.getDictTableId());
+        statsColumn.setDatabaseId(dictColumn.getDatabaseId());
+        statsColumn.setTableId(dictColumn.getTableId());
         return statsColumn;
     }
 

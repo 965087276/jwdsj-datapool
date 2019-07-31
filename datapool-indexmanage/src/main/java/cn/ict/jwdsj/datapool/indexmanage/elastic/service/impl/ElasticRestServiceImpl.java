@@ -117,13 +117,13 @@ public class ElasticRestServiceImpl implements ElasticRestService {
     /**
      * 查询某表在搜索引擎中的记录数（使用索引别名查找）
      *
-     * @param dictTableId 表id
+     * @param tableId 表id
      * @return
      */
     @Override
-    public long getRecordsByDictTableIdInAlias(long dictTableId) throws IOException {
+    public long getRecordsByTableIdInAlias(long tableId) throws IOException {
         // 该表的索引别名
-        String indexAlias = aliasPrefix + dictTableId;
+        String indexAlias = aliasPrefix + tableId;
         SearchRequest request = new SearchRequest(indexAlias);
         return client.search(request, RequestOptions.DEFAULT)
                 .getHits()
@@ -133,14 +133,14 @@ public class ElasticRestServiceImpl implements ElasticRestService {
     /**
      * 查询某表在搜索引擎中的记录数（使用索引名查找）
      *
-     * @param dictTableId 表id
+     * @param tableId 表id
      * @return
      */
     @Override
-    public long getRecordsByDictTableIdInIndex(String indexName, long dictTableId) throws IOException {
+    public long getRecordsByTableIdInIndex(String indexName, long tableId) throws IOException {
         SearchRequest request = new SearchRequest(indexName);
         SearchSourceBuilder sourceBuilder = new SearchSourceBuilder();
-        sourceBuilder.query(new TermQueryBuilder("elastic_table_id", dictTableId)).size(0);
+        sourceBuilder.query(new TermQueryBuilder("elastic_table_id", tableId)).size(0);
         request.source(sourceBuilder);
         return client.search(request, RequestOptions.DEFAULT).getHits().totalHits;
     }
@@ -149,15 +149,15 @@ public class ElasticRestServiceImpl implements ElasticRestService {
      * 删除某表的索引别名
      *
      * @param indexName 索引名
-     * @param dictTableId 表id
+     * @param tableId 表id
      */
     @Override
-    public void deleteAliasByIndexNameAndDictTableId(String indexName, long dictTableId) throws IOException {
+    public void deleteAliasByIndexNameAndTableId(String indexName, long tableId) throws IOException {
         IndicesAliasesRequest request = new IndicesAliasesRequest();
         AliasActions removeAction =
                 new AliasActions(AliasActions.Type.REMOVE)
                         .index(indexName)
-                        .alias(aliasPrefix + dictTableId);
+                        .alias(aliasPrefix + tableId);
         request.addAliasAction(removeAction);
         client.indices().updateAliases(request, RequestOptions.DEFAULT);
     }
@@ -166,23 +166,23 @@ public class ElasticRestServiceImpl implements ElasticRestService {
      * 删除某表的数据
      *
      * @param indexName
-     * @param dictTableId 表id
+     * @param tableId 表id
      */
     @Override
-    public void deleteDocsByDictTableId(String indexName, long dictTableId) {
+    public void deleteDocsByTableId(String indexName, long tableId) {
         DeleteByQueryRequest request = new DeleteByQueryRequest(indexName);
-        request.setQuery(new TermQueryBuilder("elastic_table_id", dictTableId));
+        request.setQuery(new TermQueryBuilder("elastic_table_id", tableId));
         request.setConflicts("proceed");
         request.setBatchSize(2000);
         client.deleteByQueryAsync(request, RequestOptions.DEFAULT, new ActionListener<BulkByScrollResponse>() {
             @Override
             public void onResponse(BulkByScrollResponse bulkByScrollResponse) {
-                log.info("删除索引数据成功，表id为{}", dictTableId);
+                log.info("删除索引数据成功，表id为{}", tableId);
             }
 
             @Override
             public void onFailure(Exception e) {
-                log.error("删除索引数据失败，表id为{}，异常为{}", dictTableId, e.getMessage());
+                log.error("删除索引数据失败，表id为{}，异常为{}", tableId, e.getMessage());
             }
         });
     }

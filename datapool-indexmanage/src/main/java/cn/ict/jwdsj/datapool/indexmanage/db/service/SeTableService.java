@@ -24,13 +24,13 @@ public interface SeTableService {
     Page<SeTableVO> listSeTableVO(int curPage, int pageSize, long databaseId, String nameLike);
 
     /**
-     * 通过dictTableId查找
-     * @param dictTableId
+     * 通过tableId查找
+     * @param tableId
      * @return
      */
-    SeTable findByDictTableId(long dictTableId);
+    SeTable findByTableId(long tableId);
 
-    void deleteByDictTableId(long dictTableId);
+    void deleteByTableId(long tableId);
 
     void save(SeTable seTable);
 }

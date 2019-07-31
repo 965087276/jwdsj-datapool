@@ -194,7 +194,7 @@ public class DictTableServiceImpl implements DictTableService {
         // 若该表已加入搜索引擎，则不能删除
         Assert.isTrue(!dictTable.isAddToSe(), "该表已加入搜索引擎表中，不能被删除");
         // 删除所有字段
-        dictColumnService.deleteByDictTableId(id);
+        dictColumnService.deleteByTableId(id);
         // 删除该表
         dictTableRepo.deleteById(id);
     }

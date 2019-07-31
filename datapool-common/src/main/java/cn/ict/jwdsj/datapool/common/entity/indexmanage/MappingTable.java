@@ -21,7 +21,7 @@ public class MappingTable extends BaseEntity {
 //    private DictDatabase dictDatabase;
 
     @Column(name = "database_id", nullable = false)
-    private long dictDatabaseId;
+    private long databaseId;
 
 //    @ManyToOne
 //    @JoinColumn(name = "table_id", nullable = false)
@@ -29,7 +29,7 @@ public class MappingTable extends BaseEntity {
 //    private DictTable dictTable;
 
     @Column(name = "table_id", nullable = false)
-    private long dictTableId;
+    private long tableId;
 
     @Column(name = "index_id", nullable = false)
     private long indexId;
@@ -64,7 +64,7 @@ public class MappingTable extends BaseEntity {
     private LocalDate updateDate = LocalDate.of(2009, 1, 1);
 
     public void setDictTable(DictTable dictTable) {
-        this.setDictTableId(dictTable.getId());
+        this.setTableId(dictTable.getId());
         this.setEnTable(dictTable.getEnTable());
         this.setChTable(dictTable.getChTable());
     }
@@ -75,7 +75,7 @@ public class MappingTable extends BaseEntity {
     }
 
     public void setDictDatabase(DictDatabase dictDatabase) {
-        this.setDictDatabaseId(dictDatabase.getId());
+        this.setDatabaseId(dictDatabase.getId());
         this.setEnDatabase(dictDatabase.getEnDatabase());
     }
 }

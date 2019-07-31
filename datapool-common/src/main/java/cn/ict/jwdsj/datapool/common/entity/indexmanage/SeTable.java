@@ -28,10 +28,10 @@ public class SeTable extends BaseEntity {
 //    private DictTable dictTable;
 
     @Column(name = "database_id")
-    private long dictDatabaseId;
+    private long databaseId;
 
     @Column(name = "table_id")
-    private long dictTableId;
+    private long tableId;
 
     @Column(name = "en_table")
     private String enTable;

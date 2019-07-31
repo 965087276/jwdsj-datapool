@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface StatsTableRepo extends JpaRepository<StatsTable, Long>, QuerydslPredicateExecutor<StatsTable> {
-    StatsTable findByDictTableId(long dictTableId);
+    StatsTable findByTableId(long tableId);
 
     Page<StatsTable> findAll(Predicate predicate, Pageable pageable);
 
     @Transactional
     @Modifying
-    @Query("update StatsTable r set r.enTable = :enTable, r.chTable = :chTable where r.dictTableId = :tableId")
+    @Query("update StatsTable r set r.enTable = :enTable, r.chTable = :chTable where r.tableId = :tableId")
     void updateTableInfo(@Param("tableId") long tableId, @Param("enTable") String enTable, @Param("chTable") String chTable);
 }

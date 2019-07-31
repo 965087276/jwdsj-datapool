@@ -41,10 +41,10 @@ public class MappingTableController {
     }
 
     @ApiOperation(value = "数据同步管理--删除表（取消同步）")
-    @ApiImplicitParam(name = "dictTableId", value = "dictTable表的id", required = true)
-    @DeleteMapping("index_manage/mapping_tables/dictTableId/{dictTableId}")
-    public ResponseEntity addTableMapping(@PathVariable("dictTableId") long dictTableId) throws IOException {
-        mappingTableService.deleteByDictTableId(dictTableId);
+    @ApiImplicitParam(name = "tableId", value = "dictTable表的id", required = true)
+    @DeleteMapping("index_manage/mapping_tables/tableId/{tableId}")
+    public ResponseEntity addTableMapping(@PathVariable("tableId") long tableId) throws IOException {
+        mappingTableService.deleteByTableId(tableId);
         return ResponseEntity.ok();
     }
 

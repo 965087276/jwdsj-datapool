@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class MappingColumnVO {
-    private long dictColumnId;
+    private long columnId;
 
     private String enColumn;
     private String chColumn;

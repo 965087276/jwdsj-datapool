@@ -29,9 +29,9 @@ public class StatsTableSubTask {
         tables.parallelStream().forEach(statsTable -> {
             StatsTable newStatsTable = (StatsTable) statsTable.clone();
 
-            newStatsTable.setTotalRecords( statsService.countTableRecords(statsTable.getDictTableId()) );
-            newStatsTable.setTotalColumns( statsColumnService.countColumnsByTableId(statsTable.getDictTableId()) );
-            newStatsTable.setDefectColumns( statsColumnService.countDefectedColumnsByTableId(statsTable.getDictTableId()) );
+            newStatsTable.setTotalRecords( statsService.countTableRecords(statsTable.getTableId()) );
+            newStatsTable.setTotalColumns( statsColumnService.countColumnsByTableId(statsTable.getTableId()) );
+            newStatsTable.setDefectColumns( statsColumnService.countDefectedColumnsByTableId(statsTable.getTableId()) );
             newStatsTable.setDefectRate();
             log.info("newStatsTable is {}", newStatsTable);
             if (!statsTable.equals(newStatsTable)) {

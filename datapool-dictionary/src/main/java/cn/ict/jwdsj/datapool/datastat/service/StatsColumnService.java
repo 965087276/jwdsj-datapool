@@ -19,17 +19,17 @@ public interface StatsColumnService {
 
     /**
      * 获取某表的字段数
-     * @param dictTableId
+     * @param tableId
      * @return
      */
-    int countColumnsByTableId(long dictTableId);
+    int countColumnsByTableId(long tableId);
 
     /**
      * 获取某表的缺陷字段数
-     * @param dictTableId
+     * @param tableId
      * @return
      */
-    int countDefectedColumnsByTableId(long dictTableId);
+    int countDefectedColumnsByTableId(long tableId);
 
     /**
      * 字段列表展示

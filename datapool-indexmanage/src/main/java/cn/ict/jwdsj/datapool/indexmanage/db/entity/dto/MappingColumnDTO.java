@@ -13,7 +13,7 @@ public class MappingColumnDTO {
     private String chColumn;
 
     @Min(value = 1)
-    private long dictColumnId;
+    private long columnId;
 
     @NotNull
     private boolean searched;

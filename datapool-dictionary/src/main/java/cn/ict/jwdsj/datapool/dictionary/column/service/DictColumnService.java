@@ -19,10 +19,10 @@ public interface DictColumnService {
 
     /**
      * 获取dict_column中某库下的所有表名
-     * @param dictDatabaseId
+     * @param databaseId
      * @return
      */
-    List<String> getEnTableByDictDatabaseId(long dictDatabaseId);
+    List<String> getEnTableByDatabaseId(long databaseId);
 
 
     /**
@@ -48,7 +48,7 @@ public interface DictColumnService {
 //     */
 //    List<DatabaseNameDTO> listDatabaseDropDownBox();
 
-    List<DictColumn> listByDictTableId(long dictTableId);
+    List<DictColumn> listByTableId(long tableId);
 
     List<ColumnNameDTO> listColumnNameDTOsByTableId(long tableId);
 
@@ -73,7 +73,7 @@ public interface DictColumnService {
 
     /**
      * 删除某表下的所有字段
-     * @param dictTableId
+     * @param tableId
      */
-    void deleteByDictTableId(long dictTableId);
+    void deleteByTableId(long tableId);
 }

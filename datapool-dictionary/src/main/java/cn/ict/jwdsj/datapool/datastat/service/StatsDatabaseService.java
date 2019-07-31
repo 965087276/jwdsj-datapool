@@ -23,7 +23,7 @@ public interface StatsDatabaseService {
      * @param ids 用逗号隔开的库id
      * @return
      */
-    List<StatsDatabase> listByDictDatabaseIds(String ids);
+    List<StatsDatabase> listByDatabaseIds(String ids);
 
     /**
      * 库统计列表

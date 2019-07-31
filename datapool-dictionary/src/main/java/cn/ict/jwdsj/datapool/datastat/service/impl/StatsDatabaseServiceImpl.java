@@ -47,7 +47,7 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
         StatsDatabase statsDatabase = StatsDatabase.builder()
                 .enDatabase(dictDatabase.getEnDatabase())
                 .chDatabase(dictDatabase.getChDatabase())
-                .dictDatabaseId(dictDatabase.getId())
+                .databaseId(dictDatabase.getId())
                 .build();
         statsDatabaseRepo.save(statsDatabase);
     }
@@ -58,13 +58,13 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
     }
 
     @Override
-    public List<StatsDatabase> listByDictDatabaseIds(String ids) {
+    public List<StatsDatabase> listByDatabaseIds(String ids) {
 
-        List<Long> dictDatabaseIds = Arrays.stream(ids.split(","))
+        List<Long> databaseIds = Arrays.stream(ids.split(","))
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
 
-        return statsDatabaseRepo.findByDictDatabaseIdIn(dictDatabaseIds);
+        return statsDatabaseRepo.findByDatabaseIdIn(databaseIds);
     }
 
     /**

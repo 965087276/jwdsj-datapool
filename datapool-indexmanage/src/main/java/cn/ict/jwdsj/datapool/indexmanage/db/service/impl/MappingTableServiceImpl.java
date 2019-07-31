@@ -75,21 +75,21 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Transactional(rollbackFor = Exception.class)
     public void save(MappingTableAddDTO mappingTableAddDTO) throws IOException {
 
-        long dictTableId = mappingTableAddDTO.getTableId();
-        long dictDatabaseId = mappingTableAddDTO.getDatabaseId();
+        long tableId = mappingTableAddDTO.getTableId();
+        long databaseId = mappingTableAddDTO.getDatabaseId();
         long indexId = mappingTableAddDTO.getIndexId();
 
         EsIndex esIndex = esIndexService.findById(indexId);
 
         // 若索引中存在该表的数据，则说明之前的delete by query还没有执行完毕，因此拒绝这次增加请求
-        long totalDocs = elasticRestService.getRecordsByDictTableIdInIndex(esIndex.getIndexName(), dictTableId);
+        long totalDocs = elasticRestService.getRecordsByTableIdInIndex(esIndex.getIndexName(), tableId);
         if (totalDocs != 0) {
-            elasticRestService.deleteDocsByDictTableId(esIndex.getIndexName(), dictTableId);
+            elasticRestService.deleteDocsByTableId(esIndex.getIndexName(), tableId);
         }
         Assert.isTrue(totalDocs == 0L, "数据正在删除中，请稍后尝试加入");
 
-        DictTable dictTable = dictClient.findDictTableById(dictTableId);
-        DictDatabase dictDatabase = dictClient.findDictDatabaseById(dictDatabaseId);
+        DictTable dictTable = dictClient.findDictTableById(tableId);
+        DictDatabase dictDatabase = dictClient.findDictDatabaseById(databaseId);
 
         MappingTable mappingTable = new MappingTable();
         mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
@@ -100,19 +100,19 @@ public class MappingTableServiceImpl implements MappingTableService {
 
         mappingTableRepo.save(mappingTable);
         // 为该索引添加一个别名，别名为"{alias-prefix}-表id"，别名指向这个表（即filter出elastic_table_id为该表id的文档）
-        elasticRestService.addAlias(esIndex.getIndexName(), dictTableId);
+        elasticRestService.addAlias(esIndex.getIndexName(), tableId);
         // 因为这个表要加入到es中，所以要根据表字段的搜索、分词情况来给elasticsearch的索引添加字段
         esColumnService.add(mappingTableAddDTO);
 
         // 更新se_table表的is_sync字段为true
         QSeTable seTable = QSeTable.seTable;
-        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.dictTableId.eq(dictTableId)).execute();
+        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.tableId.eq(tableId)).execute();
 
     }
 
     @Override
-    public MappingTable findByDictTableId(long dictTableId) {
-        return mappingTableRepo.findByDictTableId(dictTableId);
+    public MappingTable findByTableId(long tableId) {
+        return mappingTableRepo.findByTableId(tableId);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class MappingTableServiceImpl implements MappingTableService {
     public Page<MappingTableVO> listMappingTableVO(int curPage, int pageSize, long databaseId, String nameLike) {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
         QMappingTable mappingTable = QMappingTable.mappingTable;
-        Predicate predicate = mappingTable.dictDatabaseId.eq(databaseId);
+        Predicate predicate = mappingTable.databaseId.eq(databaseId);
         // 根据输入的待查询表名是中文还是英文来判断搜索哪个字段
         predicate = StrUtil.isBlank(nameLike) ? predicate : StrJudgeUtil.isContainChinese(nameLike) ?
                 ExpressionUtils.and(predicate, mappingTable.chTable.like('%' + nameLike + '%')) :
@@ -154,17 +154,17 @@ public class MappingTableServiceImpl implements MappingTableService {
         QMappingTable mappingTable = QMappingTable.mappingTable;
         QStatsTable statsTable = QStatsTable.statsTable;
 
-        List<Long> dictTableIds = jpaQueryFactory
-                .select(mappingTable.dictTableId)
+        List<Long> tableIds = jpaQueryFactory
+                .select(mappingTable.tableId)
                 .from(mappingTable)
                 .fetch();
         // 当前日期
         LocalDate currentDate = jdbcTemplate.queryForObject("select current_date", LocalDate.class);
-        dictTableIds.stream().forEach(dictTableId -> {
+        tableIds.stream().forEach(tableId -> {
 
-            MappingTable mtb = mappingTableRepo.findByDictTableId(dictTableId);
+            MappingTable mtb = mappingTableRepo.findByTableId(tableId);
             long oldTableRecords = mtb.getTableRecords();
-            long newTableRecords = jpaQueryFactory.select(statsTable.totalRecords).from(statsTable).where(statsTable.dictTableId.eq(dictTableId)).fetchOne();
+            long newTableRecords = jpaQueryFactory.select(statsTable.totalRecords).from(statsTable).where(statsTable.tableId.eq(tableId)).fetchOne();
             long oldIndexRecords = mtb.getIndexRecords();
             long newIndexRecords = 0;
 
@@ -173,7 +173,7 @@ public class MappingTableServiceImpl implements MappingTableService {
             // 上面两个日期的日期差
             int daysDiff = (int) ChronoUnit.DAYS.between(updateDate, currentDate);
             try {
-                newIndexRecords = elasticRestService.getRecordsByDictTableIdInAlias(dictTableId);
+                newIndexRecords = elasticRestService.getRecordsByTableIdInAlias(tableId);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -182,21 +182,21 @@ public class MappingTableServiceImpl implements MappingTableService {
             // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
             if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
                 TableSyncMsg msg = new TableSyncMsg();
-                msg.setDatabaseId(mtb.getDictDatabaseId());
+                msg.setDatabaseId(mtb.getDatabaseId());
                 msg.setDatabaseName(mtb.getEnDatabase());
                 msg.setIndexId(mtb.getIndexId());
                 msg.setIndexName(mtb.getIndexName());
-                msg.setTableId(mtb.getDictTableId());
+                msg.setTableId(mtb.getTableId());
                 msg.setTableName(mtb.getEnTable());
                 kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
                 log.info("the msg have sent to kafka, table is {}.{}", msg.getTableName(), msg.getDatabaseName());
-                mappingTableRepo.updateUpdateDate(dictTableId);
+                mappingTableRepo.updateUpdateDate(tableId);
                 isSync = true;
             }
 
             // 更新 索引记录数 表记录数
             if (newIndexRecords != oldIndexRecords || newTableRecords != oldTableRecords)
-                mappingTableRepo.updateRecords(dictTableId, newIndexRecords, isSync ? newTableRecords : oldTableRecords);
+                mappingTableRepo.updateRecords(tableId, newIndexRecords, isSync ? newTableRecords : oldTableRecords);
 
         });
     }
@@ -206,18 +206,18 @@ public class MappingTableServiceImpl implements MappingTableService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByDictTableId(long dictTableId) throws IOException {
-        String indexName = mappingTableRepo.findByDictTableId(dictTableId).getIndexName();
+    public void deleteByTableId(long tableId) throws IOException {
+        String indexName = mappingTableRepo.findByTableId(tableId).getIndexName();
 
-        mappingTableRepo.deleteByDictTableId(dictTableId);
+        mappingTableRepo.deleteByTableId(tableId);
 
         QSeTable seTable = QSeTable.seTable;
         // 更新seTable表的sync字段为false
-        jpaQueryFactory.update(seTable).set(seTable.sync, false).where(seTable.dictTableId.eq(dictTableId)).execute();
+        jpaQueryFactory.update(seTable).set(seTable.sync, false).where(seTable.tableId.eq(tableId)).execute();
         // 在elasticsearch删除该表的索引别名
-        elasticRestService.deleteAliasByIndexNameAndDictTableId(indexName, dictTableId);
+        elasticRestService.deleteAliasByIndexNameAndTableId(indexName, tableId);
         // 在elasticsearch删除该表的数据
-        elasticRestService.deleteDocsByDictTableId(indexName, dictTableId);
+        elasticRestService.deleteDocsByTableId(indexName, tableId);
 
     }
 
@@ -228,7 +228,7 @@ public class MappingTableServiceImpl implements MappingTableService {
      */
     @Override
     public void update(MappingTableUpdateDTO mappingTableUpdateDTO) {
-        MappingTable mappingTable = mappingTableRepo.findByDictTableId(mappingTableUpdateDTO.getTableId());
+        MappingTable mappingTable = mappingTableRepo.findByTableId(mappingTableUpdateDTO.getTableId());
         // 发生变化时才去更新
         if (mappingTable.getUpdatePeriod() != mappingTableUpdateDTO.getUpdatePeriod()) {
             mappingTable.setUpdatePeriod(mappingTableUpdateDTO.getUpdatePeriod());

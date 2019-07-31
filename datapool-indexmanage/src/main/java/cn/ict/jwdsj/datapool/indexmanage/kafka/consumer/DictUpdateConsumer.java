@@ -42,12 +42,12 @@ public class DictUpdateConsumer {
                     jpaQueryFactory.update(seTable)
                             .set(seTable.enTable, dictTable.getEnTable())
                             .set(seTable.chTable, dictTable.getChTable())
-                            .where(seTable.dictTableId.eq(dictTable.getId()))
+                            .where(seTable.tableId.eq(dictTable.getId()))
                             .execute();
                     jpaQueryFactory.update(mappingTable)
                             .set(mappingTable.enTable, dictTable.getEnTable())
                             .set(mappingTable.chTable, dictTable.getChTable())
-                            .where(mappingTable.dictTableId.eq(dictTable.getId()))
+                            .where(mappingTable.tableId.eq(dictTable.getId()))
                             .execute();
                     break;
 
@@ -57,7 +57,7 @@ public class DictUpdateConsumer {
                     jpaQueryFactory.update(mappingColumn)
                             .set(mappingColumn.enColumn, dictColumn.getEnColumn())
                             .set(mappingColumn.chColumn, dictColumn.getChColumn())
-                            .where(mappingColumn.dictColumnId.eq(dictColumn.getId()))
+                            .where(mappingColumn.columnId.eq(dictColumn.getId()))
                             .execute();
                     break;
 

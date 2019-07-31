@@ -33,12 +33,12 @@ public class EsColumnServiceImpl implements EsColumnService {
     public void add(MappingTableAddDTO mappingTableAddDTO) throws IOException {
 
         EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
-        long dictTableId = mappingTableAddDTO.getTableId();
+        long tableId = mappingTableAddDTO.getTableId();
 
         Set<String> esColumnsAll = esColumnRepo.findByEsIndex(esIndex).stream().map(EsColumn::getName).collect(Collectors.toSet());
 
         // 筛选出该表在mapping_column中但不在es_column中的字段，这些字段需要加入elasticsearch与es_column中
-        List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByDictTableId(dictTableId)
+        List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByTableId(tableId)
                 .stream()
                 .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getName()))) // 这里效率低，需要优化
                 .map(columnTypeDTO -> BeanUtil.toBean(columnTypeDTO, EsColumn.class))

@@ -135,10 +135,10 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
         dictTableMapper.insertIgnore(dictTables);
     }
 
-    private DictTable convertToDictTable(DictTbExcelDTO tbExcelDTO, Long dictDatabaseId) {
+    private DictTable convertToDictTable(DictTbExcelDTO tbExcelDTO, Long databaseId) {
         DictTable dictTable = new DictTable();
         dictTable.setEnDatabase(tbExcelDTO.getEnDatabase());
-        dictTable.setDictDatabase(DictDatabase.buildById(dictDatabaseId));
+        dictTable.setDictDatabase(DictDatabase.buildById(databaseId));
         dictTable.setEnTable(tbExcelDTO.getEnTable());
         dictTable.setChTable(tbExcelDTO.getChTable());
         dictTable.setAddToSe(false);

@@ -18,7 +18,7 @@ public interface MappingTableService {
      */
     void save(MappingTableAddDTO mappingTableAddDTO) throws IOException;
 
-    MappingTable findByDictTableId(long dictTableId);
+    MappingTable findByTableId(long tableId);
 
     @Deprecated
     List<MappingTable> listTableNeedToUpdate();
@@ -32,7 +32,7 @@ public interface MappingTableService {
      */
     void calRecordsSchedule();
 
-    void deleteByDictTableId(long dictTableId) throws IOException;
+    void deleteByTableId(long tableId) throws IOException;
 
     /**
      * 更新表（表的同步周期）

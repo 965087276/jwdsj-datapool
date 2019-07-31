@@ -6,7 +6,7 @@ import lombok.Data;
 public class SeTableVO {
     private String enDatabase;
     private String chDatabase;
-    private long dictTableId;
+    private long tableId;
     private String enTable;
     private String chTable;
     private boolean sync;

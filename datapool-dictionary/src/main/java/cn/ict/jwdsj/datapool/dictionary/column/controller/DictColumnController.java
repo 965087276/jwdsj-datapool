@@ -101,7 +101,7 @@ public class DictColumnController {
     @ApiIgnore
     @GetMapping("dict/dict_columns/tableId/{tableId}")
     public List<DictColumn> listByTableId(@PathVariable("tableId") long tableId) {
-        return dictColumnService.listByDictTableId(tableId);
+        return dictColumnService.listByTableId(tableId);
     }
     @ApiIgnore
     @GetMapping("dict/column_name_dto/tableId/{tableId}")

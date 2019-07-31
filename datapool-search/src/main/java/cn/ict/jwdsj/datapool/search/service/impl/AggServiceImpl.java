@@ -210,7 +210,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
 
         Map<Long, StatsDatabase> statsDatabaseMap = futureStatsDatabases.get(5, TimeUnit.SECONDS)
                 .stream()
-                .collect(Collectors.toMap(db -> db.getDictDatabaseId(), db -> db));
+                .collect(Collectors.toMap(db -> db.getDatabaseId(), db -> db));
 
 //        log.info("dictDatabaseMap is {}", dictDatabaseMap);
 //        log.info("statsDatabaseMap is {}", statsDatabaseMap);

@@ -13,10 +13,10 @@ import java.util.List;
 @Repository
 public interface StatsColumnRepo extends JpaRepository<StatsColumn, Long> {
 
-    List<StatsColumn> findByDictTableId(long dictTableId);
+    List<StatsColumn> findByTableId(long tableId);
 
     @Transactional
     @Modifying
-    @Query("update StatsColumn r set r.enColumn = :enColumn, r.chColumn = :chColumn where r.dictColumnId = :columnId")
+    @Query("update StatsColumn r set r.enColumn = :enColumn, r.chColumn = :chColumn where r.columnId = :columnId")
     void updateColumnInfo(@Param("columnId") long columnId, @Param("enColumn") String enColumn, @Param("chColumn") String chColumn);
 }

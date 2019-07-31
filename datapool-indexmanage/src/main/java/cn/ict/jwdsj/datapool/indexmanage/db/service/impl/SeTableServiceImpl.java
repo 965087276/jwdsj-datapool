@@ -41,8 +41,8 @@ public class SeTableServiceImpl implements SeTableService {
     public void save(SeTableAddDTO seTableAddDTO) {
 
         SeTable seTable = new SeTable();
-        seTable.setDictDatabaseId(seTableAddDTO.getDatabaseId());
-        seTable.setDictTableId(seTableAddDTO.getTableId());
+        seTable.setDatabaseId(seTableAddDTO.getDatabaseId());
+        seTable.setTableId(seTableAddDTO.getTableId());
         DictTable table = dictClient.findDictTableById(seTableAddDTO.getTableId());
         seTable.setEnTable(table.getEnTable());
         seTable.setChTable(table.getChTable());
@@ -59,7 +59,7 @@ public class SeTableServiceImpl implements SeTableService {
         DictDatabase dictDatabase = dictClient.findDictDatabaseById(databaseId);
         QSeTable seTable = QSeTable.seTable;
 
-        Predicate predicate = seTable.dictDatabaseId.eq(databaseId);
+        Predicate predicate = seTable.databaseId.eq(databaseId);
         // 根据输入的待查询表名是中文还是英文来判断搜索哪个字段
         predicate = StrUtil.isBlank(nameLike) ? predicate : StrJudgeUtil.isContainChinese(nameLike) ?
                 ExpressionUtils.and(predicate, seTable.chTable.like('%' + nameLike + '%')) :
@@ -69,29 +69,29 @@ public class SeTableServiceImpl implements SeTableService {
     }
 
     /**
-     * 通过dictTableId查找
+     * 通过tableId查找
      *
-     * @param dictTableId
+     * @param tableId
      * @return
      */
     @Override
-    public SeTable findByDictTableId(long dictTableId) {
-        return seTableRepo.findByDictTableId(dictTableId);
+    public SeTable findByTableId(long tableId) {
+        return seTableRepo.findByTableId(tableId);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void deleteByDictTableId(long dictTableId) {
-        SeTable seTable = seTableRepo.findByDictTableId(dictTableId);
+    public void deleteByTableId(long tableId) {
+        SeTable seTable = seTableRepo.findByTableId(tableId);
         Assert.isTrue(!seTable.isSync(), "该表在数据同步任务列表中，请先从同步列表中删除");
         // 删除该表设置的mappingColumn字段
-        mappingColumnService.deleteByDictTableId(dictTableId);
+        mappingColumnService.deleteByTableId(tableId);
 
-        seTableRepo.deleteByDictTableId(dictTableId);
+        seTableRepo.deleteByTableId(tableId);
 
         // 将dictTable表中的addToSe字段设为false
         QDictTable dictTable = QDictTable.dictTable;
-        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, false).where(dictTable.id.eq(dictTableId)).execute();
+        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, false).where(dictTable.id.eq(tableId)).execute();
     }
 
     @Override

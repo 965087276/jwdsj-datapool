@@ -24,10 +24,10 @@ public class StatsTable extends BaseEntity implements Cloneable {
 //    private DictTable dictTable;
 
     @Column(name = "database_id")
-    private long dictDatabaseId;
+    private long databaseId;
 
     @Column(name = "table_id")
-    private long dictTableId;
+    private long tableId;
 
     @Column(name = "total_records", nullable = false)
     private long totalRecords = 0L;
@@ -86,13 +86,13 @@ public class StatsTable extends BaseEntity implements Cloneable {
         return this;
     }
 
-    public StatsTable dictDatabaseId(long id) {
-        this.setDictDatabaseId(id);
+    public StatsTable databaseId(long id) {
+        this.setDatabaseId(id);
         return this;
     }
 
-    public StatsTable dictTableId(long id) {
-        this.setDictTableId(id);
+    public StatsTable tableId(long id) {
+        this.setTableId(id);
         return this;
     }
 

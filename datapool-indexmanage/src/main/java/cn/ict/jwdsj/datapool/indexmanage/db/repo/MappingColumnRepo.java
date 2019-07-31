@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface MappingColumnRepo extends JpaRepository<MappingColumn, Long> {
-    List<MappingColumn> findByDictTableId(long dictTableId);
-    List<MappingColumn> findByDictTableIdAndDisplayed(long dictTableId, boolean displayed);
-    void deleteByDictTableId(long dictTableId);
-    MappingColumn findByDictColumnId(long dictColumnId);
+    List<MappingColumn> findByTableId(long tableId);
+    List<MappingColumn> findByTableIdAndDisplayed(long tableId, boolean displayed);
+    void deleteByTableId(long tableId);
+    MappingColumn findByColumnId(long columnId);
 }

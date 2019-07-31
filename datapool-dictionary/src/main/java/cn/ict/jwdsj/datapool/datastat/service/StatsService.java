@@ -15,10 +15,10 @@ public interface StatsService {
 
     /**
      * 获取表的记录数
-     * @param dictTableId
+     * @param tableId
      * @return
      */
-    long countTableRecords(long dictTableId);
+    long countTableRecords(long tableId);
 
 
     /**

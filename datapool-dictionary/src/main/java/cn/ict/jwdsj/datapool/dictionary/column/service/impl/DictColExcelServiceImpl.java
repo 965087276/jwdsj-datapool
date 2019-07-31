@@ -84,7 +84,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 //        } else {
 //            dictColumnList
 //                    .stream()
-//                    .collect(groupingBy(dictColumn -> dictColumn.getDictTableId()))
+//                    .collect(groupingBy(dictColumn -> dictColumn.getTableId()))
 //                    .forEach((tableId, columns) -> {
 //                        dictColumnService.saveAll(columns);
 //                    });
@@ -146,8 +146,8 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
         List<DictColumn> dictColumnList = colExcelDTOList.stream()
                 .map(col -> DictColumn.builder()
-                        .dictDatabaseId(excelDictDatabases.get(col.getEnDatabase()).getId())
-                        .dictTableId(excelDictTables.get(col.getEnDatabase() + "." + col.getEnTable()).getId())
+                        .databaseId(excelDictDatabases.get(col.getEnDatabase()).getId())
+                        .tableId(excelDictTables.get(col.getEnDatabase() + "." + col.getEnTable()).getId())
                         .enDatabase(col.getEnDatabase())
                         .enTable(col.getEnTable())
                         .enColumn(col.getEnColumn())
@@ -229,9 +229,9 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 
     private DictColumn getDictColByColExcelAndTableId(DictColExcelDTO colExcelDTO, TbIdNameDTO tbIdNameDTO, DictDatabase dictDatabase) {
         DictColumn dictColumn = BeanUtil.toBean(colExcelDTO, DictColumn.class);
-        dictColumn.setDictTableId(tbIdNameDTO.getId());
+        dictColumn.setTableId(tbIdNameDTO.getId());
         dictColumn.setEnTable(tbIdNameDTO.getEnTable());
-        dictColumn.setDictDatabaseId(dictDatabase.getId());
+        dictColumn.setDatabaseId(dictDatabase.getId());
         dictColumn.setEnDatabase(dictDatabase.getEnDatabase());
         return dictColumn;
     }
@@ -242,7 +242,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 //        EXISTS_IN_DICT_COLUMN = "下列表之前已经导入过，excel不支持再次导入: ";
 //        List<String> wrongTables = new ArrayList<>();
 //        Set<String> tablesInDictColumnByDatabase = new HashSet<>(
-//                dictColumnService.getEnTableByDictDatabaseId(dictDatabase.getId())
+//                dictColumnService.getEnTableByDatabaseId(dictDatabase.getId())
 //        );
 //        for (String tableName : tableNames) {
 //            if (tablesInDictColumnByDatabase.contains(tableName)) {

@@ -57,8 +57,8 @@ public class DictColumnServiceImpl implements DictColumnService {
         dictColumnMapper.insertIgnore(dictColumns);
     }
 
-    public List<String> getEnTableByDictDatabaseId(long dictDatabaseId) {
-        return this.listTableNameDTOByDatabaseId(dictDatabaseId)
+    public List<String> getEnTableByDatabaseId(long databaseId) {
+        return this.listTableNameDTOByDatabaseId(databaseId)
                 .stream()
                 .map(TableNameDTO::getEnTable)
                 .collect(Collectors.toList());
@@ -69,7 +69,7 @@ public class DictColumnServiceImpl implements DictColumnService {
         DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
         DictTable dictTable = dictTableService.findById(tableId);
 
-        return dictColumnRepo.findByDictTableId(tableId)
+        return dictColumnRepo.findByTableId(tableId)
                 .stream()
                 .map(dictColumn -> this.convertToDictColumnVO(dictDatabase, dictTable, dictColumn))
                 .collect(Collectors.toList());
@@ -98,10 +98,10 @@ public class DictColumnServiceImpl implements DictColumnService {
     public List<TableNameDTO> listTableNameDTOByDatabaseId(long databaseId) {
         QDictColumn dictColumn = QDictColumn.dictColumn;
         List<Long> tableIds = jpaQueryFactory
-                .select(dictColumn.dictTableId)
+                .select(dictColumn.tableId)
                 .from(dictColumn)
-                .where(dictColumn.dictDatabaseId.eq(databaseId))
-                .groupBy(dictColumn.dictTableId)
+                .where(dictColumn.databaseId.eq(databaseId))
+                .groupBy(dictColumn.tableId)
                 .fetch();
         return dictTableService.listTableNameDTOByIds(tableIds);
     }
@@ -118,8 +118,8 @@ public class DictColumnServiceImpl implements DictColumnService {
 //    }
 
     @Override
-    public List<DictColumn> listByDictTableId(long dictTableId) {
-        return dictColumnRepo.findByDictTableId(dictTableId);
+    public List<DictColumn> listByTableId(long tableId) {
+        return dictColumnRepo.findByTableId(tableId);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class DictColumnServiceImpl implements DictColumnService {
         QDictColumn dictColumn = QDictColumn.dictColumn;
         return jpaQueryFactory.select(dictColumn.id, dictColumn.enColumn, dictColumn.chColumn)
                 .from(dictColumn)
-                .where(dictColumn.dictTableId.eq(tableId))
+                .where(dictColumn.tableId.eq(tableId))
                 .fetch()
                 .stream()
                 .map(tuple -> ColumnNameDTO.builder()
@@ -161,19 +161,19 @@ public class DictColumnServiceImpl implements DictColumnService {
     public void delete(long id) {
         DictColumn dictColumn = dictColumnRepo.getOne(id);
         // 该字段所在表不能加入到搜索引擎中
-        Assert.isTrue(!dictTableService.findById(dictColumn.getDictTableId()).isAddToSe(), "该字段所在的表已经加入到搜索引擎表中，请从搜索引擎表中删除该表");
+        Assert.isTrue(!dictTableService.findById(dictColumn.getTableId()).isAddToSe(), "该字段所在的表已经加入到搜索引擎表中，请从搜索引擎表中删除该表");
         dictColumnRepo.deleteById(id);
     }
 
     /**
      * 删除某表下的所有字段
      *
-     * @param dictTableId
+     * @param tableId
      */
     @Override
     @Transactional
-    public void deleteByDictTableId(long dictTableId) {
-        dictColumnRepo.deleteAllByDictTableId(dictTableId);
+    public void deleteByTableId(long tableId) {
+        dictColumnRepo.deleteAllByTableId(tableId);
     }
 
     private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
@@ -188,8 +188,8 @@ public class DictColumnServiceImpl implements DictColumnService {
 
     private DictColumn convertToDictColumn(DictDatabase dictDatabase, DictTable dictTable, DictColumnAddDTO dictColumnAddDTO) {
         DictColumn dictColumn = BeanUtil.toBean(dictColumnAddDTO, DictColumn.class);
-        dictColumn.setDictTableId(dictTable.getId());
-        dictColumn.setDictDatabaseId(dictDatabase.getId());
+        dictColumn.setTableId(dictTable.getId());
+        dictColumn.setDatabaseId(dictDatabase.getId());
         dictColumn.setEnDatabase(dictDatabase.getEnDatabase());
         dictColumn.setEnTable(dictTable.getEnTable());
         return dictColumn;

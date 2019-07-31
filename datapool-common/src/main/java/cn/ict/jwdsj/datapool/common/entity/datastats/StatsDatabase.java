@@ -26,7 +26,7 @@ public class StatsDatabase extends BaseEntity {
 //    private DictDatabase dictDatabase;
 
     @Column(name = "database_id")
-    private long dictDatabaseId;
+    private long databaseId;
 
     @Column(name = "en_database")
     private String enDatabase;

@@ -16,8 +16,8 @@
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
-            #{item.dictDatabaseId},
-            #{item.dictTableId},
+            #{item.databaseId},
+            #{item.tableId},
             #{item.enDatabase},
             #{item.enTable},
             #{item.enColumn},
