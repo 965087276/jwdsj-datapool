@@ -10,6 +10,7 @@ import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
+import cn.ict.jwdsj.datapool.dictionary.column.mapper.DictColumnMapper;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
@@ -27,7 +28,7 @@ import org.springframework.util.Assert;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.COLUMN;
+import static cn.ict.jwdsj.datapool.common.constant.DictType.COLUMN;
 
 @Service
 public class DictColumnServiceImpl implements DictColumnService {
@@ -35,6 +36,8 @@ public class DictColumnServiceImpl implements DictColumnService {
     private JPAQueryFactory jpaQueryFactory;
     @Autowired
     private DictColumnRepo dictColumnRepo;
+    @Autowired
+    private DictColumnMapper dictColumnMapper;
     @Autowired
     private DictTableService dictTableService;
     @Autowired
@@ -44,17 +47,21 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Value("${kafka.topic-name.dict-update}")
     private String kafkaUpdateTopic;
 
+    /**
+     * 批量插入（忽略错误）
+     *
+     * @param dictColumns
+     */
+    @Override
+    public void insertIgnore(List<DictColumn> dictColumns) {
+        dictColumnMapper.insertIgnore(dictColumns);
+    }
+
     public List<String> getEnTableByDictDatabaseId(long dictDatabaseId) {
         return this.listTableNameDTOByDatabaseId(dictDatabaseId)
                 .stream()
                 .map(TableNameDTO::getEnTable)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void saveAll(List<DictColumn> dictColumns) {
-        dictColumnRepo.saveAll(dictColumns);
     }
 
     @Override

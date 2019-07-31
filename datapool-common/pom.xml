@@ -33,7 +33,13 @@
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
         </dependency>
-
+        
+        <!-- dozer-->
+        <dependency>
+            <groupId>com.github.dozermapper</groupId>
+            <artifactId>dozer-spring-boot-starter</artifactId>
+            <version>${dozer.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

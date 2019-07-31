@@ -36,7 +36,6 @@ public class DictColExcelServiceImpl implements DictColExcelService {
     @Autowired private DictTableService dictTableService;
     @Autowired private DictColumnService dictColumnService;
     @Autowired private MetaColumnService metaColumnService;
-    @Autowired private DictColumnMapper dictColumnMapper;
 
     private String NOT_EXISTS_DATABASE = "下列库的字典信息未导入";
     private String NOT_EXISTS_TABLE = "下列表的字典信息未导入";
@@ -155,7 +154,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
                         .chColumn(col.getChColumn())
                         .build()
                 ).collect(toList());
-        dictColumnMapper.insertIgnore(dictColumnList);
+        dictColumnService.insertIgnore(dictColumnList);
 
     }
 

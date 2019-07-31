@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.common.kafka;
 
+import cn.ict.jwdsj.datapool.common.constant.DictType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -10,10 +11,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class DictUpdateMsg {
 
-    private DictUpdateType type;
+    private DictType type;
     private long objectId;
 
-    public enum DictUpdateType {
-        DATABASE, TABLE, COLUMN;
-    }
 }

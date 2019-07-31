@@ -19,6 +19,7 @@ import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
+import cn.ict.jwdsj.datapool.dictionary.table.mapper.DictTableMapper;
 import cn.ict.jwdsj.datapool.dictionary.table.repo.DictTableRepo;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.core.types.ExpressionUtils;
@@ -37,12 +38,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.TABLE;
+import static cn.ict.jwdsj.datapool.common.constant.DictType.TABLE;
+
 
 @Service
 public class DictTableServiceImpl implements DictTableService {
     @Autowired
     private DictTableRepo dictTableRepo;
+    @Autowired
+    private DictTableMapper dictTableMapper;
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
     @Autowired
@@ -74,6 +78,16 @@ public class DictTableServiceImpl implements DictTableService {
                 .from(dictTable)
                 .where(dictTable.dictDatabase.eq(dictDatabase))
                 .fetch();
+    }
+
+    /**
+     * 所有表的id
+     *
+     * @return
+     */
+    @Override
+    public List<Long> listTableId() {
+        return dictTableMapper.listTableId();
     }
 
     @Override

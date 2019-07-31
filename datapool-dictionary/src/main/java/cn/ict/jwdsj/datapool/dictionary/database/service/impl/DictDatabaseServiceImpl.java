@@ -13,11 +13,14 @@ import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.repo.DictDatabaseRepo;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.dto.UpdateDatabaseDTO;
+import cn.ict.jwdsj.datapool.dictionary.event.DictAddEvent;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
+import com.alibaba.fastjson.JSON;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +31,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg.DictUpdateType.DATABASE;
+import static cn.ict.jwdsj.datapool.common.constant.DictType.DATABASE;
+import static cn.ict.jwdsj.datapool.common.constant.DictType.DATABASES;
+
 
 @Service
 public class DictDatabaseServiceImpl implements DictDatabaseService {
@@ -38,20 +43,24 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     @Autowired
     private KafkaSender kafkaSender;
     @Autowired
+    private ApplicationContext publisher;
+    @Autowired
     private DictTableService dictTableService;
-
     @Value("${kafka.topic-name.dict-update}")
     private String kafkaUpdateTopic;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void save(DictDatabase dictDatabase) {
         dictDatabaseRepo.save(dictDatabase);
+        publisher.publishEvent(new DictAddEvent(dictDatabase, DATABASE));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveAll(List<DictDatabase> dictDatabases) {
         dictDatabaseRepo.saveAll(dictDatabases);
+        publisher.publishEvent(new DictAddEvent(dictDatabases, DATABASES));
     }
 
     @Override

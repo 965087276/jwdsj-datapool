@@ -36,12 +36,12 @@
         <swagger.version>2.8.0</swagger.version>
         <skipTests>true</skipTests>
         <mybatis.version>1.3.2</mybatis.version>
+        <dozer.version>6.4.0</dozer.version>
     </properties>
     
     <modules>
         <module>datapool-dictionary</module>
         <module>datapool-common</module>
-        <module>datapool-datastats</module>
         <module>datapool-indexmanage</module>
         <module>datapool-eureka</module>
         <module>datapool-datasync</module>

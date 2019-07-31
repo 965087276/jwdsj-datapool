@@ -10,6 +10,13 @@ import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.UpdateColumnDTO;
 import java.util.List;
 
 public interface DictColumnService {
+
+    /**
+     * 批量插入（忽略错误）
+     * @param dictColumns
+     */
+    void insertIgnore(List<DictColumn> dictColumns);
+
     /**
      * 获取dict_column中某库下的所有表名
      * @param dictDatabaseId
@@ -17,11 +24,6 @@ public interface DictColumnService {
      */
     List<String> getEnTableByDictDatabaseId(long dictDatabaseId);
 
-    /**
-     * 保存多个字段
-     * @param dictColumns
-     */
-    void saveAll(List<DictColumn> dictColumns);
 
     /**
      * 前端页字段展示列表

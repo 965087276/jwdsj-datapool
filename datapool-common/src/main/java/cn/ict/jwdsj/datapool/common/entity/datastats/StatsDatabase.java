@@ -34,12 +34,15 @@ public class StatsDatabase extends BaseEntity {
     @Column(name = "ch_database")
     private String chDatabase;
 
+    @Builder.Default
     @Column(name = "total_tables", nullable = false)
     private int totalTables = 0;
 
+    @Builder.Default
     @Column(name = "total_records", nullable = false)
     private long totalRecords = 0L;
 
+    @Builder.Default
     @Column(name = "update_date", nullable = false)
     private LocalDate updateDate = LocalDate.of(2018, 1, 1);
 

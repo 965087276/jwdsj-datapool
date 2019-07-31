@@ -19,6 +19,11 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
+            <groupId>cn.ict.jwdsj.datapool</groupId>
+            <artifactId>datapool-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${swagger.version}</version>
@@ -47,6 +52,8 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis.version}</version>
         </dependency>
+
+        
 
 
     </dependencies>
