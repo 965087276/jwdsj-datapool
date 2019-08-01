@@ -17,13 +17,6 @@ public interface DictColumnService {
      */
     void insertIgnore(List<DictColumn> dictColumns);
 
-    /**
-     * 获取dict_column中某库下的所有表名
-     * @param databaseId
-     * @return
-     */
-    List<String> getEnTableByDatabaseId(long databaseId);
-
 
     /**
      * 前端页字段展示列表
@@ -39,14 +32,6 @@ public interface DictColumnService {
      */
     void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO);
 
-
-    List<TableNameDTO> listTableNameDTOByDatabaseId(long databaseId);
-
-//    /**
-//     * 字段列表页库下拉框信息
-//     * @return
-//     */
-//    List<DatabaseNameDTO> listDatabaseDropDownBox();
 
     List<DictColumn> listByTableId(long tableId);
 

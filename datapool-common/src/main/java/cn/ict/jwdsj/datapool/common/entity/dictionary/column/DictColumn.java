@@ -4,6 +4,7 @@ import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.dozermapper.core.Mapping;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -54,6 +55,11 @@ public class DictColumn extends BaseEntity {
         DictColumn dictColumn = new DictColumn();
         dictColumn.setId(id);
         return dictColumn;
+    }
+
+    @Mapping(value = "columnId", optional = true)
+    public long getId() {
+        return super.getId();
     }
 
 }

@@ -1,6 +1,5 @@
 package cn.ict.jwdsj.datapool.dictionary.table.mapper;
 
-import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -20,4 +19,7 @@ public interface DictTableMapper {
 
     @Select("select id from dict_table")
     List<Long> listTableId();
+
+    @Select("select en_table from dict_table where database_id = #{databaseId}")
+    List<String> listEnTableByDatabaseId(long databaseId);
 }

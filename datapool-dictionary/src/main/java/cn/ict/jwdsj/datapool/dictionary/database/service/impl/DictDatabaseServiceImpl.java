@@ -16,6 +16,7 @@ import cn.ict.jwdsj.datapool.dictionary.database.entity.dto.UpdateDatabaseDTO;
 import cn.ict.jwdsj.datapool.dictionary.event.DictAddEvent;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.alibaba.fastjson.JSON;
+import com.github.dozermapper.core.Mapper;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,8 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     private ApplicationContext publisher;
     @Autowired
     private DictTableService dictTableService;
+    @Autowired
+    private Mapper mapper;
     @Value("${kafka.topic-name.dict-update}")
     private String kafkaUpdateTopic;
 
@@ -141,13 +144,14 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
 
 
     private DictDatabaseVO convertToDictDatabaseVO(DictDatabase dictDatabase) {
-        return BeanUtil.toBean(dictDatabase, DictDatabaseVO.class);
+        return mapper.map(dictDatabase, DictDatabaseVO.class);
     }
 
     private DatabaseNameDTO convertToDatabaseNameDTO(DictDatabase dictDatabase) {
-        DatabaseNameDTO databaseNameDTO =  BeanUtil.toBean(dictDatabase, DatabaseNameDTO.class);
-        databaseNameDTO.setDatabaseId(dictDatabase.getId());
-        return databaseNameDTO;
+//        DatabaseNameDTO databaseNameDTO =  BeanUtil.toBean(dictDatabase, DatabaseNameDTO.class);
+//        databaseNameDTO.setDatabaseId(dictDatabase.getId());
+//        return databaseNameDTO;
+        return mapper.map(dictDatabase, DatabaseNameDTO.class);
     }
 
 

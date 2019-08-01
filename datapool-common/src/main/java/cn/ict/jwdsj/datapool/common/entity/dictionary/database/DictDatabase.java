@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.common.entity.dictionary.database;
 
 
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
+import com.github.dozermapper.core.Mapping;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -25,6 +26,11 @@ public class DictDatabase extends BaseEntity {
         DictDatabase dictDatabase = new DictDatabase();
         dictDatabase.setId(id);
         return dictDatabase;
+    }
+
+    @Mapping(value = "databaseId", optional = true)
+    public long getId() {
+        return super.getId();
     }
 
 }

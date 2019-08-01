@@ -1,9 +1,6 @@
 package cn.ict.jwdsj.datapool.dictionary.table.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
@@ -12,16 +9,15 @@ import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
-import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
-import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.TbIdNameDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.vo.DictTableVO;
 import cn.ict.jwdsj.datapool.dictionary.table.mapper.DictTableMapper;
 import cn.ict.jwdsj.datapool.dictionary.table.repo.DictTableRepo;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
+import com.github.dozermapper.core.Mapper;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -35,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cn.ict.jwdsj.datapool.common.constant.DictType.TABLE;
@@ -48,13 +43,13 @@ public class DictTableServiceImpl implements DictTableService {
     @Autowired
     private DictTableMapper dictTableMapper;
     @Autowired
-    private JPAQueryFactory jpaQueryFactory;
-    @Autowired
     private DictDatabaseService dictDatabaseService;
     @Autowired
     private DictColumnService dictColumnService;
     @Autowired
     private KafkaSender kafkaSender;
+    @Autowired
+    private Mapper mapper;
     @Value("${kafka.topic-name.dict-update}")
     private String kafkaUpdateTopic;
 
@@ -71,13 +66,7 @@ public class DictTableServiceImpl implements DictTableService {
 
     @Override
     public List<String> listEnTablesByDictDatabase(DictDatabase dictDatabase) {
-        QDictTable dictTable = QDictTable.dictTable;
-
-        return jpaQueryFactory
-                .select(dictTable.enTable)
-                .from(dictTable)
-                .where(dictTable.dictDatabase.eq(dictDatabase))
-                .fetch();
+        return dictTableMapper.listEnTableByDatabaseId(dictDatabase.getId());
     }
 
     /**
@@ -95,38 +84,37 @@ public class DictTableServiceImpl implements DictTableService {
         return dictTableRepo.findByEnDatabaseAndEnTable(enDatabase, enTable);
     }
 
-    @Override
-    public List<TbIdNameDTO> listTbIdNameDTOByDictDatabase(DictDatabase dictDatabase) {
-        QDictTable dictTable = QDictTable.dictTable;
-        return jpaQueryFactory
-                .select(dictTable.id, dictTable.enTable)
-                .from(dictTable)
-                .where(dictTable.dictDatabase.eq(dictDatabase))
-                .fetch()
-                .stream()
-                .map(tuple -> TbIdNameDTO.builder()
-                        .id(tuple.get(dictTable.id))
-                        .enTable(tuple.get(dictTable.enTable))
-                        .build()
-                )
-                .collect(Collectors.toList());
-
-
-    }
+//    @Override
+//    public List<TbIdNameDTO> listTbIdNameDTOByDictDatabase(DictDatabase dictDatabase) {
+//        QDictTable dictTable = QDictTable.dictTable;
+//        return jpaQueryFactory
+//                .select(dictTable.id, dictTable.enTable)
+//                .from(dictTable)
+//                .where(dictTable.dictDatabase.eq(dictDatabase))
+//                .fetch()
+//                .stream()
+//                .map(tuple -> TbIdNameDTO.builder()
+//                        .id(tuple.get(dictTable.id))
+//                        .enTable(tuple.get(dictTable.enTable))
+//                        .build()
+//                )
+//                .collect(Collectors.toList());
+//
+//
+//    }
 
     @Override
     public Page<DictTableVO> listVO(int curPage, int pageSize, long databaseId, String nameLike) {
         Pageable pageable = PageRequest.of(curPage-1, pageSize);
         DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
         QDictTable dictTable = QDictTable.dictTable;
-
         Predicate predicate = dictTable.dictDatabase.eq(dictDatabase);
         // 根据输入的待查询表名是中文还是英文来判断搜索哪个字段
         predicate = StrUtil.isBlank(nameLike) ? predicate : StrJudgeUtil.isContainChinese(nameLike) ?
                 ExpressionUtils.and(predicate, dictTable.chTable.like('%' + nameLike + '%')) :
                 ExpressionUtils.and(predicate, dictTable.enTable.like('%' + nameLike + '%'));
 
-        return dictTableRepo.findAll(predicate, pageable).map(dictTable1 -> this.convertToDictTableVO(dictDatabase, dictTable1));
+        return dictTableRepo.findAll(predicate, pageable).map(dictTable1 -> this.convertToDictTableVO(dictTable1));
 
     }
 
@@ -210,31 +198,17 @@ public class DictTableServiceImpl implements DictTableService {
         return dictTableRepo.existsByDictDatabase(dictDatabase);
     }
 
-//    @Override
-//    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
-//        QDictTable dictTable = QDictTable.dictTable;
-//        List<Long> databaseIds = jpaQueryFactory
-//                .select(dictTable.dictDatabase.id)
-//                .from(dictTable)
-//                .groupBy(dictTable.dictDatabase.id)
-//                .fetch();
-//        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
-//    }
 
-    private DictTableVO convertToDictTableVO(DictDatabase dictDatabase, DictTable dictTable) {
-        DictTableVO dictTableVO = BeanUtil.toBean(dictTable, DictTableVO.class);
-        dictTableVO.setTableId(dictTable.getId());
-        dictTableVO.setChDatabase(dictDatabase.getChDatabase());
-        dictTableVO.setEnDatabase(dictDatabase.getEnDatabase());
-        return dictTableVO;
+    private DictTableVO convertToDictTableVO(DictTable dictTable) {
+        return mapper.map(dictTable, DictTableVO.class);
     }
+
     private TableNameDTO convertToTableNameDTO(DictTable dictTable) {
-        TableNameDTO tableNameDTO = BeanUtil.toBean(dictTable, TableNameDTO.class);
-        tableNameDTO.setTableId(dictTable.getId());
-        return tableNameDTO;
+        return mapper.map(dictTable, TableNameDTO.class);
     }
+
     private DictTable convertToDictTable(DictTableDTO dictTableDTO, DictDatabase dictDatabase) {
-        DictTable dictTable = BeanUtil.toBean(dictTableDTO, DictTable.class);
+        DictTable dictTable = mapper.map(dictTableDTO, DictTable.class);
         dictTable.setDictDatabase(dictDatabase);
         dictTable.setEnDatabase(dictDatabase.getEnDatabase());
         return dictTable;

@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.common.entity.dictionary.table;
 import cn.ict.jwdsj.datapool.common.entity.BaseEntity;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
+import com.github.dozermapper.core.Mapping;
 import lombok.Data;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
@@ -29,10 +30,9 @@ public class DictTable extends BaseEntity {
     @Column(name = "is_add_to_se")
     private boolean addToSe = false;
 
-    public static DictTable builtById(long id) {
-        DictTable dictTable = new DictTable();
-        dictTable.setId(id);
-        return dictTable;
+    @Mapping(value = "tableId", optional = true)
+    public long getId() {
+        return super.getId();
     }
 
 }

@@ -43,12 +43,12 @@ public interface DictTableService {
      */
     DictTable findByEnDatabaseAndEnTable(String enDatabase, String enTable);
 
-    /**
-     * 列出某库下所有表的id与enTable
-     * @param dictDatabase
-     * @return
-     */
-    List<TbIdNameDTO> listTbIdNameDTOByDictDatabase(DictDatabase dictDatabase);
+//    /**
+//     * 列出某库下所有表的id与enTable
+//     * @param dictDatabase
+//     * @return
+//     */
+//    List<TbIdNameDTO> listTbIdNameDTOByDictDatabase(DictDatabase dictDatabase);
 
     /**
      * 表信息管理--前端展示页
@@ -96,9 +96,4 @@ public interface DictTableService {
      */
     boolean existsByDictDatabase(DictDatabase dictDatabase);
 
-//    /**
-//     * 表信息管理--列表页--库下拉框
-//     * @return 返回dict_table表中的所有数据库信息
-//     */
-//    List<DatabaseNameDTO> listDatabaseDropDownBox();
 }

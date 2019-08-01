@@ -18,6 +18,7 @@ import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.UpdateColumnDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
+import com.github.dozermapper.core.Mapper;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,9 +43,9 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Autowired
     private DictTableService dictTableService;
     @Autowired
-    private DictDatabaseService dictDatabaseService;
-    @Autowired
     private KafkaSender kafkaSender;
+    @Autowired
+    private Mapper mapper;
     @Value("${kafka.topic-name.dict-update}")
     private String kafkaUpdateTopic;
 
@@ -57,21 +59,12 @@ public class DictColumnServiceImpl implements DictColumnService {
         dictColumnMapper.insertIgnore(dictColumns);
     }
 
-    public List<String> getEnTableByDatabaseId(long databaseId) {
-        return this.listTableNameDTOByDatabaseId(databaseId)
-                .stream()
-                .map(TableNameDTO::getEnTable)
-                .collect(Collectors.toList());
-    }
-
     @Override
     public List<DictColumnVO> listDictColumnVOs(long databaseId, long tableId) {
-        DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
-        DictTable dictTable = dictTableService.findById(tableId);
 
         return dictColumnRepo.findByTableId(tableId)
                 .stream()
-                .map(dictColumn -> this.convertToDictColumnVO(dictDatabase, dictTable, dictColumn))
+                .map(dictColumn -> this.convertToDictColumnVO(dictColumn))
                 .collect(Collectors.toList());
 
     }
@@ -79,43 +72,13 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO) {
-        DictDatabase dictDatabase = dictDatabaseService.findById(dictColumnMultiAddDTO.getDatabaseId());
-        DictTable dictTable = dictTableService.findById(dictColumnMultiAddDTO.getTableId());
-
-//        long databaseId = dictColumnMultiAddDTO.getDatabaseId();
-//        long tableId = dictColumnMultiAddDTO.getTableId();
 
         // 判断是否有重复元素
         Assert.isTrue(dictColumnMultiAddDTO.getDictColumnAddDTOS().size() == dictColumnMultiAddDTO.getDictColumnAddDTOS().stream().distinct().count(), "有重复元素");
-        List<DictColumn> dictColumns = dictColumnMultiAddDTO.getDictColumnAddDTOS()
-                .stream()
-                .map(dictColumnAddDTO -> this.convertToDictColumn(dictDatabase, dictTable, dictColumnAddDTO))
-                .collect(Collectors.toList());
+        List<DictColumn> dictColumns = this.convertToDictColumnList(dictColumnMultiAddDTO);
         dictColumnRepo.saveAll(dictColumns);
     }
 
-    @Override
-    public List<TableNameDTO> listTableNameDTOByDatabaseId(long databaseId) {
-        QDictColumn dictColumn = QDictColumn.dictColumn;
-        List<Long> tableIds = jpaQueryFactory
-                .select(dictColumn.tableId)
-                .from(dictColumn)
-                .where(dictColumn.databaseId.eq(databaseId))
-                .groupBy(dictColumn.tableId)
-                .fetch();
-        return dictTableService.listTableNameDTOByIds(tableIds);
-    }
-
-//    @Override
-//    public List<DatabaseNameDTO> listDatabaseDropDownBox() {
-//        QDictColumn dictColumn = QDictColumn.dictColumn;
-//        List<Long> databaseIds = jpaQueryFactory
-//                .select(dictColumn.dictDatabase.id)
-//                .from(dictColumn)
-//                .groupBy(dictColumn.dictDatabase.id)
-//                .fetch();
-//        return dictDatabaseService.listDatabaseNameDTOByIds(databaseIds);
-//    }
 
     @Override
     public List<DictColumn> listByTableId(long tableId) {
@@ -176,22 +139,24 @@ public class DictColumnServiceImpl implements DictColumnService {
         dictColumnRepo.deleteAllByTableId(tableId);
     }
 
-    private DictColumnVO convertToDictColumnVO(DictDatabase dictDatabase, DictTable dictTable, DictColumn dictColumn) {
-        DictColumnVO dictColumnVO = BeanUtil.toBean(dictColumn, DictColumnVO.class);
-        dictColumnVO.setColumnId(dictColumn.getId());
-        dictColumnVO.setEnDatabase(dictDatabase.getEnDatabase());
-        dictColumnVO.setChDatabase(dictDatabase.getChDatabase());
-        dictColumnVO.setEnTable(dictTable.getEnTable());
-        dictColumnVO.setChTable(dictTable.getChTable());
-        return dictColumnVO;
+    private DictColumnVO convertToDictColumnVO(DictColumn dictColumn) {
+        return mapper.map(dictColumn, DictColumnVO.class);
     }
 
-    private DictColumn convertToDictColumn(DictDatabase dictDatabase, DictTable dictTable, DictColumnAddDTO dictColumnAddDTO) {
-        DictColumn dictColumn = BeanUtil.toBean(dictColumnAddDTO, DictColumn.class);
-        dictColumn.setTableId(dictTable.getId());
-        dictColumn.setDatabaseId(dictDatabase.getId());
-        dictColumn.setEnDatabase(dictDatabase.getEnDatabase());
-        dictColumn.setEnTable(dictTable.getEnTable());
-        return dictColumn;
+    private List<DictColumn> convertToDictColumnList(DictColumnMultiAddDTO dictColumnMultiAddDTO) {
+        List<DictColumn> columns = new ArrayList<>();
+        for (DictColumnAddDTO columnDTO : dictColumnMultiAddDTO.getDictColumnAddDTOS()) {
+            DictColumn dictColumn = DictColumn.builder()
+                    .enColumn(columnDTO.getEnColumn())
+                    .chColumn(columnDTO.getChColumn())
+                    .databaseId(dictColumnMultiAddDTO.getDatabaseId())
+                    .enDatabase(dictColumnMultiAddDTO.getEnDatabase())
+                    .tableId(dictColumnMultiAddDTO.getTableId())
+                    .enTable(dictColumnMultiAddDTO.getEnTable())
+                    .build();
+            columns.add(dictColumn);
+        }
+        return columns;
     }
+
 }
