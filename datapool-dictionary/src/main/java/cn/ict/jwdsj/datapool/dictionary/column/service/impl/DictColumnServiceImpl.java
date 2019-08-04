@@ -1,11 +1,8 @@
 package cn.ict.jwdsj.datapool.dictionary.column.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
-import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.QDictColumn;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.DictColumnMultiAddDTO;
@@ -13,15 +10,16 @@ import cn.ict.jwdsj.datapool.dictionary.column.entity.vo.DictColumnVO;
 import cn.ict.jwdsj.datapool.dictionary.column.mapper.DictColumnMapper;
 import cn.ict.jwdsj.datapool.dictionary.column.repo.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
-import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.dto.UpdateColumnDTO;
+import cn.ict.jwdsj.datapool.dictionary.event.DictAddEvent;
+import cn.ict.jwdsj.datapool.dictionary.event.DictDeleteEvent;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.github.dozermapper.core.Mapper;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -31,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cn.ict.jwdsj.datapool.common.constant.DictType.COLUMN;
+import static cn.ict.jwdsj.datapool.common.constant.DictType.COLUMNS;
 
 @Service
 public class DictColumnServiceImpl implements DictColumnService {
@@ -42,6 +41,8 @@ public class DictColumnServiceImpl implements DictColumnService {
     private DictColumnMapper dictColumnMapper;
     @Autowired
     private DictTableService dictTableService;
+    @Autowired
+    private ApplicationContext publisher;
     @Autowired
     private KafkaSender kafkaSender;
     @Autowired
@@ -55,8 +56,11 @@ public class DictColumnServiceImpl implements DictColumnService {
      * @param dictColumns
      */
     @Override
-    public void insertIgnore(List<DictColumn> dictColumns) {
+    @Transactional(rollbackFor = Exception.class)
+    public void saveAllToDb(List<DictColumn> dictColumns) {
+        String currentTime = dictColumnMapper.getCurrentTimeStamp();
         dictColumnMapper.insertIgnore(dictColumns);
+        publisher.publishEvent(new DictAddEvent(currentTime, COLUMNS));
     }
 
     @Override
@@ -72,11 +76,10 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveAll(DictColumnMultiAddDTO dictColumnMultiAddDTO) {
-
         // 判断是否有重复元素
         Assert.isTrue(dictColumnMultiAddDTO.getDictColumnAddDTOS().size() == dictColumnMultiAddDTO.getDictColumnAddDTOS().stream().distinct().count(), "有重复元素");
         List<DictColumn> dictColumns = this.convertToDictColumnList(dictColumnMultiAddDTO);
-        dictColumnRepo.saveAll(dictColumns);
+        this.saveAllToDb(dictColumns);
     }
 
 
@@ -126,6 +129,7 @@ public class DictColumnServiceImpl implements DictColumnService {
         // 该字段所在表不能加入到搜索引擎中
         Assert.isTrue(!dictTableService.findById(dictColumn.getTableId()).isAddToSe(), "该字段所在的表已经加入到搜索引擎表中，请从搜索引擎表中删除该表");
         dictColumnRepo.deleteById(id);
+        publisher.publishEvent(new DictDeleteEvent(id, COLUMN));
     }
 
     /**
@@ -137,6 +141,7 @@ public class DictColumnServiceImpl implements DictColumnService {
     @Transactional
     public void deleteByTableId(long tableId) {
         dictColumnRepo.deleteAllByTableId(tableId);
+        publisher.publishEvent(new DictDeleteEvent(tableId, COLUMNS));
     }
 
     private DictColumnVO convertToDictColumnVO(DictColumn dictColumn) {

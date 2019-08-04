@@ -1,5 +1,6 @@
 package cn.ict.jwdsj.datapool.datastat.mapper;
 
+import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -11,6 +12,17 @@ import java.util.Map;
 @Repository
 @Mapper
 public interface StatsColumnMapper {
+
+    /**
+     * 从dictColumns中批量插入（使用xml方式实现）
+     * @param currentTime 插入时的时间
+     */
+    void insertAll(String currentTime);
+
+    /**
+     * 从dictColumns中批量插入（使用xml方式实现）
+     */
+    void insertFromDictColumn();
 
 
     /**

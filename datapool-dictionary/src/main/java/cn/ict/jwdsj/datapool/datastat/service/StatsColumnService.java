@@ -55,4 +55,22 @@ public interface StatsColumnService {
      * @param chColumn
      */
     void updateColumnInfo(long columnId, String enColumn, String chColumn);
+
+    /**
+     * 批量存入dict_column表新增的数据
+     * @param currentTime 插入时的时间
+     */
+    void saveAllFromDictColumn(String currentTime);
+
+    /**
+     * 根据column_id删除
+     * @param columnId
+     */
+    void deleteByColumnId(long columnId);
+
+    /**
+     * 根据table_id删除
+     * @param tableId
+     */
+    void deleteByTableId(long tableId);
 }

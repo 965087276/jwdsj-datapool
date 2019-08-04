@@ -8,7 +8,6 @@ import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaTable;
 import cn.ict.jwdsj.datapool.common.utils.ExcelJudgeUtil;
 import cn.ict.jwdsj.datapool.dictionary.column.entity.DictColExcelDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
-import cn.ict.jwdsj.datapool.dictionary.column.mapper.DictColumnMapper;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColExcelService;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
@@ -45,7 +44,7 @@ public class DictColExcelServiceImpl implements DictColExcelService {
     private final String WRONG_TITLE = "表头错误";
 
 //    @Override
-//    public void saveAll(long databaseId, MultipartFile file) throws IOException {
+//    public void saveAllToDb(long databaseId, MultipartFile file) throws IOException {
 //        DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
 //        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
 //
@@ -80,13 +79,13 @@ public class DictColExcelServiceImpl implements DictColExcelService {
 //
 //        // TIDB中一次事务不能超过5000条，所以大于5000条的要分批插入
 //        if (dictColumnList.size() < 5000) {
-//            dictColumnService.saveAll(dictColumnList);
+//            dictColumnService.saveAllToDb(dictColumnList);
 //        } else {
 //            dictColumnList
 //                    .stream()
 //                    .collect(groupingBy(dictColumn -> dictColumn.getTableId()))
 //                    .forEach((tableId, columns) -> {
-//                        dictColumnService.saveAll(columns);
+//                        dictColumnService.saveAllToDb(columns);
 //                    });
 //        }
 //    }
@@ -154,7 +153,8 @@ public class DictColExcelServiceImpl implements DictColExcelService {
                         .chColumn(col.getChColumn())
                         .build()
                 ).collect(toList());
-        dictColumnService.insertIgnore(dictColumnList);
+
+        dictColumnService.saveAllToDb(dictColumnList);
 
     }
 

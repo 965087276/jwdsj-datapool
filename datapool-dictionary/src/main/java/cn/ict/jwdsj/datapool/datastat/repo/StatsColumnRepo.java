@@ -19,4 +19,8 @@ public interface StatsColumnRepo extends JpaRepository<StatsColumn, Long> {
     @Modifying
     @Query("update StatsColumn r set r.enColumn = :enColumn, r.chColumn = :chColumn where r.columnId = :columnId")
     void updateColumnInfo(@Param("columnId") long columnId, @Param("enColumn") String enColumn, @Param("chColumn") String chColumn);
+
+    void deleteByTableId(long tableId);
+
+    void deleteByColumnId(long columnId);
 }

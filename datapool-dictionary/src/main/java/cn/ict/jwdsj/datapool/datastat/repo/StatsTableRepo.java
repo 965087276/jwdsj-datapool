@@ -24,4 +24,6 @@ public interface StatsTableRepo extends JpaRepository<StatsTable, Long>, Queryds
     @Modifying
     @Query("update StatsTable r set r.enTable = :enTable, r.chTable = :chTable where r.tableId = :tableId")
     void updateTableInfo(@Param("tableId") long tableId, @Param("enTable") String enTable, @Param("chTable") String chTable);
+
+    void deleteByTableId(long tableId);
 }

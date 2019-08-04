@@ -14,7 +14,7 @@ public interface StatsDatabaseService {
 
     void update(StatsDatabase statsDatabase);
 
-    void add(DictDatabase dictDatabase);
+    void deleteByDatabaseId(long databaseId);
 
     List<StatsDatabase> listAll();
 
@@ -41,4 +41,10 @@ public interface StatsDatabaseService {
      * @param chDatabase
      */
     void updateDatabaseInfo(long databaseId, String enDatabase, String chDatabase);
+
+    /**
+     * 批量存入dict_database表新增的数据
+     * @param currentTime 插入时的时间
+     */
+    void saveAllFromDictDatabase(String currentTime);
 }

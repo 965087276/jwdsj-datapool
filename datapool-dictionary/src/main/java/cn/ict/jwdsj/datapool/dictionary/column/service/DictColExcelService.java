@@ -7,9 +7,9 @@ import java.io.IOException;
 
 public interface DictColExcelService {
 
-//    void saveAll(String enDatabase, File file);
+//    void saveAllToDb(String enDatabase, File file);
 
-//    void saveAll(long databaseId, MultipartFile file) throws IOException;
+//    void saveAllToDb(long databaseId, MultipartFile file) throws IOException;
 
     void saveAll(MultipartFile file) throws IOException;
 }

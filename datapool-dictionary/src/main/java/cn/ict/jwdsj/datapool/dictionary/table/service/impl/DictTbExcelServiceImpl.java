@@ -50,7 +50,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
 
 //    @Override
 //    @Transactional(rollbackFor = Exception.class)
-//    public void saveAll(long databaseId, MultipartFile file) throws IOException {
+//    public void saveAllToDb(long databaseId, MultipartFile file) throws IOException {
 //
 //        DictDatabase dictDatabase = dictDatabaseService.findById(databaseId);
 //        ExcelReader reader = ExcelUtil.getReader(file.getInputStream());
@@ -73,7 +73,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
 //                .map(tbExcelDTO -> this.convertToDictTable(tbExcelDTO, dictDatabase))
 //                .collect(Collectors.toList());
 //
-//        dictTableService.saveAll(dictTables);
+//        dictTableService.saveAllToDb(dictTables);
 //    }
 
     /**
@@ -99,7 +99,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
         Assert.isTrue(tbExcelDTOS.size() == tbExcelDTOS.stream().distinct().count(), DUPLICATE_OBJECT);
 
         // excel中的所有数据库
-        List<String> excelDatabases = tbExcelDTOS.stream().map(DictTbExcelDTO::getEnDatabase).distinct().collect(Collectors.toList());
+        List<String> excelDatabases = tbExcelDTOS.stream().map(DictTbExcelDTO::getEnDatabase).map(str -> str.trim()).distinct().collect(Collectors.toList());
 
 
         // 判断库是否都在DictDatabase中存在
@@ -113,10 +113,6 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
         // 所有表必须真实存在
         Assert.isTrue(allTableExistsInMetaDatabase(tbExcelDTOS), NOT_EXISTS_TABLE);
 
-
-
-
-
         Map<String, Long> databaseNameAndId = tbExcelDTOS.stream()
                 .map(DictTbExcelDTO::getEnDatabase)
                 .distinct()
@@ -124,15 +120,11 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
                 .map(dbName -> dictDatabaseService.findByEnDatabase(dbName))
                 .collect(Collectors.toMap(DictDatabase::getEnDatabase, DictDatabase::getId));
 
-//        List<DictTable> dictTables = tbExcelDTOS.stream()
-//                .map(tbExcelDTO -> this.convertToDictTable(tbExcelDTO, dictDatabase))
-//                .collect(Collectors.toList());
-
         List<DictTable> dictTables = tbExcelDTOS.stream()
                 .map(tb -> this.convertToDictTable(tb, databaseNameAndId.get(tb.getEnDatabase())))
                 .collect(Collectors.toList());
 
-        dictTableMapper.insertIgnore(dictTables);
+        dictTableService.saveAllToDb(dictTables);
     }
 
     private DictTable convertToDictTable(DictTbExcelDTO tbExcelDTO, Long databaseId) {
@@ -165,7 +157,7 @@ public class DictTbExcelServiceImpl implements DictTbExcelService {
         NOT_EXISTS_TABLE = "数据表不存在: ";
         List<String> wrongTables = new ArrayList<>();
 
-        List<String> databases = tbExcelDTOS.stream().map(DictTbExcelDTO::getEnDatabase).distinct().collect(Collectors.toList());
+        List<String> databases = tbExcelDTOS.stream().map(DictTbExcelDTO::getEnDatabase).map(str -> str.trim()).distinct().collect(Collectors.toList());
 
         // databases中的所有表
         ConcurrentHashSet<MetaTable> metaTables = new ConcurrentHashSet<>();

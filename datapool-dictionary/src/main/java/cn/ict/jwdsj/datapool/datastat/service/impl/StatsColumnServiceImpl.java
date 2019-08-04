@@ -4,14 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.QDictTable;
 import cn.ict.jwdsj.datapool.datastat.mapper.StatsColumnMapper;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsColumnRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatsColumnService;
 import cn.ict.jwdsj.datapool.datastat.service.StatsService;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -133,6 +131,36 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     @Override
     public void updateColumnInfo(long columnId, String enColumn, String chColumn) {
         statsColumnRepo.updateColumnInfo(columnId, enColumn, chColumn);
+    }
+
+    /**
+     * 批量存入dict_column表新增的数据
+     *
+     * @param currentTime 插入时的时间
+     */
+    @Override
+    public void saveAllFromDictColumn(String currentTime) {
+        statsColumnMapper.insertAll(currentTime);
+    }
+
+    /**
+     * 根据column_id删除
+     *
+     * @param columnId
+     */
+    @Override
+    public void deleteByColumnId(long columnId) {
+        statsColumnRepo.deleteByColumnId(columnId);
+    }
+
+    /**
+     * 根据table_id删除
+     *
+     * @param tableId
+     */
+    @Override
+    public void deleteByTableId(long tableId) {
+        statsColumnRepo.deleteByTableId(tableId);
     }
 
     /**

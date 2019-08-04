@@ -13,7 +13,7 @@ public interface DictDatabaseService {
     void save(DictDatabase dictDatabase);
 
     @Transactional(rollbackFor = Exception.class)
-    void saveAll(List<DictDatabase> dictDatabases);
+    void saveAllToDb(List<DictDatabase> dictDatabases);
 
     /**
      * 判断某个库是否在字典中存在

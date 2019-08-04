@@ -5,6 +5,7 @@ import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsDatabase;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
+import cn.ict.jwdsj.datapool.datastat.mapper.StatsDatabaseMapper;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsDatabaseRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatsDatabaseService;
 import com.querydsl.core.types.ExpressionUtils;
@@ -26,6 +27,8 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
 
     @Autowired
     private StatsDatabaseRepo statsDatabaseRepo;
+    @Autowired
+    private StatsDatabaseMapper statsDatabaseMapper;
 
     @Override
     public void save(StatsDatabase statsDatabase) {
@@ -43,13 +46,8 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
     }
 
     @Override
-    public void add(DictDatabase dictDatabase) {
-        StatsDatabase statsDatabase = StatsDatabase.builder()
-                .enDatabase(dictDatabase.getEnDatabase())
-                .chDatabase(dictDatabase.getChDatabase())
-                .databaseId(dictDatabase.getId())
-                .build();
-        statsDatabaseRepo.save(statsDatabase);
+    public void deleteByDatabaseId(long databaseId) {
+        statsDatabaseRepo.deleteByDatabaseId(databaseId);
     }
 
     @Override
@@ -99,5 +97,15 @@ public class StatsDatabaseServiceImpl implements StatsDatabaseService {
     @Override
     public void updateDatabaseInfo(long databaseId, String enDatabase, String chDatabase) {
         statsDatabaseRepo.updateDatabasesInfo(databaseId, enDatabase, chDatabase);
+    }
+
+    /**
+     * 批量存入dict_database表新增的数据
+     *
+     * @param currentTime 插入时的时间
+     */
+    @Override
+    public void saveAllFromDictDatabase(String currentTime) {
+        statsDatabaseMapper.insertAll(currentTime);
     }
 }

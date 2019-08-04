@@ -15,7 +15,7 @@ public interface DictTbExcelService  {
 //     * @param file
 //     * @throws IOException
 //     */
-//    void saveAll(long databaseId, MultipartFile file) throws IOException;
+//    void saveAllToDb(long databaseId, MultipartFile file) throws IOException;
 
     /**
      * 多库数据导入

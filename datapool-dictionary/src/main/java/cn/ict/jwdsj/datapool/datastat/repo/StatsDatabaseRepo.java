@@ -21,6 +21,8 @@ public interface StatsDatabaseRepo extends JpaRepository<StatsDatabase, Long>, Q
 
     Page<StatsDatabase> findAll(Predicate predicate, Pageable pageable);
 
+    void deleteByDatabaseId(long databaseId);
+
     @Transactional
     @Modifying
     @Query("update StatsDatabase r set r.enDatabase = :enDatabase, r.chDatabase = :chDatabase where r.databaseId = :databaseId")

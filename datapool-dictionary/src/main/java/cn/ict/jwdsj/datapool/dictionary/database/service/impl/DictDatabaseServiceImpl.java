@@ -1,6 +1,5 @@
 package cn.ict.jwdsj.datapool.dictionary.database.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.DatabaseNameDTO;
@@ -10,12 +9,13 @@ import cn.ict.jwdsj.datapool.common.kafka.DictUpdateMsg;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.vo.DictDatabaseVO;
+import cn.ict.jwdsj.datapool.dictionary.database.mapper.DictDatabaseMapper;
 import cn.ict.jwdsj.datapool.dictionary.database.repo.DictDatabaseRepo;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.database.entity.dto.UpdateDatabaseDTO;
 import cn.ict.jwdsj.datapool.dictionary.event.DictAddEvent;
+import cn.ict.jwdsj.datapool.dictionary.event.DictDeleteEvent;
 import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
-import com.alibaba.fastjson.JSON;
 import com.github.dozermapper.core.Mapper;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
@@ -42,6 +42,8 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     @Autowired
     private DictDatabaseRepo dictDatabaseRepo;
     @Autowired
+    private DictDatabaseMapper dictDatabaseMapper;
+    @Autowired
     private KafkaSender kafkaSender;
     @Autowired
     private ApplicationContext publisher;
@@ -55,15 +57,15 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void save(DictDatabase dictDatabase) {
-        dictDatabaseRepo.save(dictDatabase);
-        publisher.publishEvent(new DictAddEvent(dictDatabase, DATABASE));
+        this.saveAllToDb(Arrays.asList(dictDatabase));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveAll(List<DictDatabase> dictDatabases) {
-        dictDatabaseRepo.saveAll(dictDatabases);
-        publisher.publishEvent(new DictAddEvent(dictDatabases, DATABASES));
+    public void saveAllToDb(List<DictDatabase> dictDatabases) {
+        String currentTime = dictDatabaseMapper.getCurrentTimeStamp();
+        dictDatabaseMapper.insertIgnore(dictDatabases);
+        publisher.publishEvent(new DictAddEvent(currentTime, DATABASES));
     }
 
     @Override
@@ -119,11 +121,13 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
      * @param id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(long id) {
         DictDatabase dictDatabase = DictDatabase.buildById(id);
         // 该库下不能有表
         Assert.isTrue(!dictTableService.existsByDictDatabase(dictDatabase), "该库下还有表，请先删除表信息管理中该库的所有表");
         dictDatabaseRepo.deleteById(id);
+        publisher.publishEvent(new DictDeleteEvent(id, DATABASE));
     }
 
     @Override
@@ -148,9 +152,6 @@ public class DictDatabaseServiceImpl implements DictDatabaseService {
     }
 
     private DatabaseNameDTO convertToDatabaseNameDTO(DictDatabase dictDatabase) {
-//        DatabaseNameDTO databaseNameDTO =  BeanUtil.toBean(dictDatabase, DatabaseNameDTO.class);
-//        databaseNameDTO.setDatabaseId(dictDatabase.getId());
-//        return databaseNameDTO;
         return mapper.map(dictDatabase, DatabaseNameDTO.class);
     }
 

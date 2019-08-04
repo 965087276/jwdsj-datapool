@@ -3,13 +3,10 @@ package cn.ict.jwdsj.datapool.datastat.service.impl;
 import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
-import cn.ict.jwdsj.datapool.datastat.mapper.StatsMapper;
 import cn.ict.jwdsj.datapool.datastat.mapper.StatsTableMapper;
 import cn.ict.jwdsj.datapool.datastat.repo.StatsTableRepo;
 import cn.ict.jwdsj.datapool.datastat.service.StatsTableService;
-import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -122,6 +118,26 @@ public class StatsTableServiceImpl implements StatsTableService {
     @Override
     public void updateTableInfo(long tableId, String enTable, String chTable) {
         statsTableRepo.updateTableInfo(tableId, enTable, chTable);
+    }
+
+    /**
+     * 批量存入dict_table表新增的数据
+     *
+     * @param currentTime 插入时的时间
+     */
+    @Override
+    public void saveAllFromDictTable(String currentTime) {
+        statsTableMapper.insertAll(currentTime);
+    }
+
+    /**
+     * 根据table_id删除
+     *
+     * @param tableId
+     */
+    @Override
+    public void deleteByTableId(long tableId) {
+        statsTableRepo.deleteByTableId(tableId);
     }
 
 }

@@ -2,24 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.ict.jwdsj.datapool.dictionary.table.mapper.DictTableMapper">
-    <sql id="dictTable">
-        database_id, en_database, en_table, ch_table
+<mapper namespace="cn.ict.jwdsj.datapool.dictionary.database.mapper.DictDatabaseMapper">
+    <sql id="dictDatabase">
+         en_database, ch_database, detail
     </sql>
 
     <insert id="insertIgnore" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
         INSERT IGNORE INTO
-        dict_table
+        dict_database
         (
-        <include refid="dictTable"/>
+        <include refid="dictDatabase"/>
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
-            #{item.dictDatabase.id},
             #{item.enDatabase},
-            #{item.enTable},
-            #{item.chTable}
+            #{item.chDatabase},
+            #{item.detail}
             )
         </foreach>
     </insert>

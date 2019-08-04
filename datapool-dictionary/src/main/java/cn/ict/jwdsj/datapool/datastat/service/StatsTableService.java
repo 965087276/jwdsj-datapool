@@ -1,7 +1,6 @@
 package cn.ict.jwdsj.datapool.datastat.service;
 
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsTable;
-import cn.ict.jwdsj.datapool.dictionary.event.DictAddEvent;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
@@ -60,4 +59,16 @@ public interface StatsTableService {
      * @param chTable
      */
     void updateTableInfo(long tableId, String enTable, String chTable);
+
+    /**
+     * 批量存入dict_table表新增的数据
+     * @param currentTime 插入时的时间
+     */
+    void saveAllFromDictTable(String currentTime);
+
+    /**
+     * 根据table_id删除
+     * @param tableId
+     */
+    void deleteByTableId(long tableId);
 }

@@ -63,7 +63,7 @@ public class DictDbExcelServiceImpl implements DictDbExcelService {
                 .map(dictDbExcelDTO -> BeanUtil.toBean(dictDbExcelDTO, DictDatabase.class))
                 .collect(Collectors.toList());
 
-        dictDatabaseService.saveAll(dictDatabases);
+        dictDatabaseService.saveAllToDb(dictDatabases);
     }
 
     /**

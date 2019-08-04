@@ -39,7 +39,7 @@ public class DictDatabaseServiceTest {
             dictDatabase.setDetail("这是测试库" + i);
             dictDatabases.add(dictDatabase);
         }
-        dictDatabaseService.saveAll(dictDatabases);
+        dictDatabaseService.saveAllToDb(dictDatabases);
     }
 
 

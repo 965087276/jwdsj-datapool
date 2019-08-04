@@ -10,6 +10,8 @@ import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.dictionary.column.service.DictColumnService;
 import cn.ict.jwdsj.datapool.dictionary.config.KafkaSender;
 import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
+import cn.ict.jwdsj.datapool.dictionary.event.DictAddEvent;
+import cn.ict.jwdsj.datapool.dictionary.event.DictDeleteEvent;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.DictTableMultiAddDTO;
 import cn.ict.jwdsj.datapool.dictionary.table.entity.dto.UpdateTableDTO;
@@ -20,9 +22,9 @@ import cn.ict.jwdsj.datapool.dictionary.table.service.DictTableService;
 import com.github.dozermapper.core.Mapper;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,10 +32,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static cn.ict.jwdsj.datapool.common.constant.DictType.TABLE;
+import static cn.ict.jwdsj.datapool.common.constant.DictType.TABLES;
 
 
 @Service
@@ -47,6 +51,8 @@ public class DictTableServiceImpl implements DictTableService {
     @Autowired
     private DictColumnService dictColumnService;
     @Autowired
+    private ApplicationContext publisher;
+    @Autowired
     private KafkaSender kafkaSender;
     @Autowired
     private Mapper mapper;
@@ -55,13 +61,15 @@ public class DictTableServiceImpl implements DictTableService {
 
     @Override
     public void save(DictTable dictTable) {
-        dictTableRepo.save(dictTable);
+        this.saveAllToDb(Arrays.asList(dictTable));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveAll(List<DictTable> dictTables) {
-        dictTableRepo.saveAll(dictTables);
+    public void saveAllToDb(List<DictTable> dictTables) {
+        String currentTime = dictTableMapper.getCurrentTimeStamp();
+        dictTableMapper.insertIgnore(dictTables);
+        publisher.publishEvent(new DictAddEvent(currentTime, TABLES));
     }
 
     @Override
@@ -139,7 +147,7 @@ public class DictTableServiceImpl implements DictTableService {
                 .map(dictTableDTO -> this.convertToDictTable(dictTableDTO, dictDatabase))
                 .collect(Collectors.toList());
 
-        dictTableRepo.saveAll(dictTables);
+        this.saveAllToDb(dictTables);
     }
 
     @Override
@@ -185,6 +193,7 @@ public class DictTableServiceImpl implements DictTableService {
         dictColumnService.deleteByTableId(id);
         // 删除该表
         dictTableRepo.deleteById(id);
+        publisher.publishEvent(new DictDeleteEvent(id, TABLE));
     }
 
     /**
