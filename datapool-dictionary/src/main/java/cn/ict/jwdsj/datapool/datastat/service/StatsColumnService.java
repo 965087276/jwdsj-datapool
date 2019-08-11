@@ -39,14 +39,6 @@ public interface StatsColumnService {
      */
     List<StatsColumn> listAll(long databaseId, long tableId);
 
-    /**
-     * 获取字段内容
-     * @param enDatabase 库名
-     * @param enTable 表名
-     * @param enColumn 字段名
-     * @return
-     */
-    List<String> listColumnData(String enDatabase, String enTable, String enColumn);
 
     /**
      * 更新字段名信息

@@ -116,11 +116,6 @@ public class StatsColumnServiceImpl implements StatsColumnService {
         return statsColumnRepo.findByTableId(tableId);
     }
 
-    @Override
-    public List<String> listColumnData(String enDatabase, String enTable, String enColumn) {
-        return statsService.getColumnData(enDatabase, enTable, enColumn);
-    }
-
     /**
      * 更新字段名信息
      *
@@ -180,17 +175,6 @@ public class StatsColumnServiceImpl implements StatsColumnService {
             }
         }
         return defect / total >= 0.90;
-    }
-
-
-    private StatsColumn convertToStatsColumn(DictColumn dictColumn) {
-        StatsColumn statsColumn = new StatsColumn();
-        statsColumn.setColumnId(dictColumn.getId());
-        statsColumn.setEnColumn(dictColumn.getEnColumn());
-        statsColumn.setChColumn(dictColumn.getChColumn());
-        statsColumn.setDatabaseId(dictColumn.getDatabaseId());
-        statsColumn.setTableId(dictColumn.getTableId());
-        return statsColumn;
     }
 
 }

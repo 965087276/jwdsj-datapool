@@ -17,8 +17,6 @@ public class StatsDatabaseSubTask {
     private StatsDatabaseService statsDatabaseService;
     @Autowired
     private StatsTableService statsTableService;
-    @Autowired
-    private StatsService statsService;
 
     public void updateStatDatabases() {
 
