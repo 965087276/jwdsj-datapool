@@ -12,11 +12,11 @@ public class MappingColumnVO {
     private String enColumn;
     private String chColumn;
 
-    private boolean searched;
+    private boolean searched = false;
 
-    private boolean analyzed;
+    private boolean analyzed = false;
 
-    private boolean displayed;
+    private boolean displayed = false;
 
-    private double boost;
+    private double boost = 1.0;
 }

@@ -15,6 +15,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.SeTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
+import com.github.dozermapper.core.Mapper;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Autowired private DictClient dictClient;
     @Autowired private StatsClient statsClient;
     @Autowired private SeTableService seTableService;
+    @Autowired private Mapper mapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -45,7 +47,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .stream()
                 .collect(groupingBy(this::getColumnType));
 
-        // 若该操作为在已存在的表上新增字段，且该表已加入了数据同步，那么不能增加新字段
+        // 若该表已加入了数据同步，那么不能增加新字段
         Optional.ofNullable(seTableService.findByTableId(seTableAddDTO.getTableId()))
                 .ifPresent(seTable -> {
                     Assert.isTrue(!seTable.isSync(), "该表在数据同步任务中，不能添加新字段");
@@ -84,19 +86,9 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
     @Override
     public List<ColumnTypeDTO> listColumnTypeDTOByTableId(long tableId) {
-        QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
-        return jpaQueryFactory
-                .select(mappingColumn.columnId, mappingColumn.esColumn, mappingColumn.type)
-                .from(mappingColumn)
-                .where(mappingColumn.tableId.eq(tableId))
-                .fetch()
+        return mappingColumnRepo.findByTableId(tableId)
                 .stream()
-                .map(tuple -> ColumnTypeDTO.builder()
-                        .columnId(tuple.get(mappingColumn.columnId))
-                        .name(tuple.get(mappingColumn.esColumn))
-                        .type(tuple.get(mappingColumn.type))
-                        .build()
-                )
+                .map(obj -> mapper.map(obj, ColumnTypeDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -106,8 +98,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
      * @param tableId
      * @return
      */
-    @Override
-    public Map<String, Integer> groupWithTypeAndCountByTableId(long tableId) {
+    private Map<String, Integer> groupWithTypeAndCountByTableId(long tableId) {
         QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
         return jpaQueryFactory
                 .select(mappingColumn.type, mappingColumn.count())
@@ -155,7 +146,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .stream().collect(toMap(DictColumn::getId, dictColumn -> dictColumn.getEnColumn()));
         // 表字段id与索引字段名的映射
         Map<Long, String> colIdAndEsColMap = columnTypeDTOS
-                .stream().collect(toMap(ColumnTypeDTO::getColumnId, columnTypeDTO -> columnTypeDTO.getName()));
+                .stream().collect(toMap(ColumnTypeDTO::getColumnId, columnTypeDTO -> columnTypeDTO.getEsColumn()));
 
         TableFullReadDTO tableFullReadDTO = new TableFullReadDTO();
 
@@ -228,7 +219,6 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateColumnsHasSync(SeTableAddDTO seTableAddDTO) {
-        long tableId = seTableAddDTO.getTableId();
         var columns = seTableAddDTO.getColumns();
         List<MappingColumn> mappingColumns = new ArrayList<>();
         for (var column : columns) {
@@ -251,19 +241,11 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     }
 
     private MappingColumnVO convertToMappingColumnVO(MappingColumn mappingColumn) {
-        return BeanUtil.toBean(mappingColumn, MappingColumnVO.class);
+        return mapper.map(mappingColumn, MappingColumnVO.class);
     }
 
     private MappingColumnVO convertToMappingColumnVO(DictColumn dictColumn) {
-        MappingColumnVO columnVO = new MappingColumnVO();
-        columnVO.setEnColumn(dictColumn.getEnColumn());
-        columnVO.setChColumn(dictColumn.getChColumn());
-        columnVO.setColumnId(dictColumn.getId());
-        columnVO.setDisplayed(true);
-        columnVO.setSearched(false);
-        columnVO.setAnalyzed(false);
-        columnVO.setBoost(1);
-        return columnVO;
+        return mapper.map(dictColumn, MappingColumnVO.class);
     }
 
     private String getColumnType(MappingColumnDTO column) {

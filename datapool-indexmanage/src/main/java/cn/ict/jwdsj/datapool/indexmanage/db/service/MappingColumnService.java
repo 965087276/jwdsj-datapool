@@ -27,12 +27,6 @@ public interface MappingColumnService {
     List<ColumnTypeDTO> listColumnTypeDTOByTableId(long tableId);
 
     /**
-     * 将某表的字段按照类型和数目进行group by
-     * @return
-     */
-    Map<String, Integer> groupWithTypeAndCountByTableId(long tableId);
-
-    /**
      * 表搜索引擎管理--表信息增加--加载该表的字段
      * 需要剔除空字段
      * @param databaseId 库id

@@ -10,6 +10,6 @@ import lombok.Data;
 @Builder
 public class ColumnTypeDTO {
     private long columnId;
-    private String name;
+    private String esColumn;
     private String type;
 }

@@ -1,7 +1,6 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
@@ -40,7 +39,7 @@ public class EsColumnServiceImpl implements EsColumnService {
         // 筛选出该表在mapping_column中但不在es_column中的字段，这些字段需要加入elasticsearch与es_column中
         List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByTableId(tableId)
                 .stream()
-                .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getName()))) // 这里效率低，需要优化
+                .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getEsColumn()))) // 这里效率低，需要优化
                 .map(columnTypeDTO -> BeanUtil.toBean(columnTypeDTO, EsColumn.class))
                 .collect(Collectors.toList());
         esColumns.forEach(esColumn -> esColumn.setEsIndex(esIndex));
