@@ -34,8 +34,6 @@ import static cn.ict.jwdsj.datapool.common.constant.DictType.COLUMNS;
 @Service
 public class DictColumnServiceImpl implements DictColumnService {
     @Autowired
-    private JPAQueryFactory jpaQueryFactory;
-    @Autowired
     private DictColumnRepo dictColumnRepo;
     @Autowired
     private DictColumnMapper dictColumnMapper;
@@ -90,18 +88,10 @@ public class DictColumnServiceImpl implements DictColumnService {
 
     @Override
     public List<ColumnNameDTO> listColumnNameDTOsByTableId(long tableId) {
-        QDictColumn dictColumn = QDictColumn.dictColumn;
-        return jpaQueryFactory.select(dictColumn.id, dictColumn.enColumn, dictColumn.chColumn)
-                .from(dictColumn)
-                .where(dictColumn.tableId.eq(tableId))
-                .fetch()
+        return dictColumnRepo.findByTableId(tableId)
                 .stream()
-                .map(tuple -> ColumnNameDTO.builder()
-                        .columnId(tuple.get(dictColumn.id))
-                        .enColumn(tuple.get(dictColumn.enColumn))
-                        .chColumn(tuple.get(dictColumn.chColumn))
-                        .build()
-                ).collect(Collectors.toList());
+                .map(col -> mapper.map(col, ColumnNameDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
