@@ -1,7 +1,7 @@
 package cn.ict.jwdsj.datapool.dictionary.service.dict.database.service;
 
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
-import cn.ict.jwdsj.datapool.dictionary.database.service.DictDatabaseService;
+import cn.ict.jwdsj.datapool.dictionary.service.database.DictDatabaseService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

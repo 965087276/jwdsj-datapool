@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.ict.jwdsj.datapool.dictionary.table.mapper.DictTableMapper">
+<mapper namespace="cn.ict.jwdsj.datapool.dictionary.dao.mapper.primary.table.DictTableMapper">
     <sql id="dictTable">
         database_id, en_database, en_table, ch_table
     </sql>

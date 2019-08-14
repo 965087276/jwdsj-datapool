@@ -1,15 +1,13 @@
 package cn.ict.jwdsj.datapool.common.entity.dictionary.meta;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
 
-@Entity
 @Data
-@Table(name = "SCHEMATA", catalog = "INFORMATION_SCHEMA")
+@AllArgsConstructor
 public class MetaDatabase {
 
-    @Id
-    @Column(name = "SCHEMA_NAME")
     private String database;
 }
