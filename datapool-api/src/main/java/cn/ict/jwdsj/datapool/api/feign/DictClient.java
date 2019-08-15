@@ -2,6 +2,7 @@ package cn.ict.jwdsj.datapool.api.feign;
 
 import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.dto.dictionary.TableNameDTO;
+import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.table.DictTable;
@@ -69,4 +70,13 @@ public interface DictClient {
      */
     @GetMapping("dict/column_name_dto/tableId/{tableId}")
     List<ColumnNameDTO> listColumnNameDTOByTableId(@PathVariable("tableId") long tableId);
+
+    @GetMapping("stats/stats_databases/ids/{ids}")
+    List<StatsDatabase> listStatsDatabasesByIds(@PathVariable("ids") String ids);
+
+    @GetMapping("stats/stats_column/defect_column_names/tableId/{tableId}")
+    List<String> getDefectColumnsByTable(@PathVariable("tableId") long tableId);
+
+    @GetMapping("stats/stats_table/records/tableId/{tableId}")
+    long getTableRecords(@PathVariable("tableId") long tableId);
 }
