@@ -56,13 +56,13 @@ public class StatsColumnServiceImpl implements StatsColumnService {
 
     @Override
     public void updateDefectedColumns() {
-        // dict_table表中的所有表,也是stats_column中的所有表（因为已经执行了deleteColumnsNotExist和saveColumnsNotAdd方法）
+        // dict_table表中的所有表,也是stats_column中的所有表
         List<Long> tableIds = dictTableService.listTableId();
 
         for (Long tableId : tableIds) {
             // 缺陷字段
             List<String> defectColumns = this.initAndListDefectedColumns(tableId);
-            log.info("tableId is {}, defected columns are {}", tableId, defectColumns);
+//            log.info("tableId is {}, defected columns are {}", tableId, defectColumns);
             // 字段名与字段id的对应关系
             Map<String, Long> dictColNameAndId = dictColumnService.listByTableId(tableId)
                     .stream()
@@ -70,13 +70,13 @@ public class StatsColumnServiceImpl implements StatsColumnService {
             // 缺陷字段的columnId
             List<Long> defectColumnIds = defectColumns
                     .stream()
-                    .filter(dictColNameAndId::containsKey) // 该字段要在字典表（同样也在字段统计表）中存在
+                    .filter(dictColNameAndId::containsKey) // 该字段要在字典表（同样也在字段统计表）中存在,因为录入字段时可能并没有录入了所有的字段
                     .map(dictColNameAndId::get)
                     .collect(Collectors.toList());
 
             List<StatsColumn> statsColumns = statsColumnRepo.findByTableId(tableId);
 
-            // is_defect发生改变的行
+            // is_defect发生改变的那些字段
             List<StatsColumn> statsColumnsChanged = new ArrayList<>();
 
             for (StatsColumn statsColumn : statsColumns) {

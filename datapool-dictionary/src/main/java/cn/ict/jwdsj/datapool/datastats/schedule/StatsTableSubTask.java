@@ -28,18 +28,26 @@ public class StatsTableSubTask {
 
         tables.parallelStream().forEach(statsTable -> {
             StatsTable newStatsTable = (StatsTable) statsTable.clone();
-
             newStatsTable.setTotalRecords( statsService.countTableRecords(statsTable.getTableId()) );
             newStatsTable.setTotalColumns( statsColumnService.countColumnsByTableId(statsTable.getTableId()) );
             newStatsTable.setDefectColumns( statsColumnService.countDefectedColumnsByTableId(statsTable.getTableId()) );
             newStatsTable.setDefectRate();
+
             log.info("newStatsTable is {}", newStatsTable);
+
             if (!statsTable.equals(newStatsTable)) {
-                if (statsTable.getTotalRecords() != 0)
-                    newStatsTable.setUpdateDate(LocalDate.now());
+                // 这里设 表的更新时间 只与 表的记录数 有关系
+                if (newStatsTable.getTotalRecords() != statsTable.getTotalRecords()) {
+                    // 如果原先的表的记录数为0，说明这个表是刚加入到stat_table表中的，因此初始化它的更新时间为“该表的创建时间”
+                    if (statsTable.getTotalRecords() == 0L) {
+                        newStatsTable.setUpdateDate(statsService.getTableCreateTime(statsTable.getTableId()));
+                    }
+                    else {
+                        newStatsTable.setUpdateDate(LocalDate.now());
+                    }
+                }
                 statsTableService.save(newStatsTable);
             }
-
         });
 
     }
