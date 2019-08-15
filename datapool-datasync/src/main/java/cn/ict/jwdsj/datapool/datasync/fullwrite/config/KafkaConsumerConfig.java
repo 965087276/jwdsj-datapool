@@ -1,6 +1,6 @@
 //package cn.ict.jwdsj.datapool.datasync.fullwrite.config;
 //
-//import org.apache.kafka.clients.consumer.ConsumerConfig;
+//import org.apache.kafka.clients.kafka.ConsumerConfig;
 //import org.apache.kafka.common.serialization.StringDeserializer;
 //import org.springframework.beans.factory.annotation.Value;
 //import org.springframework.context.annotation.Bean;
@@ -20,10 +20,10 @@
 //    @Value("${spring.kafka.bootstrap-servers}")
 //    private String bootstrapServers;
 //
-//    @Value("${spring.kafka.consumer.max-poll-records}")
+//    @Value("${spring.kafka.kafka.max-poll-records}")
 //    private Integer maxPollRecords;
 //
-//    @Value("${spring.kafka.consumer.auto-offset-reset}")
+//    @Value("${spring.kafka.kafka.auto-offset-reset}")
 //    private String autoOffsetReset;
 //
 //

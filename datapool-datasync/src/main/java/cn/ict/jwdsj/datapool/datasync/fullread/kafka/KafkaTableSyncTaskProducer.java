@@ -1,6 +1,5 @@
 package cn.ict.jwdsj.datapool.datasync.fullread.kafka;
 
-import cn.ict.jwdsj.datapool.api.feign.IndexManageClient;
 import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ public class KafkaTableSyncTaskProducer {
     public void sendSyncMsg(TableSyncMsg msg)  {
 
         kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
-        log.info("the msg have sent to kafka, table is {}.{}", msg.getTableName(), msg.getDatabaseName());
+        log.info("the msg have sent to kafka, table is {}.{}", msg.getEnTable(), msg.getEnDatabase());
 
     }
 }

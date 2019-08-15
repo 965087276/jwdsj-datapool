@@ -58,7 +58,7 @@ public class TableFullReadServiceImpl implements TableFullReadService {
         // 表字段到索引字段的映射
         Map<String, String> colAndEsColMap = tableFullReadDTO.getColAndEsColMap();
 
-        String sql = getSQL(msg.getDatabaseName(), msg.getTableName(), columns);
+        String sql = getSQL(msg.getEnDatabase(), msg.getEnTable(), columns);
         @Cleanup Connection con = jdbcTemplate.getDataSource().getConnection();
         @Cleanup PreparedStatement ps = con.prepareStatement(sql,ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
         ps.setFetchSize(Integer.MIN_VALUE);

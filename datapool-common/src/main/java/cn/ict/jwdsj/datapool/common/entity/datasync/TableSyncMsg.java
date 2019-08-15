@@ -6,10 +6,10 @@ import lombok.Data;
 public class TableSyncMsg {
 
     private long databaseId;
-    private String databaseName;
+    private String enDatabase;
 
     private long tableId;
-    private String tableName;
+    private String enTable;
 
     private long indexId;
     private String indexName;
