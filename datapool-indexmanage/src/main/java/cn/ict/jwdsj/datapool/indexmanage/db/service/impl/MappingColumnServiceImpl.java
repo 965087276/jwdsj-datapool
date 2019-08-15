@@ -12,6 +12,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingColumnDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingColumnVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
+import cn.ict.jwdsj.datapool.indexmanage.db.repo.SeTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.SeTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum;
@@ -37,7 +38,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Autowired private JPAQueryFactory jpaQueryFactory;
     @Autowired private DictClient dictClient;
     @Autowired private StatsClient statsClient;
-    @Autowired private SeTableService seTableService;
+    @Autowired private SeTableRepo seTableRepo;
     @Autowired private Mapper mapper;
 
     @Override
@@ -48,7 +49,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .collect(groupingBy(this::getColumnType));
 
         // 若该表已加入了数据同步，那么不能增加新字段
-        Optional.ofNullable(seTableService.findByTableId(seTableAddDTO.getTableId()))
+        Optional.ofNullable(seTableRepo.findByTableId(seTableAddDTO.getTableId()))
                 .ifPresent(seTable -> {
                     Assert.isTrue(!seTable.isSync(), "该表在数据同步任务中，不能添加新字段");
                 });

@@ -5,6 +5,7 @@ import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsColumnRepo;
+import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsIndexRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
@@ -25,13 +26,13 @@ public class EsColumnServiceImpl implements EsColumnService {
     @Autowired private EsColumnRepo esColumnRepo;
     @Autowired private ElasticRestService elasticRestService;
     @Autowired private MappingColumnService mappingColumnService;
-    @Autowired private EsIndexService esIndexService;
+    @Autowired private EsIndexRepo esIndexRepo;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void add(MappingTableAddDTO mappingTableAddDTO) throws IOException {
 
-        EsIndex esIndex = esIndexService.findById(mappingTableAddDTO.getIndexId());
+        EsIndex esIndex = esIndexRepo.findById(mappingTableAddDTO.getIndexId());
         long tableId = mappingTableAddDTO.getTableId();
 
         Set<String> esColumnsAll = esColumnRepo.findByEsIndex(esIndex).stream().map(EsColumn::getName).collect(Collectors.toSet());
@@ -57,7 +58,7 @@ public class EsColumnServiceImpl implements EsColumnService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByIndexId(long indexId) {
-        EsIndex esIndex = esIndexService.findById(indexId);
+        EsIndex esIndex = esIndexRepo.findById(indexId);
         esColumnRepo.deleteByEsIndex(esIndex);
     }
 
