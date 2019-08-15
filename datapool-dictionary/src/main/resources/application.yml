@@ -42,7 +42,7 @@ spring:
       location: C:\\Users\\wangjinhao\\AppData\\Local\\datapool
   #Kafka
   kafka:
-    bootstrap-servers: 10.10.1.121:9092
+    bootstrap-servers: 172.16.8.240:9092
 
 eureka:
   client:
