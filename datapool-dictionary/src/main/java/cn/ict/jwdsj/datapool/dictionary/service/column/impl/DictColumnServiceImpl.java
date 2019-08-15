@@ -113,6 +113,7 @@ public class DictColumnServiceImpl implements DictColumnService {
      * @param id
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void delete(long id) {
         DictColumn dictColumn = dictColumnRepo.getOne(id);
         // 该字段所在表不能加入到搜索引擎中

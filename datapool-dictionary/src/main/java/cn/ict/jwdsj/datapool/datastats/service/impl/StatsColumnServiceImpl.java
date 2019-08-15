@@ -44,7 +44,7 @@ public class StatsColumnServiceImpl implements StatsColumnService {
     public List<String> initAndListDefectedColumns(long tableId) {
         DictTable dictTable = dictTableService.findById(tableId);
 
-        List<Map<String, Object>> list = statsService.getTableData(dictTable.getEnTable(), dictTable.getEnDatabase());
+        List<Map<String, Object>> list = statsService.getTableData(dictTable.getEnDatabase(), dictTable.getEnTable());
         if (list.size() == 0) return new ArrayList<>();
 
         return list.get(0).keySet().stream()
