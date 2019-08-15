@@ -1,12 +1,8 @@
 package cn.ict.jwdsj.datapool.dictionary.service.meta.impl;
 
-import cn.ict.jwdsj.datapool.common.entity.dictionary.database.QDictDatabase;
-import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.QMetaDatabase;
 import cn.ict.jwdsj.datapool.dictionary.dao.mapper.secondary.meta.MetaDatabaseMapper;
 import cn.ict.jwdsj.datapool.dictionary.service.database.DictDatabaseService;
 import cn.ict.jwdsj.datapool.dictionary.service.meta.MetaDatabaseService;
-import com.netflix.discovery.converters.Auto;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
