@@ -2,7 +2,6 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
-import cn.ict.jwdsj.datapool.api.feign.StatsClient;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingColumn;
@@ -27,6 +26,7 @@ import org.springframework.util.Assert;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static cn.ict.jwdsj.datapool.common.entity.indexmanage.QMappingColumn.mappingColumn;
 import static cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum.KEYWORD;
 import static cn.ict.jwdsj.datapool.indexmanage.elastic.constant.EsColumnTypeEnum.TEXT;
 import static java.util.stream.Collectors.groupingBy;
@@ -35,9 +35,8 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class MappingColumnServiceImpl implements MappingColumnService {
     @Autowired private MappingColumnRepo mappingColumnRepo;
-    @Autowired private JPAQueryFactory jpaQueryFactory;
     @Autowired private DictClient dictClient;
-    @Autowired private StatsClient statsClient;
+//    @Autowired private StatsClient statsClient;
     @Autowired private SeTableRepo seTableRepo;
     @Autowired private Mapper mapper;
 
@@ -100,15 +99,21 @@ public class MappingColumnServiceImpl implements MappingColumnService {
      * @return
      */
     private Map<String, Integer> groupWithTypeAndCountByTableId(long tableId) {
-        QMappingColumn mappingColumn = QMappingColumn.mappingColumn;
-        return jpaQueryFactory
-                .select(mappingColumn.type, mappingColumn.count())
-                .from(mappingColumn)
-                .where(mappingColumn.tableId.eq(tableId))
-                .groupBy(mappingColumn.type)
-                .fetch()
+
+        List<Map<String, String>> objects = mappingColumnRepo.groupWithTypeAndCountByTableId(tableId);
+
+        return mappingColumnRepo.groupWithTypeAndCountByTableId(tableId)
                 .stream()
-                .collect(toMap(tuple -> tuple.get(mappingColumn.type), tuple -> tuple.get(mappingColumn.count().intValue())));
+                .collect(toMap(map -> map.get("0"), map -> Integer.parseInt(map.get("1"))));
+
+//        return jpaQueryFactory
+//                .select(mappingColumn.type, mappingColumn.count())
+//                .from(mappingColumn)
+//                .where(mappingColumn.tableId.eq(tableId))
+//                .groupBy(mappingColumn.type)
+//                .fetch()
+//                .stream()
+//                .collect(toMap(tuple -> tuple.get(mappingColumn.type), tuple -> tuple.get(mappingColumn.count().intValue())));
     }
 
     /**
@@ -123,7 +128,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
         List<DictColumn> dictColumns = dictClient.listDictColumnsByTableId(tableId);
         // 缺陷字段
-        List<String> defectColumns = statsClient.getDefectColumnsByTable(tableId);
+        List<String> defectColumns = dictClient.getDefectColumnsByTable(tableId);
 
         return dictColumns
                 .stream().filter(dictColumn -> !defectColumns.contains(dictColumn.getEnColumn())) // 过滤缺陷字段
@@ -147,7 +152,7 @@ public class MappingColumnServiceImpl implements MappingColumnService {
                 .stream().collect(toMap(DictColumn::getId, dictColumn -> dictColumn.getEnColumn()));
         // 表字段id与索引字段名的映射
         Map<Long, String> colIdAndEsColMap = columnTypeDTOS
-                .stream().collect(toMap(ColumnTypeDTO::getColumnId, columnTypeDTO -> columnTypeDTO.getEsColumn()));
+                .stream().collect(toMap(ColumnTypeDTO::getColumnId, columnTypeDTO -> columnTypeDTO.getName()));
 
         TableFullReadDTO tableFullReadDTO = new TableFullReadDTO();
 

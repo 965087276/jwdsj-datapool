@@ -18,7 +18,6 @@ public interface MappingTableService {
      */
     void save(MappingTableAddDTO mappingTableAddDTO) throws IOException;
 
-    MappingTable findByTableId(long tableId);
 
     @Deprecated
     List<MappingTable> listTableNeedToUpdate();
@@ -30,8 +29,13 @@ public interface MappingTableService {
      * 更新表记录数和索引记录数
      * 并将需要更新数据的表发送给datasync模块
      */
-    void calRecordsSchedule();
+    void updateEsData();
 
+    /**
+     * 取消数据同步
+     * @param tableId 被取消数据同步的表的tableId
+     * @throws IOException
+     */
     void deleteByTableId(long tableId) throws IOException;
 
     /**
@@ -40,14 +44,6 @@ public interface MappingTableService {
      */
     void update(MappingTableUpdateDTO mappingTableUpdateDTO);
 
-    /**
-     * 判断某索引下是否有表存在
-     * @param indexId
-     * @return
-     */
-    boolean existsByIndexId(long indexId);
-
-    void save(MappingTable mappingTable);
 
     /**
      * 手动数据同步

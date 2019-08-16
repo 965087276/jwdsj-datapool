@@ -18,6 +18,4 @@ public interface DictColumnMapper extends BaseMapper {
      */
     void insertIgnore(List<DictColumn> dictColumns);
 
-    @Select("select id column_id, en_column, ch_column from dict_column where table_id = #{tableId}")
-    List<ColumnNameDTO> listColumnNameDTOsByTableId(long tableId);
 }

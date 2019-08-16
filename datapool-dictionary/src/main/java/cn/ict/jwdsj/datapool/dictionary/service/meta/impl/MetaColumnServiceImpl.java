@@ -4,6 +4,7 @@ import cn.ict.jwdsj.datapool.common.dto.dictionary.ColumnNameDTO;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.meta.MetaColumn;
 import cn.ict.jwdsj.datapool.dictionary.dao.mapper.primary.column.DictColumnMapper;
 import cn.ict.jwdsj.datapool.dictionary.dao.mapper.secondary.meta.MetaColumnMapper;
+import cn.ict.jwdsj.datapool.dictionary.dao.repo.column.DictColumnRepo;
 import cn.ict.jwdsj.datapool.dictionary.dao.repo.database.DictDatabaseRepo;
 import cn.ict.jwdsj.datapool.dictionary.dao.repo.table.DictTableRepo;
 import cn.ict.jwdsj.datapool.dictionary.service.meta.MetaColumnService;
@@ -20,7 +21,7 @@ public class MetaColumnServiceImpl implements MetaColumnService {
     @Autowired private MetaColumnMapper metaColumnMapper;
     @Autowired private DictDatabaseRepo dictDatabaseRepo;
     @Autowired private DictTableRepo dictTableRepo;
-    @Autowired private DictColumnMapper dictColumnMapper;
+    @Autowired private DictColumnRepo dictColumnRepo;
 
     @Override
     public List<MetaColumn> listByDatabaseAndTable(String database, String table) {
@@ -47,9 +48,9 @@ public class MetaColumnServiceImpl implements MetaColumnService {
 
         // 该表的所有字段
         List<MetaColumn> columnsAll = this.listByDatabaseAndTable(enDatabase, enTable);
-
+        List<ColumnNameDTO> columnNameDTOS = dictColumnRepo.listColumnNameDTOsByTableId(tableId);
         // 已加入到字典中的字段
-        Set<String> columnsAdd = dictColumnMapper.listColumnNameDTOsByTableId(tableId)
+        Set<String> columnsAdd = dictColumnRepo.listColumnNameDTOsByTableId(tableId)
                 .stream()
                 .map(ColumnNameDTO::getEnColumn)
                 .collect(Collectors.toSet());

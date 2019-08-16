@@ -22,7 +22,7 @@ public class StatsServiceImpl implements StatsService {
     @Async
     public Future<List<StatsDatabase>> listDatabasesByIds(List<Long> ids) {
         String idStr = ids.stream().map(i -> i.toString()).collect(joining(","));
-        List<StatsDatabase> databases = statsClient.listDatabasesByIds(idStr);
+        List<StatsDatabase> databases = statsClient.listStatsDatabasesByIds(idStr);
         return new AsyncResult<>(databases);
     }
 }

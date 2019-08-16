@@ -6,10 +6,12 @@ import cn.ict.jwdsj.datapool.common.entity.indexmanage.EsIndex;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsColumnRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsIndexRepo;
+import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
+import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,7 @@ import static java.util.stream.Collectors.groupingBy;
 public class EsColumnServiceImpl implements EsColumnService {
     @Autowired private EsColumnRepo esColumnRepo;
     @Autowired private ElasticRestService elasticRestService;
-    @Autowired private MappingColumnService mappingColumnService;
+    @Autowired private MappingColumnRepo mappingColumnRepo;
     @Autowired private EsIndexRepo esIndexRepo;
 
     @Override
@@ -38,9 +40,9 @@ public class EsColumnServiceImpl implements EsColumnService {
         Set<String> esColumnsAll = esColumnRepo.findByEsIndex(esIndex).stream().map(EsColumn::getName).collect(Collectors.toSet());
 
         // 筛选出该表在mapping_column中但不在es_column中的字段，这些字段需要加入elasticsearch与es_column中
-        List<EsColumn> esColumns = mappingColumnService.listColumnTypeDTOByTableId(tableId)
+        List<EsColumn> esColumns = mappingColumnRepo.listColumnTypeDTOByTableId(tableId)
                 .stream()
-                .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getEsColumn()))) // 这里效率低，需要优化
+                .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getName()))) // 这里效率低，需要优化
                 .map(columnTypeDTO -> BeanUtil.toBean(columnTypeDTO, EsColumn.class))
                 .collect(Collectors.toList());
         esColumns.forEach(esColumn -> esColumn.setEsIndex(esIndex));

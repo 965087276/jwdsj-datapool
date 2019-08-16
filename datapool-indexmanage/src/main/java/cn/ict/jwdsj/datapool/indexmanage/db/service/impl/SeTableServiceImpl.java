@@ -11,6 +11,7 @@ import cn.ict.jwdsj.datapool.common.entity.indexmanage.SeTable;
 import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.SeTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.SeTableVO;
+import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingColumnRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.SeTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.SeTableService;
@@ -31,6 +32,8 @@ public class SeTableServiceImpl implements SeTableService {
     private SeTableRepo seTableRepo;
     @Autowired
     private MappingColumnService mappingColumnService;
+    @Autowired
+    private MappingColumnRepo mappingColumnRepo;
     @Autowired
     private JPAQueryFactory jpaQueryFactory;
     @Autowired
@@ -68,16 +71,16 @@ public class SeTableServiceImpl implements SeTableService {
         return seTableRepo.findAll(predicate, pageable).map(seTable1 -> this.convertToSeTableVO(dictDatabase, seTable1));
     }
 
-    /**
-     * 通过tableId查找
-     *
-     * @param tableId
-     * @return
-     */
-    @Override
-    public SeTable findByTableId(long tableId) {
-        return seTableRepo.findByTableId(tableId);
-    }
+//    /**
+//     * 通过tableId查找
+//     *
+//     * @param tableId
+//     * @return
+//     */
+//    @Override
+//    public SeTable findByTableId(long tableId) {
+//        return seTableRepo.findByTableId(tableId);
+//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -85,7 +88,7 @@ public class SeTableServiceImpl implements SeTableService {
         SeTable seTable = seTableRepo.findByTableId(tableId);
         Assert.isTrue(!seTable.isSync(), "该表在数据同步任务列表中，请先从同步列表中删除");
         // 删除该表设置的mappingColumn字段
-        mappingColumnService.deleteByTableId(tableId);
+        mappingColumnRepo.deleteByTableId(tableId);
 
         seTableRepo.deleteByTableId(tableId);
 

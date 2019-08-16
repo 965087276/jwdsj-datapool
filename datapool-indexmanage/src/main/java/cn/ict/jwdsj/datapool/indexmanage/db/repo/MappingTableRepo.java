@@ -9,6 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Repository
 public interface MappingTableRepo extends JpaRepository<MappingTable, Long>, QuerydslPredicateExecutor<MappingTable> {
 
@@ -42,4 +45,10 @@ public interface MappingTableRepo extends JpaRepository<MappingTable, Long>, Que
     void deleteByTableId(long tableId);
 
     MappingTable findByTableId(long tableId);
+
+    @Query("select t.tableId from MappingTable t")
+    List<Long> listTableId();
+
+    @Query(value = "select current_date ", nativeQuery = true)
+    LocalDate getLocalDate();
 }

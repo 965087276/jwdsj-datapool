@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.indexmanage.kafka.consumer;
+package cn.ict.jwdsj.datapool.indexmanage.db.kafka;
 
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.column.DictColumn;

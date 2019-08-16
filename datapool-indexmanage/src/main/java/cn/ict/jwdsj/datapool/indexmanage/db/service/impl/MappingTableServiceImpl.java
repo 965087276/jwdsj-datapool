@@ -2,9 +2,7 @@ package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.ict.jwdsj.datapool.api.feign.DataSyncClient;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
-import cn.ict.jwdsj.datapool.api.feign.StatsClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import cn.ict.jwdsj.datapool.common.entity.dictionary.database.DictDatabase;
@@ -17,12 +15,14 @@ import cn.ict.jwdsj.datapool.common.utils.StrJudgeUtil;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableUpdateDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
+import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsIndexRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
-import cn.ict.jwdsj.datapool.indexmanage.db.service.EsIndexService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
 import com.alibaba.fastjson.JSON;
+import com.github.dozermapper.core.Mapper;
+import com.github.dozermapper.core.Mapping;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Ops;
@@ -32,7 +32,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,13 +60,13 @@ public class MappingTableServiceImpl implements MappingTableService {
     @Autowired
     private ElasticRestService elasticRestService;
     @Autowired
-    private EsIndexService esIndexService;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private EsIndexRepo esIndexRepo;
     @Autowired
     private DictClient dictClient;
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    private Mapper mapper;
     @Value("${kafka.topic-name.table-sync-task}")
     private String syncTableTaskTopic;
 
@@ -79,7 +78,7 @@ public class MappingTableServiceImpl implements MappingTableService {
         long databaseId = mappingTableAddDTO.getDatabaseId();
         long indexId = mappingTableAddDTO.getIndexId();
 
-        EsIndex esIndex = esIndexService.findById(indexId);
+        EsIndex esIndex = esIndexRepo.findById(indexId);
 
         // 若索引中存在该表的数据，则说明之前的delete by query还没有执行完毕，因此拒绝这次增加请求
         long totalDocs = elasticRestService.getRecordsByTableIdInIndex(esIndex.getIndexName(), tableId);
@@ -108,11 +107,6 @@ public class MappingTableServiceImpl implements MappingTableService {
         QSeTable seTable = QSeTable.seTable;
         jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.tableId.eq(tableId)).execute();
 
-    }
-
-    @Override
-    public MappingTable findByTableId(long tableId) {
-        return mappingTableRepo.findByTableId(tableId);
     }
 
     @Override
@@ -150,16 +144,13 @@ public class MappingTableServiceImpl implements MappingTableService {
      */
     @Override
     @Scheduled(initialDelay = 10000, fixedRate = 86400000)
-    public void calRecordsSchedule() {
+    public void updateEsData() {
         QMappingTable mappingTable = QMappingTable.mappingTable;
         QStatsTable statsTable = QStatsTable.statsTable;
 
-        List<Long> tableIds = jpaQueryFactory
-                .select(mappingTable.tableId)
-                .from(mappingTable)
-                .fetch();
+        List<Long> tableIds = mappingTableRepo.listTableId();
         // 当前日期
-        LocalDate currentDate = jdbcTemplate.queryForObject("select current_date", LocalDate.class);
+        LocalDate currentDate = mappingTableRepo.getLocalDate();
         tableIds.stream().forEach(tableId -> {
 
             MappingTable mtb = mappingTableRepo.findByTableId(tableId);
@@ -181,15 +172,28 @@ public class MappingTableServiceImpl implements MappingTableService {
             boolean isSync = false;
             // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
             if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
-                TableSyncMsg msg = new TableSyncMsg();
-                msg.setDatabaseId(mtb.getDatabaseId());
-                msg.setDatabaseName(mtb.getEnDatabase());
-                msg.setIndexId(mtb.getIndexId());
-                msg.setIndexName(mtb.getIndexName());
-                msg.setTableId(mtb.getTableId());
-                msg.setTableName(mtb.getEnTable());
+                // 先删除，再增加
+                elasticRestService.deleteDocsByTableId(mtb.getIndexName(), tableId);
+                while (true) {
+                    try {
+                        if (!(elasticRestService.getRecordsByTableIdInIndex(mtb.getIndexName(), tableId) != 0L)) break;
+                        Thread.sleep(20000);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                TableSyncMsg msg = mapper.map(mtb, TableSyncMsg.class);
+//                msg.setDatabaseId(mtb.getDatabaseId());
+//                msg.setEnDatabase(mtb.getEnDatabase());
+//                msg.setIndexId(mtb.getIndexId());
+//                msg.setIndexName(mtb.getIndexName());
+//                msg.setTableId(mtb.getTableId());
+//                msg.setEnTable(mtb.getEnTable());
                 kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
-                log.info("the msg have sent to kafka, table is {}.{}", msg.getTableName(), msg.getDatabaseName());
+                log.info("the msg have sent to kafka, table is {}.{}", msg.getEnTable(), msg.getEnDatabase());
                 mappingTableRepo.updateUpdateDate(tableId);
                 isSync = true;
             }
@@ -237,28 +241,12 @@ public class MappingTableServiceImpl implements MappingTableService {
     }
 
     /**
-     * 判断某索引下是否有表存在
-     *
-     * @param indexId
-     * @return
-     */
-    @Override
-    public boolean existsByIndexId(long indexId) {
-        return mappingTableRepo.existsByIndexId(indexId);
-    }
-
-    @Override
-    public void save(MappingTable mappingTable) {
-        mappingTableRepo.save(mappingTable);
-    }
-
-    /**
      * 手动数据同步
      */
     @Override
     @Async
     public void syncData() {
-        this.calRecordsSchedule();
+        this.updateEsData();
     }
 
 
