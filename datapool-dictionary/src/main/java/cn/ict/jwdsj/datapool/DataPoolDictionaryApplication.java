@@ -7,10 +7,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import javax.persistence.EntityManager;
 
 @SpringBootApplication
+@EnableAsync
 @ComponentScan(basePackageClasses = {DataPoolCommonConfig.class,
     DataPoolDictionaryApplication.class})
 public class DataPoolDictionaryApplication {

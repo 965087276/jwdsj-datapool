@@ -7,8 +7,13 @@ import cn.ict.jwdsj.datapool.dictionary.service.table.DictTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -55,10 +60,28 @@ public class StatsServiceImpl implements StatsService {
         String enTable = table.getEnTable();
         String enDatabase = table.getEnDatabase();
 
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        Timestamp timestamp = (Timestamp) statsMapper.getTableStatus(enDatabase, enTable).get("Create_time");
+        return this.toLocalDate(timestamp);
+    }
 
-        return LocalDate.parse((String) statsMapper.getTableStatus(enDatabase, enTable).get("Create_time"), df);
+    /**
+     * 获取表的更新日期
+     *
+     * @param tableId 表id
+     * @return
+     */
+    @Override
+    public LocalDate getTableUpdateTime(long tableId) {
+        DictTable table = dictTableService.findById(tableId);
 
+        String enTable = table.getEnTable();
+        String enDatabase = table.getEnDatabase();
+
+        Timestamp timestamp = (Timestamp) statsMapper.getTableStatus(enDatabase, enTable).get("Update_time");
+        if (timestamp == null) {
+            timestamp = (Timestamp) statsMapper.getTableStatus(enDatabase, enTable).get("Create_time");
+        }
+        return this.toLocalDate(timestamp);
     }
 
     /**
@@ -71,6 +94,12 @@ public class StatsServiceImpl implements StatsService {
     @Override
     public List<Map<String, Object>> getTableData(String database, String table) {
         return statsMapper.getTableData(database, table);
+    }
+
+    private LocalDate toLocalDate(Timestamp timestamp) {
+        Instant instant = new Date(timestamp.getTime()).toInstant();
+        ZoneId shanghai = ZoneId.of("Asia/Shanghai");
+        return instant.atZone(shanghai).toLocalDate();
     }
 
 }

@@ -38,6 +38,13 @@ public interface StatsService {
     LocalDate getTableCreateTime(long tableId);
 
     /**
+     * 获取表的更新日期
+     * @param tableId 表id
+     * @return
+     */
+    LocalDate getTableUpdateTime(long tableId);
+
+    /**
      * 返回某个表的400条数据
      * @param database 所在库
      * @param table 表名
