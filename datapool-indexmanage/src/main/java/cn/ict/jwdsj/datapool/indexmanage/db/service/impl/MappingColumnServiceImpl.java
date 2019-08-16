@@ -86,9 +86,8 @@ public class MappingColumnServiceImpl implements MappingColumnService {
 
     @Override
     public List<ColumnTypeDTO> listColumnTypeDTOByTableId(long tableId) {
-        return mappingColumnRepo.findByTableId(tableId)
+        return mappingColumnRepo.listColumnTypeDTOByTableId(tableId)
                 .stream()
-                .map(obj -> mapper.map(obj, ColumnTypeDTO.class))
                 .collect(Collectors.toList());
     }
 
@@ -145,14 +144,14 @@ public class MappingColumnServiceImpl implements MappingColumnService {
     @Override
     public TableFullReadDTO getTableFullReadDTOByTableId(long tableId) {
         List<DictColumn> dictColumns = dictClient.listDictColumnsByTableId(tableId);
-        List<ColumnTypeDTO> columnTypeDTOS = listColumnTypeDTOByTableId(tableId);
+        List<ColumnTypeDTO> columnTypeDTOS = this.listColumnTypeDTOByTableId(tableId);
 
         // 表字段id与表字段名的映射
         Map<Long, String> colIdAndColNameMap = dictColumns
-                .stream().collect(toMap(DictColumn::getId, dictColumn -> dictColumn.getEnColumn()));
+                .stream().collect(toMap(DictColumn::getId, DictColumn::getEnColumn));
         // 表字段id与索引字段名的映射
         Map<Long, String> colIdAndEsColMap = columnTypeDTOS
-                .stream().collect(toMap(ColumnTypeDTO::getColumnId, columnTypeDTO -> columnTypeDTO.getName()));
+                .stream().collect(toMap(ColumnTypeDTO::getColumnId, ColumnTypeDTO::getName));
 
         TableFullReadDTO tableFullReadDTO = new TableFullReadDTO();
 

@@ -172,26 +172,20 @@ public class MappingTableServiceImpl implements MappingTableService {
             boolean isSync = false;
             // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
             if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
-                // 先删除，再增加
-                elasticRestService.deleteDocsByTableId(mtb.getIndexName(), tableId);
-                while (true) {
-                    try {
-                        if (!(elasticRestService.getRecordsByTableIdInIndex(mtb.getIndexName(), tableId) != 0L)) break;
-                        Thread.sleep(20000);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
+//                // 先删除，再增加
+//                elasticRestService.deleteDocsByTableId(mtb.getIndexName(), tableId);
+//                while (true) {
+//                    try {
+//                        if (elasticRestService.getRecordsByTableIdInIndex(mtb.getIndexName(), tableId) == 0L) break;
+//                        Thread.sleep(20000);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }
                 TableSyncMsg msg = mapper.map(mtb, TableSyncMsg.class);
-//                msg.setDatabaseId(mtb.getDatabaseId());
-//                msg.setEnDatabase(mtb.getEnDatabase());
-//                msg.setIndexId(mtb.getIndexId());
-//                msg.setIndexName(mtb.getIndexName());
-//                msg.setTableId(mtb.getTableId());
-//                msg.setEnTable(mtb.getEnTable());
                 kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
                 log.info("the msg have sent to kafka, table is {}.{}", msg.getEnTable(), msg.getEnDatabase());
                 mappingTableRepo.updateUpdateDate(tableId);

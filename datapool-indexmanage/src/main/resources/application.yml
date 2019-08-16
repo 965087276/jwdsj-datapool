@@ -32,7 +32,7 @@ spring:
         enable_lazy_load_no_trans: true
   #Kafka
   kafka:
-    bootstrap-servers: 172.116.8.240:9092
+    bootstrap-servers: 172.16.8.240:9092
     consumer:
       enable-auto-commit: false
       auto-offset-reset: latest
