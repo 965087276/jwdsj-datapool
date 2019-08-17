@@ -6,6 +6,7 @@ import cn.ict.jwdsj.datapool.delete.mapper.primary.StatsMapper;
 import cn.ict.jwdsj.datapool.delete.mapper.secondary.DataPoolMapper;
 import cn.ict.jwdsj.datapool.delete.service.DeleteService;
 import cn.ict.jwdsj.datapool.delete.service.ElasticRestService;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class DeleteServiceImpl implements DeleteService {
 
@@ -40,6 +42,7 @@ public class DeleteServiceImpl implements DeleteService {
         for (String dictDatabase : dictDatabases) {
             // 字典中的某个库在数据池中不存在，则删除所有与该库有关的业务数据
             if (!poolDatabases.contains(Strings.toLowerCase(dictDatabase))) {
+                log.info("删除数据库{}", dictDatabase);
                 long databaseId = dictMapper.findIdByEnDatabase(dictDatabase);
                 this.deleteByDatabaseId(databaseId);
             }
@@ -49,6 +52,7 @@ public class DeleteServiceImpl implements DeleteService {
                 for (String dictTable : dictTables) {
                     // 字典中的某个表在数据池中不存在，则删除所有与该表有关的业务数据
                     if (!poolTables.contains(Strings.toLowerCase(dictTable))) {
+                        log.info("删除数据表{}.{}", dictDatabase, dictTable);
                         long tableId = dictMapper.findIdByEnDatabaseAndEnTable(dictDatabase, dictTable);
                         this.deleteByTableId(tableId);
                     }
