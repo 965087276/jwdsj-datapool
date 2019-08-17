@@ -1,6 +1,6 @@
 package cn.ict.jwdsj.datapool.search.service.impl;
 
-import cn.ict.jwdsj.datapool.api.feign.StatsClient;
+import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.StatsDatabase;
 import cn.ict.jwdsj.datapool.search.service.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,13 @@ import static java.util.stream.Collectors.joining;
 @Service
 public class StatsServiceImpl implements StatsService {
     @Autowired
-    private StatsClient statsClient;
+    private DictClient dictClient;
 
     @Override
     @Async
     public Future<List<StatsDatabase>> listDatabasesByIds(List<Long> ids) {
         String idStr = ids.stream().map(i -> i.toString()).collect(joining(","));
-        List<StatsDatabase> databases = statsClient.listStatsDatabasesByIds(idStr);
+        List<StatsDatabase> databases = dictClient.listStatsDatabasesByIds(idStr);
         return new AsyncResult<>(databases);
     }
 }
