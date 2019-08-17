@@ -42,7 +42,7 @@ public class EsColumnServiceImpl implements EsColumnService {
         // 筛选出该表在mapping_column中但不在es_column中的字段，这些字段需要加入elasticsearch与es_column中
         List<EsColumn> esColumns = mappingColumnRepo.listColumnTypeDTOByTableId(tableId)
                 .stream()
-                .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getName()))) // 这里效率低，需要优化
+                .filter(columnTypeDTO -> !(esColumnsAll.contains(columnTypeDTO.getName())))
                 .map(columnTypeDTO -> BeanUtil.toBean(columnTypeDTO, EsColumn.class))
                 .collect(Collectors.toList());
         esColumns.forEach(esColumn -> esColumn.setEsIndex(esIndex));
