@@ -59,10 +59,16 @@ eureka:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-    username: businessuseratdbpool
-    password: dbpool
-    driver-class-name: com.mysql.jdbc.Driver
+    primary:
+      jdbc-url: jdbc:mysql://10.10.1.122:3306/information_schema?zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: bohuatech_2018
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      url: jdbc:mysql://10.10.169.121:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: false
     properties:
