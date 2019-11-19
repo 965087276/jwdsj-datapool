@@ -143,7 +143,7 @@ public class MappingTableServiceImpl implements MappingTableService {
      * 并将需要更新数据的表发送给datasync模块
      */
     @Override
-//    @Scheduled(initialDelay = 10000, fixedRate = 86400000)
+    @Scheduled(initialDelay = 10000, fixedRate = 86400000)
     public void updateEsData() {
         QMappingTable mappingTable = QMappingTable.mappingTable;
         QStatsTable statsTable = QStatsTable.statsTable;
