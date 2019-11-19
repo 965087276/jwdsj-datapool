@@ -1,0 +1,5 @@
+[localrepo]
+name=Local Repo
+baseurl=http://10.10.169.58/Repo/
+enabled=1
+gpgcheck=0

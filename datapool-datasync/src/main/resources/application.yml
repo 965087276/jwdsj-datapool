@@ -20,7 +20,7 @@ spring:
     url: jdbc:mysql://10.10.1.122:3306/zkbh-test?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
     username: root
     password: bohuatech_2018
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     properties:
@@ -48,10 +48,10 @@ elasticsearch:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://10.10.169.31:4000/information_schema?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=CST&useSSL=false
     username: businessuseratdbpool
     password: dbpool
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: false
     properties:
@@ -59,7 +59,7 @@ spring:
         enable_lazy_load_no_trans: true
   #Kafka
   kafka:
-    bootstrap-servers: 10.10.169.141:9092
+    bootstrap-servers: 192.168.0.13:9092
     consumer:
       #      max-poll-records: 1000
       enable-auto-commit: true
@@ -72,36 +72,4 @@ eureka:
     service-url:
       defaultZone: http://192.168.0.32:1025/eureka/
 elasticsearch:
-  hosts: 10.10.169.142:9200,10.10.169.147:9200,10.10.169.164:9200,10.10.169.158:9200
-
----
-spring:
-  profiles: yk
-  datasource:
-    url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-    username: root
-    password:
-    driver-class-name: com.mysql.jdbc.Driver
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        enable_lazy_load_no_trans: true
-  #Kafka
-  kafka:
-    bootstrap-servers: 192.168.110.128:9092
-    consumer:
-      #      max-poll-records: 1000
-      enable-auto-commit: true
-      auto-offset-reset: latest
-#    listener:
-#      concurrency: 4
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:1025/eureka/
-
-elasticsearch:
-  hosts: 192.168.110.128:9200
-
+  hosts: 192.168.0.8:9200,192.168.0.12:9200,192.168.0.5:9200,192.168.0.15:9200

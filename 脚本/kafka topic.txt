@@ -1,0 +1,5 @@
+bin/kafka-topics.sh --create --topic dict-update --replication-factor 1 --partitions 1 --zookeeper localhost:2181
+bin/kafka-topics.sh --create --topic sync-table-task --replication-factor 1 --partitions 1 --zookeeper localhost:2181
+bin/kafka-topics.sh --create --topic table-full-read --replication-factor 1 --partitions 4 --zookeeper localhost:2181
+
+bin/kafka-server-start.sh -daemon config/server.properties &
