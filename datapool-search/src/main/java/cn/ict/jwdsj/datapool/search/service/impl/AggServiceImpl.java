@@ -54,7 +54,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
      * @return
      */
     @Override
-    @Cacheable(value = "库下表聚合", key = "'databaseId: ' + #databaseId + ', searchWord: ' + #searchWord")
+//    @Cacheable(value = "库下表聚合", key = "'databaseId: ' + #databaseId + ', searchWord: ' + #searchWord")
     public List<AggTableVO> aggByTable(long databaseId, String searchWord) throws IOException {
         SearchRequest request = new SearchRequest(indexPrefix + "*");
         searchWord = wordRegular(searchWord);
@@ -133,7 +133,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
      * @return
      */
     @Override
-    @Cacheable(value = "库聚合", key = "'curPage: ' + #curPage + 'pageSize: ' + #pageSize + ', searchWord: ' + #searchWord")
+//    @Cacheable(value = "库聚合", key = "'curPage: ' + #curPage + 'pageSize: ' + #pageSize + ', searchWord: ' + #searchWord")
     public AggDatabasePageVO aggByDatabase(String searchWord, int curPage, int pageSize) throws IOException, InterruptedException, ExecutionException, TimeoutException {
         long startTime = System.currentTimeMillis();
         searchWord = wordRegular(searchWord);

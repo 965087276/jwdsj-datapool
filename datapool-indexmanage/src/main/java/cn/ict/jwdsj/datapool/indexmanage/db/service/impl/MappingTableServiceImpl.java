@@ -242,6 +242,4 @@ public class MappingTableServiceImpl implements MappingTableService {
     public void syncData() {
         this.updateEsData();
     }
-
-
 }

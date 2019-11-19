@@ -20,10 +20,10 @@ spring:
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
-  redis:
-    host: 172.16.8.240
-    port: 6379
-    database: 1
+#  redis:
+#    host: 172.16.8.240
+#    port: 6379
+#    database: 1
 eureka:
   client:
     service-url:
