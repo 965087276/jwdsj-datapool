@@ -1,6 +1,7 @@
 package cn.ict.jwdsj.datapool.indexmanage.db.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
@@ -91,7 +92,7 @@ public class MappingTableServiceImpl implements MappingTableService {
         DictDatabase dictDatabase = dictClient.findDictDatabaseById(databaseId);
 
         MappingTable mappingTable = new MappingTable();
-        mappingTable.setUpdatePeriod(mappingTableAddDTO.getUpdatePeriod());
+        mappingTable.setUpdatePeriod(RandomUtil.randomInt(20, 60));
         mappingTable.setEsIndex(esIndex);
         mappingTable.setDictTable(dictTable);
         mappingTable.setDictDatabase(dictDatabase);
@@ -143,9 +144,8 @@ public class MappingTableServiceImpl implements MappingTableService {
      * 并将需要更新数据的表发送给datasync模块
      */
     @Override
-//    @Scheduled(initialDelay = 10000, fixedRate = 86400000)
+    @Scheduled(cron = "0 0 1 * * ?")
     public void updateEsData() {
-        QMappingTable mappingTable = QMappingTable.mappingTable;
         QStatsTable statsTable = QStatsTable.statsTable;
 
         List<Long> tableIds = mappingTableRepo.listTableId();
@@ -172,19 +172,16 @@ public class MappingTableServiceImpl implements MappingTableService {
             boolean isSync = false;
             // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
             if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
-//                // 先删除，再增加
-//                elasticRestService.deleteDocsByTableId(mtb.getIndexName(), tableId);
-//                while (true) {
-//                    try {
-//                        if (elasticRestService.getRecordsByTableIdInIndex(mtb.getIndexName(), tableId) == 0L) break;
-//                        Thread.sleep(20000);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
+                // 先删除，再增加
+                elasticRestService.deleteDocsByTableId(mtb.getIndexName(), tableId);
+                while (true) {
+                    try {
+                        if (elasticRestService.getRecordsByTableIdInIndex(mtb.getIndexName(), tableId) == 0L) break;
+                        Thread.sleep(20000);
+                    } catch (Exception e) {
+                        break;
+                    }
+                }
                 TableSyncMsg msg = mapper.map(mtb, TableSyncMsg.class);
                 kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
                 log.info("the msg have sent to kafka, table is {}.{}", msg.getEnTable(), msg.getEnDatabase());
