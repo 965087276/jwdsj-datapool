@@ -10,21 +10,23 @@ spring:
 #定义kafka的一些主题
 kafka:
   topic-name:
-    #    dict-column-update: dict-column-update
-    #    dict-database-update: dict-database-update
-    #    dict-table-update: dict-table-update
-    dict-update: dict-update
-    table-sync-task: sync-table-task
+    table-full-read: table-full-read
 
 
 ---
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://10.10.1.122:3306/zkbh-test?characterEncoding=UTF-8
-    username: root
-    password: bohuatech_2018
-    driver-class-name: com.mysql.jdbc.Driver
+    primary:
+      jdbc-url: jdbc:mysql://10.10.1.122:3306/zkbh-test?zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: bohuatech_2018
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      jdbc-url: jdbc:mysql://10.10.1.122:3306/information_schema?zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: bohuatech_2018
+      driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
     properties:
@@ -34,10 +36,9 @@ spring:
   kafka:
     bootstrap-servers: 172.16.8.240:9092
     consumer:
-      enable-auto-commit: false
+      #      max-poll-records: 1000
+      enable-auto-commit: true
       auto-offset-reset: latest
-    listener:
-      ack-mode: manual
 eureka:
   client:
     service-url:
@@ -51,10 +52,16 @@ elasticsearch:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-    username: businessuseratdbpool
-    password: dbpool
-    driver-class-name: com.mysql.jdbc.Driver
+    primary:
+      jdbc-url: jdbc:mysql://10.10.1.122:3306/zkbh-test?zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: bohuatech_2018
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      jdbc-url: jdbc:mysql://10.10.1.122:3306/information_schema?zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: bohuatech_2018
+      driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: false
     properties:

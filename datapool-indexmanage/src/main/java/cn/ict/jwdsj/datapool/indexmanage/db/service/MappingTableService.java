@@ -25,13 +25,6 @@ public interface MappingTableService {
     Page<MappingTableVO> listMappingTableVO(int curPage, int pageSize, long databaseId, String nameLike);
 
     /**
-     * 定时任务
-     * 更新表记录数和索引记录数
-     * 并将需要更新数据的表发送给datasync模块
-     */
-    void updateEsData();
-
-    /**
      * 取消数据同步
      * @param tableId 被取消数据同步的表的tableId
      * @throws IOException
@@ -44,9 +37,4 @@ public interface MappingTableService {
      */
     void update(MappingTableUpdateDTO mappingTableUpdateDTO);
 
-
-    /**
-     * 手动数据同步
-     */
-    void syncData();
 }

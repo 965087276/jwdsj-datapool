@@ -6,6 +6,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableAddDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableUpdateDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
+import cn.ict.jwdsj.datapool.datasync.fullread.task.EsDataSyncTask;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -23,6 +24,8 @@ public class MappingTableController {
 
     @Autowired
     private MappingTableService mappingTableService;
+    @Autowired
+    private EsDataSyncTask esDataSyncTask;
 
     @ApiOperation(value = "数据同步管理--添加新表")
     @ApiImplicitParam(name = "mappingTableAddDTO", value = "表对象，包括库id、表id、索引id、更新周期", required = true, dataType = "MappingTableAddDTO")
@@ -69,7 +72,7 @@ public class MappingTableController {
     @ApiOperation(value = "数据同步管理--手动数据同步")
     @GetMapping("index_manage/manual_sync")
     public ResponseEntity dataSync() throws IOException {
-        mappingTableService.syncData();
+        esDataSyncTask.updateEsData();
         return ResponseEntity.ok();
     }
 

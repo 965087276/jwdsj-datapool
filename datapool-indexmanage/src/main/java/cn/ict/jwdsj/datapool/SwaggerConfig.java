@@ -1,4 +1,4 @@
-package cn.ict.jwdsj.datapool.indexmanage;
+package cn.ict.jwdsj.datapool;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

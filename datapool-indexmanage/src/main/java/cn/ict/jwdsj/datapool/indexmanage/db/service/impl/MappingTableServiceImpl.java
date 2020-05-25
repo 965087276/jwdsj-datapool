@@ -33,6 +33,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,12 +65,6 @@ public class MappingTableServiceImpl implements MappingTableService {
     private EsIndexRepo esIndexRepo;
     @Autowired
     private DictClient dictClient;
-    @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-    @Autowired
-    private Mapper mapper;
-    @Value("${kafka.topic-name.table-sync-task}")
-    private String syncTableTaskTopic;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -138,63 +133,6 @@ public class MappingTableServiceImpl implements MappingTableService {
         return mappingTableRepo.findAll(predicate, pageable).map(tb -> BeanUtil.toBean(tb, MappingTableVO.class));
     }
 
-    /**
-     * 定时任务
-     * 更新表记录数和索引记录数
-     * 并将需要更新数据的表发送给datasync模块
-     */
-    @Override
-    @Scheduled(cron = "0 0 1 * * ?")
-    public void updateEsData() {
-        QStatsTable statsTable = QStatsTable.statsTable;
-
-        List<Long> tableIds = mappingTableRepo.listTableId();
-        // 当前日期
-        LocalDate currentDate = mappingTableRepo.getLocalDate();
-        tableIds.stream().forEach(tableId -> {
-
-            MappingTable mtb = mappingTableRepo.findByTableId(tableId);
-            long oldTableRecords = mtb.getTableRecords();
-            long newTableRecords = jpaQueryFactory.select(statsTable.totalRecords).from(statsTable).where(statsTable.tableId.eq(tableId)).fetchOne();
-            long oldIndexRecords = mtb.getIndexRecords();
-            long newIndexRecords = 0;
-
-            // 该表的最后更新日期
-            LocalDate updateDate = mtb.getUpdateDate();
-            // 上面两个日期的日期差
-            int daysDiff = (int) ChronoUnit.DAYS.between(updateDate, currentDate);
-            try {
-                newIndexRecords = elasticRestService.getRecordsByTableIdInAlias(tableId);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            boolean isSync = false;
-            // 如果表的记录数发生了变化并且更新周期已经到了，则对该表进行数据全量更新
-            if (oldTableRecords != newTableRecords && daysDiff >= mtb.getUpdatePeriod()) {
-                // 先删除，再增加
-                elasticRestService.deleteDocsByTableId(mtb.getIndexName(), tableId);
-                while (true) {
-                    try {
-                        if (elasticRestService.getRecordsByTableIdInIndex(mtb.getIndexName(), tableId) == 0L) break;
-                        Thread.sleep(20000);
-                    } catch (Exception e) {
-                        break;
-                    }
-                }
-                TableSyncMsg msg = mapper.map(mtb, TableSyncMsg.class);
-                kafkaTemplate.send(syncTableTaskTopic, JSON.toJSONString(msg));
-                log.info("the msg have sent to kafka, table is {}.{}", msg.getEnTable(), msg.getEnDatabase());
-                mappingTableRepo.updateUpdateDate(tableId);
-                isSync = true;
-            }
-
-            // 更新 索引记录数 表记录数
-            if (newIndexRecords != oldIndexRecords || newTableRecords != oldTableRecords)
-                mappingTableRepo.updateRecords(tableId, newIndexRecords, isSync ? newTableRecords : oldTableRecords);
-
-        });
-    }
 
     /**
      * 取消数据同步
@@ -230,15 +168,5 @@ public class MappingTableServiceImpl implements MappingTableService {
             mappingTableRepo.save(mappingTable);
         }
     }
-
-    /**
-     * 手动数据同步
-     */
-    @Override
-    @Async
-    public void syncData() {
-        this.updateEsData();
-    }
-
 
 }

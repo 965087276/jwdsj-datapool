@@ -7,6 +7,9 @@ import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import cn.ict.jwdsj.datapool.datasync.fullread.kafka.KafkaTableFullReadProducer;
 import cn.ict.jwdsj.datapool.datasync.fullread.service.TableFullReadService;
+import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
+import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingColumnService;
+import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +19,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,22 +31,24 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TableFullReadServiceImpl implements TableFullReadService {
 
-    @Value("${spring.datasource.driver-class-name}")
+    @Value("${spring.datasource.secondary.driver-class-name}")
     private String driver;
-    @Value("${spring.datasource.url}")
+    @Value("${spring.datasource.secondary.url}")
     private String url;
-    @Value("${spring.datasource.username}")
+    @Value("${spring.datasource.secondary.username}")
     private String username;
-    @Value("${spring.datasource.password}")
+    @Value("${spring.datasource.secondary.password}")
     private String password;
-
-    @Autowired
-    private IndexManageClient indexManageClient;
 
     @Autowired
     private KafkaTableFullReadProducer kafkaTableFullReadProducer;
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private MappingColumnService mappingColumnService;
+    @Autowired
+    private MappingTableRepo mappingTableRepo;
+
 
     @Override
     @Async
@@ -52,7 +60,7 @@ public class TableFullReadServiceImpl implements TableFullReadService {
         }
 
 //        @Cleanup Connection con = DriverManager.getConnection(url, username, password);
-        TableFullReadDTO tableFullReadDTO = indexManageClient.getTableFullReadDTOByTableId(msg.getTableId());
+        TableFullReadDTO tableFullReadDTO = mappingColumnService.getTableFullReadDTOByTableId(msg.getTableId());
         // 需要入搜索引擎的字段
         List<String> columns = tableFullReadDTO.getColumns();
         // 表字段到索引字段的映射
@@ -65,7 +73,6 @@ public class TableFullReadServiceImpl implements TableFullReadService {
         ps.setFetchDirection(ResultSet.FETCH_REVERSE);
 
         @Cleanup ResultSet rs = ps.executeQuery();
-
         while (rs.next()) {
             JSONObject record = new JSONObject();
             for (String column : columns) {
@@ -82,7 +89,8 @@ public class TableFullReadServiceImpl implements TableFullReadService {
             record.put("md5_id", getMD5(record));
             kafkaTableFullReadProducer.send(record.toJSONString());
         }
-
+        // 数据更新完成后，将mapping_table表的updateDate字段更新
+        mappingTableRepo.updateUpdateDate(msg.getTableId());
     }
 
     /**
