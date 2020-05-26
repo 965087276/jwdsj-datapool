@@ -6,6 +6,8 @@ spring:
     name: datapool-indexmanage
   profiles:
     active: dev
+  main:
+    allow-bean-definition-overriding: true
 
 #定义kafka的一些主题
 kafka:

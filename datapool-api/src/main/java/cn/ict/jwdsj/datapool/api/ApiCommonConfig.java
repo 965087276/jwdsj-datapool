@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableAutoConfiguration
 @Configuration
+@EnableFeignClients
 @ComponentScan(basePackageClasses = ApiCommonConfig.class)
 public class ApiCommonConfig {
 }
