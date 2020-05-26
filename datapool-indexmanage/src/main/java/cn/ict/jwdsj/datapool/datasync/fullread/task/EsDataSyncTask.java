@@ -38,11 +38,7 @@ public class EsDataSyncTask {
     @Autowired
     private ElasticRestService elasticRestService;
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-    @Autowired
     private Mapper mapper;
-    @Value("${kafka.topic-name.table-sync-task}")
-    private String syncTableTaskTopic;
     @Autowired
     private ApplicationContext publisher;
 
