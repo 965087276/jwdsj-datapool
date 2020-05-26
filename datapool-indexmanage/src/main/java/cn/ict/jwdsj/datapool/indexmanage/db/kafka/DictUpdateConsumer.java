@@ -28,7 +28,7 @@ public class DictUpdateConsumer {
 
     @KafkaListener(topics = "#{'${kafka.topic-name.dict-update}'}", groupId = "dict-update-indexmanage")
     @Transactional
-    public void update(ConsumerRecord<String, String> record, Acknowledgment ack) {
+    public void update(ConsumerRecord<String, String> record) {
         Optional.ofNullable(record.value()).ifPresent(v -> {
 
             DictUpdateMsg msg = JSONObject.parseObject(v, DictUpdateMsg.class);
@@ -65,7 +65,6 @@ public class DictUpdateConsumer {
                     break;
             }
 
-            ack.acknowledge();
         });
 
     }
