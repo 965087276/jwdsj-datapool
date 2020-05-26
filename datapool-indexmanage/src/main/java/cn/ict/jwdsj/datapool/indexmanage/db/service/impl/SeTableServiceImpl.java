@@ -52,8 +52,7 @@ public class SeTableServiceImpl implements SeTableService {
         seTableRepo.save(seTable);
         mappingColumnService.saveAll(seTableAddDTO);
         // 更新dict_table表is_add_to_se字段为true（已加入搜索引擎模块）
-        QDictTable dictTable = QDictTable.dictTable;
-        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, true).where(dictTable.id.eq(seTableAddDTO.getTableId())).execute();
+        this.updateAddToSe(table.getId(), true);
     }
 
     @Override
@@ -93,8 +92,7 @@ public class SeTableServiceImpl implements SeTableService {
         seTableRepo.deleteByTableId(tableId);
 
         // 将dictTable表中的addToSe字段设为false
-        QDictTable dictTable = QDictTable.dictTable;
-        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, false).where(dictTable.id.eq(tableId)).execute();
+        this.updateAddToSe(tableId, false);
     }
 
     @Override
@@ -107,5 +105,11 @@ public class SeTableServiceImpl implements SeTableService {
         seTableVO.setEnDatabase(dictDatabase.getEnDatabase());
         seTableVO.setChDatabase(dictDatabase.getChDatabase());
         return seTableVO;
+    }
+
+    @Transactional
+    public void updateAddToSe(long tableId, boolean addToSe) {
+        QDictTable dictTable = QDictTable.dictTable;
+        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, false).where(dictTable.id.eq(tableId)).execute();
     }
 }

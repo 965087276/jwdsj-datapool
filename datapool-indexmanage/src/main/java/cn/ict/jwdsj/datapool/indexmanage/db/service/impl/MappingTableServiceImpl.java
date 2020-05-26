@@ -16,6 +16,7 @@ import cn.ict.jwdsj.datapool.indexmanage.db.entity.dto.MappingTableUpdateDTO;
 import cn.ict.jwdsj.datapool.indexmanage.db.entity.vo.MappingTableVO;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.EsIndexRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.repo.MappingTableRepo;
+import cn.ict.jwdsj.datapool.indexmanage.db.repo.SeTableRepo;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.EsColumnService;
 import cn.ict.jwdsj.datapool.indexmanage.db.service.MappingTableService;
 import cn.ict.jwdsj.datapool.indexmanage.elastic.service.ElasticRestService;
@@ -50,6 +51,8 @@ public class MappingTableServiceImpl implements MappingTableService {
     private ElasticRestService elasticRestService;
     @Autowired
     private EsIndexRepo esIndexRepo;
+    @Autowired
+    private SeTableRepo seTableRepo;
     @Autowired
     private DictClient dictClient;
 
@@ -87,9 +90,7 @@ public class MappingTableServiceImpl implements MappingTableService {
         esColumnService.add(mappingTableAddDTO);
 
         // 更新se_table表的is_sync字段为true
-        QSeTable seTable = QSeTable.seTable;
-        jpaQueryFactory.update(seTable).set(seTable.sync, true).where(seTable.tableId.eq(tableId)).execute();
-
+        seTableRepo.updateSync(tableId, true);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class MappingTableServiceImpl implements MappingTableService {
 
         QSeTable seTable = QSeTable.seTable;
         // 更新seTable表的sync字段为false
-        jpaQueryFactory.update(seTable).set(seTable.sync, false).where(seTable.tableId.eq(tableId)).execute();
+        seTableRepo.updateSync(tableId, false);
         // 在elasticsearch删除该表的索引别名
         elasticRestService.deleteAliasByIndexNameAndTableId(indexName, tableId);
         // 在elasticsearch删除该表的数据

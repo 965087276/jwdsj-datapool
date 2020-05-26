@@ -46,7 +46,7 @@ public class JpaPrimaryConfig {
         return builder
                 .dataSource(primaryDataSource)
                 .properties(jpaProperties.getProperties())
-                .packages("cn.ict.jwdsj.datapool.common.entity.indexmanage")
+                .packages("cn.ict.jwdsj.datapool.common.entity.indexmanage", "cn.ict.jwdsj.datapool.common.entity.dictionary")
                 .persistenceUnit("primaryPersistenceUnit")
                 .build();
     }

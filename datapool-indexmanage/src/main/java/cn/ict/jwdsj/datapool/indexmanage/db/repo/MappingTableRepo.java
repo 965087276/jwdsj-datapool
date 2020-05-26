@@ -42,6 +42,7 @@ public interface MappingTableRepo extends JpaRepository<MappingTable, Long>, Que
      */
     boolean existsByIndexId(long indexId);
 
+    @Transactional
     void deleteByTableId(long tableId);
 
     MappingTable findByTableId(long tableId);
