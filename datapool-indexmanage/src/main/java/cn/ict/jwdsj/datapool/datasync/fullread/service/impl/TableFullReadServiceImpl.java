@@ -30,13 +30,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class TableFullReadServiceImpl implements TableFullReadService {
 
-    @Value("${spring.datasource.secondary.driver-class-name}")
+    @Value("${jwdb.driver-class-name}")
     private String driver;
-    @Value("${spring.datasource.secondary.jdbc-url}")
+    @Value("${jwdb.jdbc-url}")
     private String url;
-    @Value("${spring.datasource.secondary.username}")
+    @Value("${jwdb.username}")
     private String username;
-    @Value("${spring.datasource.secondary.password}")
+    @Value("${jwdb.password}")
     private String password;
 
     @Autowired

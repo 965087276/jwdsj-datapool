@@ -1,6 +1,7 @@
 server:
   port: 8082
 
+
 spring:
   application:
     name: datapool-indexmanage
@@ -8,6 +9,7 @@ spring:
     active: dev
   main:
     allow-bean-definition-overriding: true
+
 
 #定义kafka的一些主题
 kafka:
@@ -20,16 +22,10 @@ kafka:
 spring:
   profiles: dev
   datasource:
-    primary:
-      jdbc-url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
-      username: root
-      password: 88888888
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    secondary:
-      jdbc-url: jdbc:mysql://localhost:3306/information_schema?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=CST&useSSL=false&useLegacyDatetimeCode=false
-      username: root
-      password: 88888888
-      driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 88888888
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: true
     properties:
@@ -42,6 +38,12 @@ spring:
       #      max-poll-records: 1000
       enable-auto-commit: true
       auto-offset-reset: latest
+
+jwdb:
+  jdbc-url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
+  username: root
+  password: 88888888
+  driver-class-name: com.mysql.cj.jdbc.Driver
 
 eureka:
   client:
@@ -56,16 +58,10 @@ elasticsearch:
 spring:
   profiles: prd
   datasource:
-    primary:
-      jdbc-url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
-      username: root
-      password: 88888888
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    secondary:
-      jdbc-url: jdbc:mysql://192.168.2.8:3306/information_schema?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=CST&useSSL=false&useLegacyDatetimeCode=false
-      username: root
-      password: 88888888
-      driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 88888888
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: false
     properties:
@@ -78,6 +74,12 @@ spring:
       #      max-poll-records: 1000
       enable-auto-commit: true
       auto-offset-reset: latest
+jwdb:
+  jdbc-url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
+  username: root
+  password: 88888888
+  driver-class-name: com.mysql.cj.jdbc.Driver
+
 eureka:
   client:
     service-url:
