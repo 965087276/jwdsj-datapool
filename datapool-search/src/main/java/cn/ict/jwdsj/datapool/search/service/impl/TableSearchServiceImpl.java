@@ -44,7 +44,7 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
      * @return
      */
     @Override
-    @Cacheable(value = "单表搜索", key = "'curPage: ' + #curPage + 'pageSize: ' + #pageSize + ', searchWord: ' + #searchWord + ', tableId: ' + #tableId")
+//    @Cacheable(value = "单表搜索", key = "'curPage: ' + #curPage + 'pageSize: ' + #pageSize + ', searchWord: ' + #searchWord + ', tableId: ' + #tableId")
     public SearchTableVO searchByTableId(long tableId, String searchWord, int curPage, int pageSize) throws IOException {
 
         searchWord = wordRegular(searchWord);
