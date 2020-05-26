@@ -22,7 +22,6 @@ public class KafkaTableSyncTaskListener {
 
     @EventListener
     public void sendSyncMsg(TableSyncMsg msg)  {
-        log.info("the msg have sent to kafka, table is {}.{}", msg.getEnTable(), msg.getEnDatabase());
         try {
             fullReadService.fullRead(msg);
         } catch (InterruptedException e) {

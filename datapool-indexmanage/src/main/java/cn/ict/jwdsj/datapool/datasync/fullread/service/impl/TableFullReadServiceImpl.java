@@ -70,7 +70,7 @@ public class TableFullReadServiceImpl implements TableFullReadService {
         @Cleanup PreparedStatement ps = con.prepareStatement(sql,ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
         ps.setFetchSize(Integer.MIN_VALUE);
         ps.setFetchDirection(ResultSet.FETCH_REVERSE);
-
+        log.info("Start to sync data; The database is {}, the table is {}", msg.getEnDatabase(), msg.getEnTable());
         @Cleanup ResultSet rs = ps.executeQuery();
         while (rs.next()) {
             JSONObject record = new JSONObject();
@@ -90,6 +90,7 @@ public class TableFullReadServiceImpl implements TableFullReadService {
         }
         // 数据更新完成后，将mapping_table表的updateDate字段更新
         mappingTableRepo.updateUpdateDate(msg.getTableId());
+        log.info("Finishing sync data; The database is {}, the table is {}", msg.getEnDatabase(), msg.getEnTable());
     }
 
     /**
