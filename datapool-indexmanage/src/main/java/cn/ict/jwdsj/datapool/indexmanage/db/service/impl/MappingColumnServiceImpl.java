@@ -36,7 +36,6 @@ import static java.util.stream.Collectors.toMap;
 public class MappingColumnServiceImpl implements MappingColumnService {
     @Autowired private MappingColumnRepo mappingColumnRepo;
     @Autowired private DictClient dictClient;
-//    @Autowired private StatsClient statsClient;
     @Autowired private SeTableRepo seTableRepo;
     @Autowired private Mapper mapper;
 

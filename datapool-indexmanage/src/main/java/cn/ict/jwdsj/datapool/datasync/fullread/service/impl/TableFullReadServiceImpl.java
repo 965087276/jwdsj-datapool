@@ -2,7 +2,6 @@ package cn.ict.jwdsj.datapool.datasync.fullread.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
-import cn.ict.jwdsj.datapool.api.feign.IndexManageClient;
 import cn.ict.jwdsj.datapool.common.dto.indexmanage.TableFullReadDTO;
 import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import cn.ict.jwdsj.datapool.datasync.fullread.kafka.KafkaTableFullReadProducer;
@@ -33,7 +32,7 @@ public class TableFullReadServiceImpl implements TableFullReadService {
 
     @Value("${spring.datasource.secondary.driver-class-name}")
     private String driver;
-    @Value("${spring.datasource.secondary.url}")
+    @Value("${spring.datasource.secondary.jdbc-url}")
     private String url;
     @Value("${spring.datasource.secondary.username}")
     private String username;

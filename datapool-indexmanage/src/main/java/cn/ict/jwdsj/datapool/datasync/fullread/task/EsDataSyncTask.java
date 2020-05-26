@@ -1,6 +1,5 @@
 package cn.ict.jwdsj.datapool.datasync.fullread.task;
 
-import cn.ict.jwdsj.datapool.api.feign.DictClient;
 import cn.ict.jwdsj.datapool.common.entity.datastats.QStatsTable;
 import cn.ict.jwdsj.datapool.common.entity.datasync.TableSyncMsg;
 import cn.ict.jwdsj.datapool.common.entity.indexmanage.MappingTable;
