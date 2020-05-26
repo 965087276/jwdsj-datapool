@@ -16,7 +16,7 @@ spring:
   profiles: dev
   servlet:
     multipart:
-      location: C:\\Users\\wangjinhao\\AppData\\Local\\datapool
+      location: /home/centos/data/temp/datapool
 eureka:
   client:
     service-url:
@@ -24,11 +24,11 @@ eureka:
 
 ---
 spring:
-  profiles: test
+  profiles: prd
   servlet:
     multipart:
       location: /home/centos/data/temp/datapool
 eureka:
   client:
     service-url:
-      defaultZone: http://192.168.0.32:1025/eureka/
+      defaultZone: http://localhost:1025/eureka/

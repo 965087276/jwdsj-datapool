@@ -12,6 +12,8 @@ spring:
 eureka:
   instance:
     hostname: localhost
+  server:
+    enable-self-preservation: false
   client:
     #表示是否将自己注册到Eureka Server，默认为true。
     register-with-eureka: false
@@ -23,7 +25,7 @@ eureka:
 
 ---
 spring:
-  profiles: test
+  profiles: prd
 eureka:
   instance:
     hostname: localhost

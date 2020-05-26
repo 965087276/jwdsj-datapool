@@ -11,9 +11,9 @@ spring:
 #定义kafka的一些主题
 kafka:
   topic-name:
-#    dict-column-update: dict-column-update
-#    dict-database-update: dict-database-update
-#    dict-table-update: dict-table-update
+    #    dict-column-update: dict-column-update
+    #    dict-database-update: dict-database-update
+    #    dict-table-update: dict-table-update
     dict-update: dict-update
 
 mybatis:
@@ -23,51 +23,14 @@ spring:
   profiles: dev
   datasource:
     primary:
-      jdbc-url: jdbc:mysql://10.10.1.122:3306/zkbh-test?zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      jdbc-url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
       username: root
-      password: bohuatech_2018
+      password: 88888888
       driver-class-name: com.mysql.cj.jdbc.Driver
     secondary:
-      jdbc-url: jdbc:mysql://10.10.1.122:3306/information_schema?zeroDateTimeBehavior=convertToNull&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
+      jdbc-url: jdbc:mysql://localhost:3306/information_schema?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=CST&useSSL=false&useLegacyDatetimeCode=false
       username: root
-      password: bohuatech_2018
-      driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        enable_lazy_load_no_trans: true
-  servlet:
-    multipart:
-      location: C:\\Users\\wangjinhao\\AppData\\Local\\datapool
-  #Kafka
-  kafka:
-    bootstrap-servers: 172.16.8.240:9092
-    consumer:
-      enable-auto-commit: false
-      auto-offset-reset: latest
-    listener:
-      ack-mode: manual
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:1025/eureka/
-
-
----
-spring:
-  profiles: test
-  datasource:
-    primary:
-      jdbc-url: jdbc:mysql://10.10.169.121:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
-      username: root
-      password: 123456
-      driver-class-name: com.mysql.cj.jdbc.Driver
-    secondary:
-      jdbc-url: jdbc:mysql://10.10.169.31:4000/information_schema?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=CST&useSSL=false&useLegacyDatetimeCode=false
-      username: businessuseratdbpool
-      password: dbpool
+      password: 88888888
       driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: false
@@ -79,14 +42,49 @@ spring:
       location: /home/centos/data/temp/datapool
   #Kafka
   kafka:
-    bootstrap-servers: 192.168.0.13:9092
+    bootstrap-servers: localhost:9092
     consumer:
       enable-auto-commit: false
       auto-offset-reset: latest
       listener:
         ack-mode: manual
-
 eureka:
   client:
     service-url:
-      defaultZone: http://192.168.0.32:1025/eureka/
+      defaultZone: http://localhost:1025/eureka/
+
+
+---
+spring:
+  profiles: prd
+  datasource:
+    primary:
+      jdbc-url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false
+      username: root
+      password: 88888888
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      jdbc-url: jdbc:mysql://192.168.2.8:3306/information_schema?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=CST&useSSL=false&useLegacyDatetimeCode=false
+      username: root
+      password: 88888888
+      driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+  servlet:
+    multipart:
+      location: /home/centos/data/temp/datapool
+  #Kafka
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: latest
+      listener:
+        ack-mode: manual
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:1025/eureka/

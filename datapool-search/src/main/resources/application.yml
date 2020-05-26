@@ -11,25 +11,21 @@ spring:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://10.10.1.122:3306/zkbh-test?characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
     username: root
-    password: bohuatech_2018
+    password: 88888888
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
-  redis:
-    host: 172.16.8.240
-    port: 6379
-    database: 1
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:1025/eureka/
 elasticsearch:
-  hosts: 172.16.8.240:9200
+  hosts: localhost:9200
   # 表聚合的最大数目
   max-table-agg: 30
   index-prefix: jwdsj-datapool-index-
@@ -37,28 +33,23 @@ elasticsearch:
 
 ---
 spring:
-  profiles: test
+  profiles: prd
   datasource:
-    url: jdbc:mysql://10.10.169.31:4000/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-    username: businessuseratdbpool
-    password: dbpool
+    url: jdbc:mysql://localhost:3306/dbpool?characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: 88888888
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: false
     properties:
       hibernate:
         enable_lazy_load_no_trans: true
-  redis:
-    host: 10.10.169.79
-    port: 6379
-    password: ict@123
-    database: 3
 eureka:
   client:
     service-url:
-      defaultZone: http://192.168.0.32:1025/eureka/
+      defaultZone: http://localhost:1025/eureka/
 elasticsearch:
-  hosts: 10.10.169.142:9200,10.10.169.147:9200,10.10.169.164:9200,10.10.169.158:9200
+  hosts: localhost:9200
   # 表聚合的最大数目
   max-table-agg: 30
   index-prefix: jwdsj-datapool-index-
