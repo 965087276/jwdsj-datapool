@@ -10,6 +10,7 @@ spring:
 #定义kafka的一些主题
 kafka:
   topic-name:
+    dict-update: dict-update
     table-full-read: table-full-read
 
 
@@ -39,6 +40,8 @@ spring:
       #      max-poll-records: 1000
       enable-auto-commit: true
       auto-offset-reset: latest
+    listener:
+      ack-mode: manual
 eureka:
   client:
     service-url:
