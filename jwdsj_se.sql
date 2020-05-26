@@ -32,7 +32,7 @@ CREATE TABLE `dict_column` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `table_id` (`table_id`,`en_column`) USING BTREE,
   UNIQUE KEY `en_database_2` (`en_database`,`en_table`,`en_column`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=480326 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='字段中英对照信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='字段中英对照信息表';
 
 -- ----------------------------
 -- Table structure for dict_database
@@ -47,7 +47,7 @@ CREATE TABLE `dict_database` (
   `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `en_database` (`en_database`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=270002 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据库中英对照信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据库中英对照信息表';
 
 -- ----------------------------
 -- Table structure for dict_table
@@ -65,7 +65,7 @@ CREATE TABLE `dict_table` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `database_id` (`database_id`,`en_table`) USING BTREE,
   KEY `en_database` (`en_database`,`en_table`)
-) ENGINE=InnoDB AUTO_INCREMENT=510019 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据表中英对照信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据表中英对照信息表';
 
 -- ----------------------------
 -- Table structure for es_column
@@ -81,7 +81,7 @@ CREATE TABLE `es_column` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `index_id_2` (`index_id`,`name`),
   KEY `index_id` (`index_id`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=150036 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='索引字段信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='索引字段信息表';
 
 -- ----------------------------
 -- Table structure for es_index
@@ -95,7 +95,7 @@ CREATE TABLE `es_index` (
   `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `index_name` (`index_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=30002 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='索引信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='索引信息表';
 
 -- ----------------------------
 -- Table structure for mapping_column
@@ -120,7 +120,7 @@ CREATE TABLE `mapping_column` (
   UNIQUE KEY `table_id_2` (`table_id`,`es_column`) USING BTREE,
   UNIQUE KEY `table_id_3` (`table_id`,`en_column`),
   KEY `table_id` (`table_id`,`type`)
-) ENGINE=InnoDB AUTO_INCREMENT=420144 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='表字段与索引字段对照信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='表字段与索引字段对照信息表';
 
 -- ----------------------------
 -- Table structure for mapping_table
@@ -143,7 +143,7 @@ CREATE TABLE `mapping_table` (
   `gmt_modified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `table_id` (`table_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=420006 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='表名与索引名对照信息表 同步信息表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='表名与索引名对照信息表 同步信息表';
 
 -- ----------------------------
 -- Table structure for se_table
@@ -161,7 +161,7 @@ CREATE TABLE `se_table` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `table_id` (`table_id`) USING BTREE,
   UNIQUE KEY `database_id_2` (`database_id`,`en_table`)
-) ENGINE=InnoDB AUTO_INCREMENT=390006 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='搜索引擎的表的集合。包括了已加入到同步队列中的表和未加入到同步队列中的表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='搜索引擎的表的集合。包括了已加入到同步队列中的表和未加入到同步队列中的表';
 
 -- ----------------------------
 -- Table structure for stat_column
@@ -181,7 +181,7 @@ CREATE TABLE `stat_column` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `column_id` (`column_id`) USING BTREE,
   KEY `table_id` (`table_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32989 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT;
 
 -- ----------------------------
 -- Table structure for stat_database
@@ -200,7 +200,7 @@ CREATE TABLE `stat_database` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `database_id` (`database_id`) USING BTREE,
   UNIQUE KEY `en_database` (`en_database`)
-) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据库数据统计';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据库数据统计';
 
 -- ----------------------------
 -- Table structure for stat_table
@@ -222,4 +222,4 @@ CREATE TABLE `stat_table` (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `table_id` (`table_id`) USING BTREE,
   KEY `database_id` (`database_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2058 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据表数据统计';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=COMPACT COMMENT='数据表数据统计';
