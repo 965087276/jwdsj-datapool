@@ -8,6 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 @Configuration
 @ComponentScan(basePackageClasses = ApiCommonConfig.class)
-@EnableFeignClients
 public class ApiCommonConfig {
 }
