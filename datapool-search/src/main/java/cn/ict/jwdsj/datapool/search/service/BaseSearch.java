@@ -68,7 +68,7 @@ public class BaseSearch {
      * @return
      */
     protected String wordRegular(String word) {
-        word = word.replaceAll("[\\pP\\p{Punct}]"," ");
+        word = word.replaceAll("[[\\p{P}\\p{S}]&&[^_]]"," ");
         String[] words = StrUtil.trimToEmpty(word).split("\\s+");;
         return Arrays.stream(words).collect(Collectors.joining(" AND "));
     }

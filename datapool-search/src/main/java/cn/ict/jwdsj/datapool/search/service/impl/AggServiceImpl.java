@@ -164,7 +164,7 @@ public class AggServiceImpl extends BaseSearch implements AggService {
         // 返回结果
         AggDatabasePageVO databasePageVO = new AggDatabasePageVO();
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);
-        log.info("response is {}", response);
+//        log.info("response is {}", response);
         // 所有的聚合
         Map<String, Aggregation> aggMap = response.getAggregations().asMap();
 

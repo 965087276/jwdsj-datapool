@@ -93,7 +93,7 @@ public class TableSearchServiceImpl extends BaseSearch implements TableSearchSer
         log.info("request is {}", request);
         // 执行查询
         SearchResponse response = client.search(request, RequestOptions.DEFAULT);
-        log.info("response is {}", response);
+//        log.info("response is {}", response);
 
         // es字段名与原始字段名映射
         Map<String, String> esColAndDbCol = columnsDisplayed
