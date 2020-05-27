@@ -110,6 +110,6 @@ public class SeTableServiceImpl implements SeTableService {
     @Transactional
     public void updateAddToSe(long tableId, boolean addToSe) {
         QDictTable dictTable = QDictTable.dictTable;
-        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, false).where(dictTable.id.eq(tableId)).execute();
+        jpaQueryFactory.update(dictTable).set(dictTable.addToSe, addToSe).where(dictTable.id.eq(tableId)).execute();
     }
 }
