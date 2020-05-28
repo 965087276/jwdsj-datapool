@@ -1,3 +1,6 @@
+rm -rf /home/centos/code/backend/jwdsj-datapool/logs
+cd /home/centos/code/backend/jwdsj-datapool
+mkdir logs
 nohup java -jar datapool-eureka/target/datapool-eureka-1.0.0.jar --spring.profiles.active=$1 1> ./logs/eureka.log 2>&1 &
 nohup java -jar datapool-gateway/target/datapool-gateway-1.0.0.jar --spring.profiles.active=$1 1> ./logs/gateway.log 2>&1 &
 nohup java -jar datapool-dictionary/target/datapool-dictionary-1.0.0.jar --spring.profiles.active=$1 1> ./logs/dictionary.log 2>&1 &
